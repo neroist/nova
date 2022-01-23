@@ -1,5 +1,5 @@
 # Nova
-Nova is a CLI for controlling Govee light strips based off of Bandev's Lux made in Nim.
+Nova is a CLI for controlling Govee light strips based off of Bandev's Lux. Made in Nim.
 
 ## Contents
 - [Commands](https://github.com/nonimportant/nova/blob/main/README.md#commands)
