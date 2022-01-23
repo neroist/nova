@@ -7,6 +7,7 @@ import json
 import strformat
 import strutils
 import terminal
+import browsers
 
 # NOTE: rgb and color will be 0 if
 # 1. music mode is on
@@ -170,6 +171,7 @@ proc color(device: int = 0, color: string = "") =
 
   var
     color = color.toLowerAscii()
+    colorJson: JsonNode
     r: int
     g: int
     b: int
@@ -188,8 +190,11 @@ proc color(device: int = 0, color: string = "") =
         ).body
       )
 
-    let
+    try:
       colorJson = response["data"]["properties"][3]["color"]
+    except KeyError:
+      colorJson = parseJson("""{"r": 0, "g": 0, "b": 0}""")
+    let
       color = '#' & $colorJson["r"].getInt().toHex()[^2 .. ^1] &
         $colorJson["g"].getInt().toHex()[^2 .. ^1] &
         $colorJson["b"].getInt().toHex()[^2 .. ^1]
@@ -516,6 +521,28 @@ proc devices() =
 proc device(device: int = 0) =
   ## Alias for `state`
   state(device)
+
+#proc source() =
+#  ## View Nova's source code
+#  openDefaultBrowser("https://github.com/nonimportant/Nova/blob/main/nova.nim")
+#
+#proc repo() =
+#  ## View Nova's GitHub repository
+#  openDefaultBrowser("https://github.com/nonimportant/Nova/")
+#
+#proc license() =
+#  ## View Nova's license
+#
+#  echo newHttpClient().getContent("https://raw.githubusercontent.com/nonimportant/Nova/main/LICENSE")
+#
+#proc documentation() =
+#  ## Open Nova's documentation
+#
+#  openDefaultBrowser("https://github.com/nonimportant/Nova/blob/main/DOCS.md")
+#
+#proc docs() =
+#  ## Alias for `documentation`
+#  documentation()
 
 proc version() =
   ## Get Nova current version
