@@ -41,55 +41,55 @@
   - [Description](https://github.com/nonimportant/nova/blob/main/README.md#description)
     - [Usage](https://github.com/nonimportant/nova/blob/main/README.md#usage-11)
 
-## Commands
+## Commands:
 
-### Setup
+## Setup
 Setup is a command for setting up Nova. Nova is reqired to be setup for the commands to work.
-#### Usage
+### Usage
 ```
 nova setup
 ```
     
-### Turn
+## Turn
 `turn` is a command for turning a Govee device on or off. 
-#### Options
+### Options
 <`-s`, `--state`> `state` - **Type: str/string. Optional.**
 The state you want to put the device in. 
 Has to be the string "on" or "off." If left blank, the command will print the current power state of the device.
 
 <`-d`, `--device`> `device` - **Type: int/integer. Optional.**
 The device to perform the command on. Defaults to '0.' '0' refers to the first device on your account, '1' refers to the second, ect. 
-#### Usage
+### Usage
 ```
 nova turn --device:[device] --state:[state]
 ```
- #### Examples
+### Examples
 ```
 nova turn --status:on
 nova turn -d:2 -s:"off"
 nova turn 
 ```
 
-### Brightness
+## Brightness
 `brightness` is a command for controlling and retrieving a Govee light strip's brightness.
-#### Options
+### Options
 <`-b`, `--brightness`> `brightness` - **Type: int/integer. Optional.**
 The brightness you want to set on the device. Supports values 1-100 only. 
 If left blank, the command will print the current brightness of the device.
 
 <`-d`, `--device`> `device` - **Type: int/integer. Optional.**
 The device to perform the command on. Defaults to '0.' '0' refers to the first device on your account, '1' refers to the second, ect. 
-#### Usage
+### Usage
 ```
 nova brightness --device:[device] -brightness:[brightness]
 ```
-#### Examples
+### Examples
 ```
 nova brightness --brightness:100
 nova brightness 
 nova brightness -b:1 -d:3
 ```
-### Color
+## Color
 `color` is a command for controlling and retrieving a Govee light strip's color. 
 With this command you can also change a Govee device's color to a random one. 
 
@@ -98,7 +98,7 @@ With this command you can also change a Govee device's color to a random one.
 2. Color temperature is not 0. or
 3. A scene is playing on the device.
 
-#### Options
+### Options
 <`-c`, `--color`> `color` - **Type: str/string. Optional.**
 The color you want to set on the device. Has to be an HTML/hex color code, prefixing it with '#' is optional though, or the string "rand" or "random."
 If the string "rand" or "random" is passed, a random color will be chosen. If left blank, the command will print the current color of the device. 
@@ -106,12 +106,12 @@ If the string "rand" or "random" is passed, a random color will be chosen. If le
 <`-d`, `--device`> `device` - **Type: int/integer. Optional.**
 The device to perform the command on. Defaults to '0.' '0' refers to the first device on your account, '1' refers to the second, ect. 
 
-#### Usage
+### Usage
 ```
 nova color --device:[device] --color:[color or "rand"|"random"]
 ```
 
-#### Examples
+### Examples
 ```
 nova color -c:"#6A0748"
 nova color -d:1 -c:"random"
@@ -119,64 +119,64 @@ nova color
 nova color -d:2
 ```
 
-### Color-tem
+## Color-tem
 `color-tem` is a command for controlling the color temperature of a Govee light strip.
 
-#### Options
+### Options
 <`-t`, `--temperature`> `temperature` - **Type: int/integer. Reqired.**
 The color temperature you want to set on the device. Has to be in the valid range your Govee device supports.
 
 <`-d`, `--device`> `device` - **Type: int/integer. Optional.**
 The device to perform the command on. Defaults to '0.' '0' refers to the first device on your account, '1' refers to the second, ect.
 
-#### Usage
+### Usage
 ```
 nova color-tem --device:[device] --temperature:[temperature]
 ```
 
-#### Examples
+### Examples
 ```
 nova color-tem -t:5000
 nova color-tem -d:2 -t:4675
 ```
 
-### State 
+## State 
 `state` is a command for retriving the state of a Govee device.
 
-#### Options
+### Options
 <`-d`, `--device`> `device` - **Type: int/integer. Optional.**
 The device to perform the command on. Defaults to '0.' '0' refers to the first device on your account, '1' refers to the second, ect.
 
-#### Usage
+### Usage
 ```
 nova state -d:[device]
 ```
 
-#### Examples
+### Examples
 ```
 nova state
 nova state -d:5
 ```
 
-### Device
+## Device
 `device` is an for `state`.
 
-#### Options
+### Options
 <`-d`, `--device`> `device` - **Type: int/integer. Optional.**
 The device to perform the command on. Defaults to '0.' '0' refers to the first device on your account, '1' refers to the second, ect.
 
-#### Usage
+### Usage
 ```
 nova device -d:[device]
 ```
 
-#### Examples
+### Examples
 ```
 nova device
 nova device -d:5
 ```
 
-### Rgb
+## Rgb
 `rgb` is a command for controlling and retrieving a Govee light strip's color. 
 With this command you can also change a Govee device's color to a random one. 
 
@@ -185,7 +185,7 @@ With this command you can also change a Govee device's color to a random one.
 2. Color temperature is not 0. or
 3. A scene is playing on the device.
 
-#### Options
+### Options
 `rgb` - **Type: list/sequence. Optional.**
 The color you want to set on the device. Has to be 3 numbers seperated by a space. 
 This option has no `-x` or `--x` ~~thing~~, a list of numbers/integers are just given to the command. 
@@ -194,46 +194,46 @@ If left blank, the command will print the current color in an rgb function.
 <`-d`, `--device`> `device` - **Type: int/integer. Optional.**
 The device to perform the command on. Defaults to '0.' '0' refers to the first device on your account, '1' refers to the second, ect. 
 
-#### Usage
+### Usage
 ```
 nova rgb --device:[device] r g b
 ```
 
-#### Examples
+### Examples
 ```
 nova rgb 12 181 192 -d:3
 nova rgb -d:2
 nova rgb 217 140 180
 ```
 
-### Devices
+## Devices
 `devices` is a command for getting the list of Govee devices on your account.
 
-#### Usage
+### Usage
 ```
 nova devices
 ```
 
-### Version
+## Version
 `version` is a command for getting Nova's current version.
 
-#### Usage
+### Usage
 ```
 nova version
 ```
 
-### About
+## About
 `about` is a command for getting Nova's about (i.e. Nova's version and description). 
 
-#### Usage
+### Usage
 ```
 nova about
 ```
 
-### Description
+## Description
 `description` is a command for getting Nova's description
 
-#### Usage
+### Usage
 ```
 nova description
 ```
