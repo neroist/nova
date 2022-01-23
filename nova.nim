@@ -21,7 +21,7 @@ randomize()
 enableTrueColors()
 
 # forward declarations
-proc isSetup(): bool
+proc isSetup(echoMsg: bool = true): bool
 
 # globals
 var num_devices: int
@@ -33,13 +33,9 @@ const
   Version = "v1.0.0"
   Description = "Nova is a CLI for controlling Govee light strips."
   DevicesURI = "https://developer-api.govee.com/v1/devices"
-#  Red = "\e[31m"
-#  Green = "\e[32m"
-#  Bold = "\e[1m"
-#  Italic = "\e[3m"
 
 # set num_devices
-if isSetup():
+if isSetup(false):
   let
     apiKey = readFile(".KEY")
     data = parseJson(newHttpClient(headers=newHttpHeaders({"Govee-API-Key": apiKey})).get(DevicesURI).body)
@@ -54,12 +50,13 @@ proc getDeviceInfo(jsonData: JsonNode, device: int): array[2, string] =
 
   result = [deviceName, model]
 
-proc isSetup(): bool =
+proc isSetup(echoMsg: bool = true): bool =
   if fileExists(".KEY"):
     if readFile(".KEY") != "":
       result = true
   else:
-    styledEcho fgRed, NotSetupErrorMsg
+    if echoMsg:
+      styledEcho fgRed, NotSetupErrorMsg
     result = false
 
 proc sendCompletionMsg(code: int, message: JsonNode, code_msg: HttpCode) =
