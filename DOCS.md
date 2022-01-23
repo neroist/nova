@@ -169,7 +169,7 @@ With this command you can also change a Govee device's color to a random one.
 `rgb` - **Type: list/sequence. Optional.**
 The color you want to set on the device in an RGB format. Has to be 3 numbers seperated by a space. 
 This option has no `-x` or `--x` ~~thing~~, a list of numbers/integers are just given to the command. 
-If left blank, the command will print the current color in an rgb function.
+If left blank, the command will print the current color in an RGB function.
 
 <`-d`, `--device`> `device` - **Type: int/integer. Optional.**
 The device to perform the command on. Defaults to '0.' '0' refers to the first device on your account, '1' refers to the second, ect. 
