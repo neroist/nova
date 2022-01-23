@@ -1,7 +1,12 @@
 # Nova
-Nova is a CLI for controlling Govee light strips based off of Bandev's Lux. Made in Nim.
+Nova is a CLI for controlling Govee light strips based off of/inspired by Bandev's Lux. Made in Nim. 
+
+Not affiliated with Govee or Bandev at all.
 
 ## Contents
+- [Supported Devices](https://github.com/nonimportant/nova/blob/main/README.md#supporteddevices)
+- [Installation](https://github.com/nonimportant/nova/blob/main/README.md#installation)
+- [Deletion](https://github.com/nonimportant/nova/blob/main/README.md#deletion)
 - [Commands](https://github.com/nonimportant/nova/blob/main/README.md#commands)
   - [Setup](https://github.com/nonimportant/nova/blob/main/README.md#setup)
     - [Usage](https://github.com/nonimportant/nova/blob/main/README.md#usage)
@@ -41,6 +46,30 @@ Nova is a CLI for controlling Govee light strips based off of Bandev's Lux. Made
     - [Usage](https://github.com/nonimportant/nova/blob/main/README.md#usage-10)
   - [Description](https://github.com/nonimportant/nova/blob/main/README.md#description)
     - [Usage](https://github.com/nonimportant/nova/blob/main/README.md#usage-11)
+
+## Supported Devices
+Not all Govee devices are supported by Nova. The devices supported by Nova are:
+H6160, H6163, H6104, H6109, H6110, H6117, H6159, H7022, H6086, 
+H6089, H6182, H6085, H7014, H5081, H6188, H6135, H6137, H6141, 
+H6142, H6195, H7005, H6083, H6002, H6003, H6148, H6052, H6143, 
+H6144, H6050, H6199, H6054, H5001, H6050, H6154, H6143, H6144, 
+H6072, H6121, H611A, H5080, H6062, H614C, H615A, H615B, H7020, 
+H7021, H614D, H611Z, H611B, H611C, H615C, H615D, H7006, H7007, 
+H7008, H7012, H7013, H7050, H6051, H6056, H6061, H6058, H6073, 
+H6076, H619A, H619C, H618A, H618C, H6008, H6071, H6075, H614A, 
+H614B, H614E, H618E, H619E, H605B, H6087, H6172, H619B, H619D, 
+H619Z, H61A0, H7060, H610A, H6059, H7028, H6198, H6049. 
+
+Only Wi-Fi devices are supported.
+
+## Installation
+1. Download the .exe from the [most recent version](https://github.com/nonimportant/nova/releases/latest)
+2. Create a directory in your root directory, then move the file into that directory (the location doesn't actually matter just don't leave it in the Downloads folder. I suggest this directory only have the file in and nothing else because of the next step).
+3. Add the directory to your `Path` environment variable, or else you'll have to go to and find the directory and open a terminal in that directory just to use Nova.
+
+## Deletion
+1. Delete nova.exe from whatever directory you put it in.
+###### Thats it!
 
 ## Commands:
 
