@@ -7,6 +7,7 @@ import json
 import strformat
 import strutils
 import terminal
+import browsers
 
 # NOTE: rgb and color will be 0 if
 # 1. music mode is on
@@ -31,11 +32,11 @@ const
   "See the full list of devices with `nova devices`."
   NotSetupErrorMsg = "Nova is not setup properly. Use the command `nova setup` to setup Nova."
   Version = "v1.0.0"
-  Description = "Nova is a CLI for controlling Govee light strips."
+  Description = "Nova is a CLI for controlling Govee light strips based off of Bandev's Lux."
   DevicesURI = "https://developer-api.govee.com/v1/devices"
 
 # set num_devices
-if isSetup(false):
+if isSetup(echoMsg=false):
   let
     apiKey = readFile(".KEY")
     data = parseJson(newHttpClient(headers=newHttpHeaders({"Govee-API-Key": apiKey})).get(DevicesURI).body)
@@ -158,7 +159,7 @@ proc turn(device: int = 0, state: string = "") =
 
 proc color(device: int = 0, color: string = "") =
   ## Set device color with an HTML/hex color code.
-  ## NOTE: when called with no parameters, the device's current color will be rgb(0, 0, 0) if:
+  ## NOTE: when called with no parameters, the device's current color will be #000000 if:
   ## 1. Music mode is on. 2. color temperature is not 0. or 3. A scene is playing on the device.
 
   if not isSetup(): return
@@ -517,6 +518,28 @@ proc device(device: int = 0) =
   ## Alias for `state`
   state(device)
 
+#proc source() =
+#  ## View Nova's source code
+#  openDefaultBrowser("https://github.com/nonimportant/Nova/blob/main/nova.nim")
+#
+#proc repo() =
+#  ## View Nova's GitHub repository
+#  openDefaultBrowser("https://github.com/nonimportant/Nova/")
+#
+#proc license() =
+#  ## View Nova's license
+#
+#  echo newHttpClient().getContent("https://raw.githubusercontent.com/nonimportant/Nova/main/LICENSE")
+#
+#proc documentation() =
+#  ## Open Nova's documentation
+#
+#  openDefaultBrowser("https://github.com/nonimportant/Nova/blob/main/DOCS.md")
+#
+#proc docs() =
+#  ## Alias for `documentation`
+#  documentation()
+
 proc version() =
   ## Get Nova current version
   echo "Nova version ", Version
@@ -533,8 +556,8 @@ when isMainModule:
     [
       turn,
       help={
-        "state": "The state you want to put the device. Has to be 'on' or 'off'. "&
-          "If left blank, will return the current power state of the device.",
+        "state": "The state you want to put the device in. Has to be the string \"on\" or \"off.\" " &
+          " If left blank, the command will print the current power state of the device.",
         "device": $DeviceHelp
       }
     ],
@@ -542,7 +565,7 @@ when isMainModule:
       brightness,
       help={
         "brightness": "The brightness you want to set on the device. Supports values 1-100 only. "&
-          "If left blank, will return the current brightness of the device.",
+          "If left blank, the command will print the current brightness of the device.",
         "device": $DeviceHelp
       }
     ],
@@ -550,7 +573,7 @@ when isMainModule:
       color,
       help={
         "color": "The color that you want to display on the device. " &
-          "Has to be a hex/HTML color code, the string \"rand\" or \"random\", or left blank. " &
+          "Has to be a hex/HTML color code, optionally prefixed with '#', or the string \"rand\" or \"random.\" " &
           "If left blank, will return the current color of the device. " &
           "If `color` is \"rand\" or \"random\" a random color will be displayed on the device",
         "device": $DeviceHelp
@@ -560,7 +583,8 @@ when isMainModule:
       `color-tem`,
       cmdName="color-tem",
       help={
-        "temperature": "The color temperature you want to set on the device.",
+        "temperature": "The color temperature you want to set on the device. " &
+          "Has to be in the valid range your Govee device supports.",
         "device": $DeviceHelp
       }
     ],
@@ -576,8 +600,9 @@ when isMainModule:
       rgb,
       help={
         "device": $DeviceHelp,
-        "rgb": "The color that you want to display on the device in an RGB format. " &
-          "If left blank, will return the current color of the device in an RGB function. "
+        "rgb": "The color you want to set on the device in an RGB format. " &
+          "Has to be 3 numbers seperated by a space. " &
+          "If left blank, the command will print the current color in an RGB function."
       }
     ],
     [devices],
