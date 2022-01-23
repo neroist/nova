@@ -24,22 +24,18 @@
     - [Options](https://github.com/nonimportant/nova/blob/main/DOCS.md#options-4)
     - [Usage](https://github.com/nonimportant/nova/blob/main/DOCS.md#usage-5)
     - [Examples](https://github.com/nonimportant/nova/blob/main/DOCS.md#examples-4)
-  - [Device](https://github.com/nonimportant/nova/blob/main/DOCS.md#device)
+  - [Rgb](https://github.com/nonimportant/nova/blob/main/DOCS.md#rgb)
     - [Options](https://github.com/nonimportant/nova/blob/main/DOCS.md#options-5)
     - [Usage](https://github.com/nonimportant/nova/blob/main/DOCS.md#usage-6)
     - [Examples](https://github.com/nonimportant/nova/blob/main/DOCS.md#examples-5)
-  - [Rgb](https://github.com/nonimportant/nova/blob/main/DOCS.md#rgb)
-    - [Options](https://github.com/nonimportant/nova/blob/main/DOCS.md#options-6)
-    - [Usage](https://github.com/nonimportant/nova/blob/main/DOCS.md#usage-7)
-    - [Examples](https://github.com/nonimportant/nova/blob/main/DOCS.md#examples-6)
   - [Devices](https://github.com/nonimportant/nova/blob/main/DOCS.md#devices)
-    - [Usage](https://github.com/nonimportant/nova/blob/main/DOCS.md#usage-8)
+    - [Usage](https://github.com/nonimportant/nova/blob/main/DOCS.md#usage-7)
   - [Version](https://github.com/nonimportant/nova/blob/main/DOCS.md#version)
-    - [Usage](https://github.com/nonimportant/nova/blob/main/DOCS.md#usage-9)
+    - [Usage](https://github.com/nonimportant/nova/blob/main/DOCS.md#usage-8)
   - [About](https://github.com/nonimportant/nova/blob/main/DOCS.md#about)
-    - [Usage](https://github.com/nonimportant/nova/blob/main/DOCS.md#usage-10)
+    - [Usage](https://github.com/nonimportant/nova/blob/main/DOCS.md#usage-9)
   - [Description](https://github.com/nonimportant/nova/blob/main/DOCS.md#description)
-    - [Usage](https://github.com/nonimportant/nova/blob/main/DOCS.md#usage-11)
+    - [Usage](https://github.com/nonimportant/nova/blob/main/DOCS.md#usage-10)
 
 ## Commands:
 
@@ -143,6 +139,8 @@ nova color-tem -d:2 -t:4675
 ## State 
 `state` is a command for retriving the state of a Govee device.
 
+Alias: `device`
+
 ### Options
 <`-d`, `--device`> `device` - **Type: int/integer. Optional.**
 The device to perform the command on. Defaults to '0.' '0' refers to the first device on your account, '1' refers to the second, ect.
@@ -156,24 +154,6 @@ nova state -d:[device]
 ```
 nova state
 nova state -d:5
-```
-
-## Device
-`device` is an for `state`.
-
-### Options
-<`-d`, `--device`> `device` - **Type: int/integer. Optional.**
-The device to perform the command on. Defaults to '0.' '0' refers to the first device on your account, '1' refers to the second, ect.
-
-### Usage
-```
-nova device -d:[device]
-```
-
-### Examples
-```
-nova device
-nova device -d:5
 ```
 
 ## Rgb
