@@ -4,7 +4,7 @@ Nova is a CLI for controlling Govee light strips based off of/inspired by Bandev
 Not affiliated with Govee or Bandev at all.
 
 ## Contents
-- [Supported Devices](https://github.com/nonimportant/nova/blob/main/README.md#supporteddevices)
+- [Supported Devices](https://github.com/nonimportant/nova/blob/main/README.md#supported-devices)
 - [Installation](https://github.com/nonimportant/nova/blob/main/README.md#installation)
 - [Deletion](https://github.com/nonimportant/nova/blob/main/README.md#deletion)
 - [Commands](https://github.com/nonimportant/nova/blob/main/README.md#commands)
