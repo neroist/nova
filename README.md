@@ -7,45 +7,41 @@ Not affiliated with Govee or Bandev.
 - [Supported Devices](https://github.com/nonimportant/nova/blob/main/README.md#supported-devices)
 - [Installation](https://github.com/nonimportant/nova/blob/main/README.md#installation)
 - [Deletion](https://github.com/nonimportant/nova/blob/main/README.md#deletion)
-- [Commands](https://github.com/nonimportant/nova/blob/main/README.md#commands)
-  - [Setup](https://github.com/nonimportant/nova/blob/main/README.md#setup)
-    - [Usage](https://github.com/nonimportant/nova/blob/main/README.md#usage)
-  - [Turn](https://github.com/nonimportant/nova/blob/main/README.md#turn)
-    - [Options](https://github.com/nonimportant/nova/blob/main/README.md#options)
-    - [Usage](https://github.com/nonimportant/nova/blob/main/README.md#usage-1)
-    - [Examples](https://github.com/nonimportant/nova/blob/main/README.md#examples)
-  - [Brightness](https://github.com/nonimportant/nova/blob/main/README.md#brightness)
-    - [Options](https://github.com/nonimportant/nova/blob/main/README.md#options-1)
-    - [Usage](https://github.com/nonimportant/nova/blob/main/README.md#usage-2)
-    - [Examples](https://github.com/nonimportant/nova/blob/main/README.md#examples-1)
-  - [Color](https://github.com/nonimportant/nova/blob/main/README.md#color)
-    - [Options](https://github.com/nonimportant/nova/blob/main/README.md#options-2)
-    - [Usage](https://github.com/nonimportant/nova/blob/main/README.md#usage-3)
-    - [Examples](https://github.com/nonimportant/nova/blob/main/README.md#examples-2)
-  - [Color-tem](https://github.com/nonimportant/nova/blob/main/README.md#color-tem)
-    - [Options](https://github.com/nonimportant/nova/blob/main/README.md#options-3)
-    - [Usage](https://github.com/nonimportant/nova/blob/main/README.md#usage-4)
-    - [Examples](https://github.com/nonimportant/nova/blob/main/README.md#examples-3)
-  - [State](https://github.com/nonimportant/nova/blob/main/README.md#state)
-    - [Options](https://github.com/nonimportant/nova/blob/main/README.md#options-4)
-    - [Usage](https://github.com/nonimportant/nova/blob/main/README.md#usage-5)
-    - [Examples](https://github.com/nonimportant/nova/blob/main/README.md#examples-4)
-  - [Device](https://github.com/nonimportant/nova/blob/main/README.md#device)
-    - [Options](https://github.com/nonimportant/nova/blob/main/README.md#options-5)
-    - [Usage](https://github.com/nonimportant/nova/blob/main/README.md#usage-6)
-    - [Examples](https://github.com/nonimportant/nova/blob/main/README.md#examples-5)
-  - [Rgb](https://github.com/nonimportant/nova/blob/main/README.md#rgb)
-    - [Options](https://github.com/nonimportant/nova/blob/main/README.md#options-6)
-    - [Usage](https://github.com/nonimportant/nova/blob/main/README.md#usage-7)
-    - [Examples](https://github.com/nonimportant/nova/blob/main/README.md#examples-6)
-  - [Devices](https://github.com/nonimportant/nova/blob/main/README.md#devices)
-    - [Usage](https://github.com/nonimportant/nova/blob/main/README.md#usage-8)
-  - [Version](https://github.com/nonimportant/nova/blob/main/README.md#version)
-    - [Usage](https://github.com/nonimportant/nova/blob/main/README.md#usage-9)
-  - [About](https://github.com/nonimportant/nova/blob/main/README.md#about)
-    - [Usage](https://github.com/nonimportant/nova/blob/main/README.md#usage-10)
-  - [Description](https://github.com/nonimportant/nova/blob/main/README.md#description)
-    - [Usage](https://github.com/nonimportant/nova/blob/main/README.md#usage-11)
+- [Commands](https://github.com/nonimportant/nova/blob/main/DOCS.md#commands)
+  - [Setup](https://github.com/nonimportant/nova/blob/main/DOCS.md#setup)
+    - [Usage](https://github.com/nonimportant/nova/blob/main/DOCS.md#usage)
+  - [Turn](https://github.com/nonimportant/nova/blob/main/DOCS.md#turn)
+    - [Options](https://github.com/nonimportant/nova/blob/main/DOCS.md#options)
+    - [Usage](https://github.com/nonimportant/nova/blob/main/DOCS.md#usage-1)
+    - [Examples](https://github.com/nonimportant/nova/blob/main/DOCS.md#examples)
+  - [Brightness](https://github.com/nonimportant/nova/blob/main/DOCS.md#brightness)
+    - [Options](https://github.com/nonimportant/nova/blob/main/DOCS.md#options-1)
+    - [Usage](https://github.com/nonimportant/nova/blob/main/DOCS.md#usage-2)
+    - [Examples](https://github.com/nonimportant/nova/blob/main/DOCS.md#examples-1)
+  - [Color](https://github.com/nonimportant/nova/blob/main/DOCS.md#color)
+    - [Options](https://github.com/nonimportant/nova/blob/main/DOCS.md#options-2)
+    - [Usage](https://github.com/nonimportant/nova/blob/main/DOCS.md#usage-3)
+    - [Examples](https://github.com/nonimportant/nova/blob/main/DOCS.md#examples-2)
+  - [Color-tem](https://github.com/nonimportant/nova/blob/main/DOCS.md#color-tem)
+    - [Options](https://github.com/nonimportant/nova/blob/main/DOCS.md#options-3)
+    - [Usage](https://github.com/nonimportant/nova/blob/main/DOCS.md#usage-4)
+    - [Examples](https://github.com/nonimportant/nova/blob/main/DOCS.md#examples-3)
+  - [State](https://github.com/nonimportant/nova/blob/main/DOCS.md#state)
+    - [Options](https://github.com/nonimportant/nova/blob/main/DOCS.md#options-4)
+    - [Usage](https://github.com/nonimportant/nova/blob/main/DOCS.md#usage-5)
+    - [Examples](https://github.com/nonimportant/nova/blob/main/DOCS.md#examples-4)
+  - [Rgb](https://github.com/nonimportant/nova/blob/main/DOCS.md#rgb)
+    - [Options](https://github.com/nonimportant/nova/blob/main/DOCS.md#options-5)
+    - [Usage](https://github.com/nonimportant/nova/blob/main/DOCS.md#usage-6)
+    - [Examples](https://github.com/nonimportant/nova/blob/main/DOCS.md#examples-5)
+  - [Devices](https://github.com/nonimportant/nova/blob/main/DOCS.md#devices)
+    - [Usage](https://github.com/nonimportant/nova/blob/main/DOCS.md#usage-7)
+  - [Version](https://github.com/nonimportant/nova/blob/main/DOCS.md#version)
+    - [Usage](https://github.com/nonimportant/nova/blob/main/DOCS.md#usage-8)
+  - [About](https://github.com/nonimportant/nova/blob/main/DOCS.md#about)
+    - [Usage](https://github.com/nonimportant/nova/blob/main/DOCS.md#usage-9)
+  - [Description](https://github.com/nonimportant/nova/blob/main/DOCS.md#description)
+    - [Usage](https://github.com/nonimportant/nova/blob/main/DOCS.md#usage-10)
 
 ## Supported Devices
 Not all Govee devices are supported by Nova. The devices supported by Nova are:
@@ -173,6 +169,8 @@ nova color-tem -d:2 -t:4675
 ## State 
 `state` is a command for retriving the state of a Govee device.
 
+Alias: `device`
+
 ### Options
 <`-d`, `--device`> `device` - **Type: int/integer. Optional.**
 The device to perform the command on. Defaults to '0.' '0' refers to the first device on your account, '1' refers to the second, ect.
@@ -186,24 +184,6 @@ nova state -d:[device]
 ```
 nova state
 nova state -d:5
-```
-
-## Device
-`device` is an for `state`.
-
-### Options
-<`-d`, `--device`> `device` - **Type: int/integer. Optional.**
-The device to perform the command on. Defaults to '0.' '0' refers to the first device on your account, '1' refers to the second, ect.
-
-### Usage
-```
-nova device -d:[device]
-```
-
-### Examples
-```
-nova device
-nova device -d:5
 ```
 
 ## Rgb
@@ -267,3 +247,4 @@ nova about
 ```
 nova description
 ```
+
