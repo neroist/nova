@@ -41,7 +41,7 @@
   - [Description](https://github.com/nonimportant/nova/blob/main/README.md#description)
     - [Usage](https://github.com/nonimportant/nova/blob/main/README.md#usage-11)
 
-## Commands:
+## Commands
 
 ### Setup
 Setup is a command for setting up Nova. Nova is reqired to be setup for the commands to work.
