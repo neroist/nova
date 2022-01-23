@@ -7,7 +7,6 @@ import json
 import strformat
 import strutils
 import terminal
-import browsers
 
 # NOTE: rgb and color will be 0 if
 # 1. music mode is on
@@ -517,28 +516,6 @@ proc devices() =
 proc device(device: int = 0) =
   ## Alias for `state`
   state(device)
-
-#proc source() =
-#  ## View Nova's source code
-#  openDefaultBrowser("https://github.com/nonimportant/Nova/blob/main/nova.nim")
-#
-#proc repo() =
-#  ## View Nova's GitHub repository
-#  openDefaultBrowser("https://github.com/nonimportant/Nova/")
-#
-#proc license() =
-#  ## View Nova's license
-#
-#  echo newHttpClient().getContent("https://raw.githubusercontent.com/nonimportant/Nova/main/LICENSE")
-#
-#proc documentation() =
-#  ## Open Nova's documentation
-#
-#  openDefaultBrowser("https://github.com/nonimportant/Nova/blob/main/DOCS.md")
-#
-#proc docs() =
-#  ## Alias for `documentation`
-#  documentation()
 
 proc version() =
   ## Get Nova current version
