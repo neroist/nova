@@ -7,6 +7,7 @@ import json
 import strformat
 import strutils
 import terminal
+import browsers
 
 # NOTE: rgb and color will be 0 if
 # 1. music mode is on
@@ -24,7 +25,8 @@ enableTrueColors()
 proc isSetup(echoMsg: bool = true): bool
 
 # globals
-var num_devices: int
+var
+  num_devices: int
 const
   DeviceHelp = "The device to perform the action/command on. Defaults to '0'." &
   "'0' refers to the first device on your account, '1' refers to the second, ect. " &
@@ -33,7 +35,7 @@ const
   Version = "v1.0.0"
   Description = "Nova is a CLI for controlling Govee light strips based off of Bandev's Lux."
   DevicesURI = "https://developer-api.govee.com/v1/devices"
-
+  Author = "Alice/Grace"
 # set num_devices
 if isSetup(echoMsg=false):
   let
@@ -526,68 +528,92 @@ proc version() =
   echo "Nova version ", Version
 proc about() =
   ## Nova about
-  echo "Nova ", Version; echo Description
+  echo "Nova ", Version
+  echo Description
+  echo "Made by ", Author
+
 proc description() =
   ## Prints Nova's description
   echo Description
 
-when isMainModule:
-  dispatchMulti(
-    [setup],
-    [
-      turn,
-      help={
-        "state": "The state you want to put the device in. Has to be the string \"on\" or \"off.\" " &
-          " If left blank, the command will print the current power state of the device.",
-        "device": $DeviceHelp
-      }
-    ],
-    [
-      brightness,
-      help={
-        "brightness": "The brightness you want to set on the device. Supports values 1-100 only. "&
-          "If left blank, the command will print the current brightness of the device.",
-        "device": $DeviceHelp
-      }
-    ],
-    [
-      color,
-      help={
-        "color": "The color that you want to display on the device. " &
-          "Has to be a hex/HTML color code, optionally prefixed with '#', or the string \"rand\" or \"random.\" " &
-          "If left blank, will return the current color of the device. " &
-          "If `color` is \"rand\" or \"random\" a random color will be displayed on the device",
-        "device": $DeviceHelp
-      }
-    ],
-    [
-      `color-tem`,
-      cmdName="color-tem",
-      help={
-        "temperature": "The color temperature you want to set on the device. " &
-          "Has to be in the valid range your Govee device supports.",
-        "device": $DeviceHelp
-      }
-    ],
-    [
-      state,
-      help={"device": $DeviceHelp}
-    ],
-    [
-      device,
-      help={"device": $DeviceHelp}
-    ],
-    [
-      rgb,
-      help={
-        "device": $DeviceHelp,
-        "rgb": "The color you want to set on the device in an RGB format. " &
-          "Has to be 3 numbers seperated by a space. " &
-          "If left blank, the command will print the current color in an RGB function."
-      }
-    ],
-    [devices],
-    [version],
-    [about],
-    [description]
-  )
+proc source() =
+  ## View Nova's source code
+  openDefaultBrowser("https://github.com/nonimportant/Nova/blob/main/nova.nim")
+
+proc repo() =
+  ## View Nova's GitHub repository
+  openDefaultBrowser("https://github.com/nonimportant/Nova/")
+
+proc license() =
+  ## View Nova's license
+
+  openDefaultBrowser("https://github.com/nonimportant/Nova/blob/main/LICENSE")
+
+proc docs() =
+  ## View Nova's documentation
+  openDefaultBrowser("https://github.com/nonimportant/Nova/blob/main/DOCS.md")
+
+
+dispatchMulti(
+  [setup],
+  [
+    turn,
+    help={
+      "state": "The state you want to put the device in. Has to be the string \"on\" or \"off.\" " &
+        " If left blank, the command will print the current power state of the device.",
+      "device": $DeviceHelp
+    }
+  ],
+  [
+    brightness,
+    help={
+      "brightness": "The brightness you want to set on the device. Supports values 1-100 only. "&
+        "If left blank, the command will print the current brightness of the device.",
+      "device": $DeviceHelp
+    }
+  ],
+  [
+    color,
+    help={
+      "color": "The color that you want to display on the device. " &
+        "Has to be a hex/HTML color code, optionally prefixed with '#', or the string \"rand\" or \"random.\" " &
+        "If left blank, will return the current color of the device. " &
+        "If `color` is \"rand\" or \"random\" a random color will be displayed on the device",
+      "device": $DeviceHelp
+    }
+  ],
+  [
+    `color-tem`,
+    cmdName="color-tem",
+    help={
+      "temperature": "The color temperature you want to set on the device. " &
+        "Has to be in the valid range your Govee device supports.",
+      "device": $DeviceHelp
+    }
+  ],
+  [
+    state,
+    help={"device": $DeviceHelp}
+  ],
+  [
+    device,
+    help={"device": $DeviceHelp}
+  ],
+  [
+    rgb,
+    help={
+      "device": $DeviceHelp,
+      "rgb": "The color you want to set on the device in an RGB format. " &
+        "Has to be 3 numbers seperated by a space. " &
+        "If left blank, the command will print the current color in an RGB function."
+    }
+  ],
+  [devices],
+  [version],
+  [about],
+  [description],
+  [source],
+  [repo],
+  [license],
+  [docs]
+)
