@@ -43,6 +43,15 @@ Not affiliated with Govee or Bandev.
         - [Usage](https://github.com/nonimportant/nova/blob/main/README.md#usage-9)
     - [Description](https://github.com/nonimportant/nova/blob/main/README.md#description)
         - [Usage](https://github.com/nonimportant/nova/blob/main/README.md#usage-10)
+    - [Source](https://github.com/nonimportant/nova/blob/main/README.md#source)
+        - [Usage](https://github.com/nonimportant/nova/blob/main/README.md#usage-11)
+    - [Repo](https://github.com/nonimportant/nova/blob/main/README.md#repo)
+        - [Usage](https://github.com/nonimportant/nova/blob/main/README.md#usage-12)
+    - [License](https://github.com/nonimportant/nova/blob/main/README.md#license)
+        - [Usage](https://github.com/nonimportant/nova/blob/main/README.md#usage-13)
+    - [Docs](https://github.com/nonimportant/nova/blob/main/README.md#docs)
+        - [Usage](https://github.com/nonimportant/nova/blob/main/README.md#usage-14)
+
 
 ## Supported Devices
 Not all Govee devices are supported by Nova. The devices supported by Nova are:
@@ -207,7 +216,7 @@ The device to perform the command on. Defaults to '0.' '0' refers to the first d
 
 ### Usage
 ```
-nova rgb --device:[device] r g b
+nova rgb r g b --device:[device]
 ```
 
 ### Examples
@@ -247,5 +256,37 @@ nova about
 ### Usage
 ```
 nova description
+```
+
+## Source
+`source` is a command for opening Nova's source code
+
+### Usage
+```
+nova source
+``` 
+
+## Repo
+`repo` is a command for opening Nova's GitHub repository
+
+### Usage
+```
+nova repo
+```
+
+## License 
+`license` is a command for getting Nova's licence
+
+### Usage
+```
+nova license
+```
+
+## Docs
+`docs` is a command for getting Nova's description
+
+### Usage
+```
+nova docs
 ```
 
