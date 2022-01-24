@@ -36,6 +36,14 @@
     - [Usage](https://github.com/nonimportant/nova/blob/main/DOCS.md#usage-9)
   - [Description](https://github.com/nonimportant/nova/blob/main/DOCS.md#description)
     - [Usage](https://github.com/nonimportant/nova/blob/main/DOCS.md#usage-10)
+  - [Source](https://github.com/nonimportant/nova/blob/main/DOCS.md#source)
+    - [Usage](https://github.com/nonimportant/nova/blob/main/DOCS.md#usage-11)
+  - [Repo](https://github.com/nonimportant/nova/blob/main/DOCS.md#repo)
+    - [Usage](https://github.com/nonimportant/nova/blob/main/DOCS.md#usage-12)
+  - [License](https://github.com/nonimportant/nova/blob/main/DOCS.md#license)
+    - [Usage](https://github.com/nonimportant/nova/blob/main/DOCS.md#usage-13)
+  - [Docs](https://github.com/nonimportant/nova/blob/main/DOCS.md#docs)
+    - [Usage](https://github.com/nonimportant/nova/blob/main/DOCS.md#usage-14)
 
 ## Commands:
 
@@ -216,4 +224,36 @@ nova about
 ### Usage
 ```
 nova description
+```
+
+## Source
+`source` is a command for opening Nova's source code
+
+### Usage
+```
+nova source
+``` 
+
+## Repo
+`repo` is a command for opening Nova's GitHub repository
+
+### Usage
+```
+nova repo
+```
+
+## License 
+`license` is a command for getting Nova's licence
+
+### Usage
+```
+nova license
+```
+
+## Docs
+`docs` is a command for getting Nova's description
+
+### Usage
+```
+nova docs
 ```
