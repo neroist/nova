@@ -74,7 +74,7 @@ Only Wi-Fi devices are supported.
 
 ## Installation
 1. Download the .exe from the [most recent version](https://github.com/nonimportant/nova/releases/latest) (If your browser or antivirus raises a warning, ignore it).
-2. Create a directory in your root directory, then move the file into that directory (the location doesn't actually matter just don't leave it in the Downloads folder. I suggest this directory only have the file in and nothing else because of the next step).
+2. Create a directory in your root or home directory, then move the file into that directory (the location doesn't actually matter just don't leave it in the Downloads folder. I suggest this directory only have the file in and nothing else because of the next step).
 3. Add the directory to your `Path` environment variable, or else you'll have to go to and find the directory and open a terminal in that directory just to use Nova.
 
 ## Deletion
