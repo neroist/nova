@@ -6,7 +6,7 @@ Not affiliated with Govee or Bandev.
 
 ## Contents
 - [Supported Devices](https://github.com/nonimportant/nova/blob/main/README.md#supported-devices)
-- [Notes](https://github.com/nonimportant/nova/blob/main/README.md#notes)
+- [Notes](https://github.com/nonimportant/nova/blob/main/README.md#important-notes)
 - [Installation](https://github.com/nonimportant/nova/blob/main/README.md#installation)
 - [Deletion](https://github.com/nonimportant/nova/blob/main/README.md#deletion)
 - [Commands](https://github.com/nonimportant/nova/blob/main/README.md#commands)
@@ -69,8 +69,8 @@ H619Z, H61A0, H7060, H610A, H6059, H7028, H6198, H6049.
 
 Only Wi-Fi devices are supported.
 
-## Notes
-**Important - Positional arguments are not supported.** For example: `nova color 0 "aliceblue"` will not work and throw an error. You will have to explicitly declare every argument you pass into the command. For example: `nova color -d 0 -c "aliceblue"`.
+## Important Notes
+**Positional arguments are not supported.** For example: `nova color 0 "aliceblue"` will not work and throw an error. You will have to explicitly declare every argument you pass into the command. For example: `nova color -d 0 -c "aliceblue"`. Also, see [`setup`](https://github.com/nonimportant/nova/blob/main/README.md#setup).
 
 ## Installation
 1. Download the .exe from the [most recent version](https://github.com/nonimportant/nova/releases/latest) (If your browser or antivirus raises a warning, ignore it).
@@ -84,7 +84,9 @@ Only Wi-Fi devices are supported.
 ## Commands:
 
 ## Setup
-Setup is a command for setting up Nova. Nova is reqired to be setup for the commands to work.
+`setup` is a command for setting up Nova. Nova is reqired to be setup for Nova to work. 
+###### **Note: you *may* need to give your shell root/administrator permissions for this command to work.**
+
 ### Usage
 ```
 nova setup
