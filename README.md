@@ -6,6 +6,7 @@ Not affiliated with Govee or Bandev.
 
 ## Contents
 - [Supported Devices](https://github.com/nonimportant/nova/blob/main/README.md#supported-devices)
+- [Notes](https://github.com/nonimportant/nova/blob/main/README.md#notes)
 - [Installation](https://github.com/nonimportant/nova/blob/main/README.md#installation)
 - [Deletion](https://github.com/nonimportant/nova/blob/main/README.md#deletion)
 - [Commands](https://github.com/nonimportant/nova/blob/main/README.md#commands)
@@ -67,6 +68,9 @@ H614B, H614E, H618E, H619E, H605B, H6087, H6172, H619B, H619D,
 H619Z, H61A0, H7060, H610A, H6059, H7028, H6198, H6049.
 
 Only Wi-Fi devices are supported.
+
+## Notes
+**Important - Positional arguments are not supported.** For example: `nova color 0 "aliceblue"` will not work and throw an error. You will have to explicitly declare every argument you pass into the command. For example: `nova color -d 0 -c "aliceblue"`.
 
 ## Installation
 1. Download the .exe from the [most recent version](https://github.com/nonimportant/nova/releases/latest) (If your browser or antivirus raises a warning, ignore it).
@@ -136,7 +140,7 @@ With this command you can also change a Govee device's color to a random one.
 
 ### Options
 <`-c`, `--color`> `color` - **Type: str/string. Optional.**
-The color you want to set on the device. Has to be an HTML/hex color code, prefixing it with '#' is optional though, or the string "rand" or "random."
+The color you want to set on the device. Has to be an HTML/hex color code (a "#" is optional), a color name [(click here to see a list of color names)](https://www.w3schools.com/colors/colors_hex.asp), or the string "rand" or "random."
 If the string "rand" or "random" is passed, a random color will be chosen. If left blank, the command will print the current color of the device.
 
 <`-d`, `--device`> `device` - **Type: int/integer. Optional.**
@@ -149,10 +153,11 @@ nova color --device:[device] --color:[color or "rand"|"random"]
 
 ### Examples
 ```
-nova color -c:"#6A0748"
-nova color -d:1 -c:"random"
+nova color -c "#6A0748"
+nova color -d:1 -c:random
+nova color -c "alice blue" 
+nova color -d=2
 nova color 
-nova color -d:2
 ```
 
 ## Color-tem
