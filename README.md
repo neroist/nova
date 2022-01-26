@@ -73,9 +73,10 @@ Only Wi-Fi devices are supported.
 **Positional arguments are not supported.** For example: `nova color 0 "aliceblue"` will not work and throw an error. You will have to explicitly declare every argument you pass into the command. For example: `nova color -d 0 -c "aliceblue"`. Also, see [`setup`](https://github.com/nonimportant/nova/blob/main/README.md#setup).
 
 ## Installation
-1. Download the .exe from the [most recent version](https://github.com/nonimportant/nova/releases/latest) (If your browser or antivirus raises a warning, ignore it).
+1. Download the .exe from the [most recent version](https://github.com/nonimportant/nova/releases/latest) (If your browser or antivirus raises a warning, ignore it and let it bypass. If you don't, there might be problems with step 4).
 2. Create a directory in your root or home directory, then move the file into that directory (the location doesn't actually matter just don't leave it in the Downloads folder. I suggest this directory only have the file in and nothing else because of the next step).
 3. Add the directory to your `Path` environment variable, or else you'll have to go to and find the directory and open a terminal in that directory just to use Nova.
+4. Run `nova setup` in your terminal/shell, and you're good to go (see [`setup`](https://github.com/nonimportant/nova/blob/main/README.md#setup)'s docs if there are any problems).
 
 ## Deletion
 1. Delete nova.exe from whatever directory you put it in.
@@ -86,6 +87,7 @@ Only Wi-Fi devices are supported.
 ## Setup
 `setup` is a command for setting up Nova. Nova is reqired to be setup for Nova to work. 
 ###### **Note: you *may* need to give your shell root/administrator permissions for this command to work.**
+###### If this command still doesn't work, make a file called ".KEY" in the same directory that nova.exe is in and put your Govee API key in it.
 
 ### Usage
 ```
