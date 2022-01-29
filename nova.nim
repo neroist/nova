@@ -1,5 +1,5 @@
 from uri import encodeUrl
-from os import fileExists, execShellCmd
+from os import fileExists, execShellCmd, getAppDir
 from random import rand, randomize
 import cligen
 import httpclient
@@ -28,6 +28,9 @@ proc isSetup(echoMsg: bool = true): bool
 # globals
 var
   num_devices: int
+
+let
+  KeyDir = getAppDir() & "\\.KEY"
   
 const
   DeviceHelp = "The device to perform the action/command on. Defaults to '0'." &
@@ -43,7 +46,7 @@ const
 # set num_devices
 if isSetup(echoMsg=false):
   let
-    apiKey = readFile(".KEY")
+    apiKey = readFile(KeyDir)
     data = parseJson(
       newHttpClient(headers=newHttpHeaders({"Govee-API-Key": apiKey})).get(DevicesURI).body
     )
@@ -59,13 +62,13 @@ proc getDeviceInfo(jsonData: JsonNode, device: int): array[2, string] =
   result = [deviceName, model]
 
 proc isSetup(echoMsg: bool = true): bool =
-  if fileExists(".KEY"):
-    if readFile(".KEY") != "":
-      result = true
+  if fileExists(KeyDir):
+    if readFile(KeyDir) != "":
+      return true
   else:
     if echoMsg:
       styledEcho fgRed, NotSetupErrorMsg
-    result = false
+    return false
 
 proc sendCompletionMsg(code: int, message: JsonNode, code_msg: HttpCode) =
   if code == 200:
@@ -96,25 +99,24 @@ proc setup() =
     response: JsonNode
     codeKey: string
 
-  
   response = json.parseJson(client.get(DevicesURI).body)
   
   try: 
     discard response["code"]
     codeKey = "code"
   except KeyError: 
-    codeKey = "status" 
+    codeKey = "status"
 
   if response[codeKey].getInt() == 200:
-    writeFile(".KEY", apiKey)
+    writeFile(KeyDir, apiKey)
     styledEcho fgGreen, "\nSetup completed successfully.\nWelcome to Nova."
 
     when defined windows:
-      discard execShellCmd("attrib -r +h .KEY") # remove "read-only" attribute and add "hidden" attribute
+      discard execShellCmd(fmt"attrib -r +h {KeyDir}") # remove "read-only" attribute and add "hidden" attribute
     elif defined macos:
-      discard execShellCmd("chflags hidden .KEY") # set "hidden" flag on file
+      discard execShellCmd(fmt"chflags hidden {KeyDir}") # set "hidden" flag on file
     elif defined macosx:
-        discard execShellCmd("chflags hidden .KEY") # same as above
+        discard execShellCmd(fmt"chflags hidden {KeyDir}") # same as above
     return
   else:
     styledEcho fgRed, "\nCode: ", $response[codeKey]
@@ -126,7 +128,7 @@ proc turn(device: int = 0, state: string = "") =
 
   if not isSetup() or not checkDevices(device): return
 
-  let apiKey = readFile(".KEY")
+  let apiKey = readFile(KeyDir)
 
   if state == "":
     var client = newHttpClient(headers=newHttpHeaders({"Govee-API-Key": apiKey}))
@@ -185,7 +187,7 @@ proc color(device: int = 0, color: string = "") =
 
   if not isSetup() or not checkDevices(device): return
 
-  let apiKey = readFile(".KEY")
+  let apiKey = readFile(KeyDir)
 
   var
     color = color.replace(" ").toLowerAscii()
@@ -278,7 +280,7 @@ proc brightness(device = 0, brightness: int = -1) =
 
   if not isSetup() or not checkDevices(device): return
 
-  let apiKey = readFile(".KEY")
+  let apiKey = readFile(KeyDir)
 
   if brightness == -1:  # if brightness is default value
     var client = newHttpClient(headers=newHttpHeaders({"Govee-API-Key": apiKey}))
@@ -331,7 +333,7 @@ proc color_tem(device = 0, temperature: int) =
 
   if not isSetup() or not checkDevices(device): return
 
-  let apiKey = readFile(".KEY")
+  let apiKey = readFile(KeyDir)
 
   var client = newHttpClient(headers=newHttpHeaders({"Govee-API-Key": apiKey}))
 
@@ -372,7 +374,7 @@ proc state(device: int = 0) =
 
   if not isSetup() or not checkDevices(device): return
 
-  let apiKey = readFile(".KEY")
+  let apiKey = readFile(KeyDir)
 
   var
     client = newHttpClient(headers=newHttpHeaders({"Govee-API-Key": apiKey}))
@@ -422,7 +424,7 @@ proc rgb(rgb: seq[int], device: int = 0) =
   ## or 3. A scene is playing on the device.
 
   if not isSetup() or not checkDevices(device): return
-  let apiKey = readFile(".KEY")
+  let apiKey = readFile(KeyDir)
 
   var rgb = rgb
 
@@ -502,7 +504,7 @@ proc devices() =
 
   if not isSetup(): return
 
-  let apiKey = readFile(".KEY")
+  let apiKey = readFile(KeyDir)
 
   var client = newHttpClient(headers=newHttpHeaders({"Govee-API-Key": apiKey}))
   let resp = json.parseJson(client.get(DevicesURI).body)
