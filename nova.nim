@@ -8,6 +8,7 @@ import strformat
 import strutils
 import terminal
 import browsers
+from colors import parseColor, isColor, extractRGB, `$`
 
 # NOTE: rgb and color will be 0 if
 # 1. music mode is on
@@ -27,6 +28,7 @@ proc isSetup(echoMsg: bool = true): bool
 # globals
 var
   num_devices: int
+  
 const
   DeviceHelp = "The device to perform the action/command on. Defaults to '0'." &
   "'0' refers to the first device on your account, '1' refers to the second, ect. " &
@@ -35,12 +37,16 @@ const
   Version = "v1.1.1"
   Description = "Nova is a CLI for controlling Govee light strips based off of Bandev's Lux."
   DevicesURI = "https://developer-api.govee.com/v1/devices"
+  ControlURI = DevicesURI & "/control"
   Author = "Alice/Grace"
+
 # set num_devices
 if isSetup(echoMsg=false):
   let
     apiKey = readFile(".KEY")
-    data = parseJson(newHttpClient(headers=newHttpHeaders({"Govee-API-Key": apiKey})).get(DevicesURI).body)
+    data = parseJson(
+      newHttpClient(headers=newHttpHeaders({"Govee-API-Key": apiKey})).get(DevicesURI).body
+    )
 
   num_devices = data["data"]["devices"].getElems().len()
 
@@ -66,47 +72,59 @@ proc sendCompletionMsg(code: int, message: JsonNode, code_msg: HttpCode) =
     styledEcho fgGreen, "Successfully executed command"
   else:
     styledEcho fgRed, "Error executing command"
+ 
   echo "Message: ", message
   echo "Code: ", code_msg
+
+proc checkDevices(device: int): bool = 
+  if device notin 0 ..< num_devices:
+    styledEcho fgRed, fmt"Invalid device '{device}'. You have {num_devices} device(s)."
+    return false
+  
+  return true
 
 # commands
 proc setup() =
   ## Setup Nova
 
   echo "Enter Govee API Key:"
-  let apiKey = readLine(stdin)
+  let 
+    apiKey = readLine(stdin)
+    client = newHttpClient(headers=newHttpHeaders({"Govee-API-Key": apiKey}))
 
   var
-    client = newHttpClient(headers=newHttpHeaders({"Govee-API-Key": apiKey}))
     response: JsonNode
+    codeKey: string
 
-  try:
-    response = json.parseJson(client.getContent(DevicesURI))
-  except HttpRequestError:
-    response = json.parseJson("""{"code": 401}""")
+  
+  response = json.parseJson(client.get(DevicesURI).body)
+  
+  try: 
+    discard response["code"]
+    codeKey = "code"
+  except KeyError: 
+    codeKey = "status" 
 
-  if response["code"].getInt() == 200:
+  if response[codeKey].getInt() == 200:
     writeFile(".KEY", apiKey)
     styledEcho fgGreen, "\nSetup completed successfully.\nWelcome to Nova."
 
     when defined windows:
-      discard execShellCmd("attrib -r +h .KEY") # remove "read-only" flag and add "hidden" flag
+      discard execShellCmd("attrib -r +h .KEY") # remove "read-only" attribute and add "hidden" attribute
     elif defined macos:
       discard execShellCmd("chflags hidden .KEY") # set "hidden" flag on file
     elif defined macosx:
         discard execShellCmd("chflags hidden .KEY") # same as above
     return
   else:
-    styledEcho fgRed, "\nInvalid API Key."
+    styledEcho fgRed, "\nCode: ", $response[codeKey]
+    styledEcho fgRed, response["message"].getStr()[0..^1], "."
     return
 
 proc turn(device: int = 0, state: string = "") =
   ## Turn device on or off
 
-  if not isSetup(): return
-  if device notin 0 ..< num_devices:
-    styledEcho fgRed, &"Invalid device '{device}'. You have {num_devices} device(s)."
-    return
+  if not isSetup() or not checkDevices(device): return
 
   let apiKey = readFile(".KEY")
 
@@ -143,7 +161,7 @@ proc turn(device: int = 0, state: string = "") =
 
   client.headers = newHttpHeaders({"Govee-API-Key": apiKey, "Content-Type": "application/json"})
 
-  let body = &"""
+  let body = fmt"""
   {{
     "device": "{deviceName}",
     "model": "{model}",
@@ -154,24 +172,23 @@ proc turn(device: int = 0, state: string = "") =
   }}
   """
 
-  let re = client.put("https://developer-api.govee.com/v1/devices/control", body)
+  let re = client.put(ControlURI, body)
 
   sendCompletionMsg int(re.code()), parseJson(re.body())["message"], re.code()
 
 proc color(device: int = 0, color: string = "") =
   ## Set device color with an HTML/hex color code.
   ## NOTE: when called with no parameters, the device's current color will be #000000 if:
-  ## 1. Music mode is on. 2. color temperature is not 0. or 3. A scene is playing on the device.
+  ## 1. Music mode is on. 
+  ## 2. color temperature is not 0. 
+  ## or 3. A scene is playing on the device.
 
-  if not isSetup(): return
-  if device notin 0 ..< num_devices:
-    styledEcho fgRed, &"Invalid device '{device}'. You have {num_devices} device(s)."
-    return
+  if not isSetup() or not checkDevices(device): return
 
   let apiKey = readFile(".KEY")
 
   var
-    color = color.toLowerAscii()
+    color = color.replace(" ").toLowerAscii()
     colorJson: JsonNode
     r: int
     g: int
@@ -203,22 +220,18 @@ proc color(device: int = 0, color: string = "") =
     echo fmt"Device {device} color: ", color
     return
 
-  if color != "random" and color != "rand":
-    if color[0] != '#': color = '#' & color
+  block checks:
+    if color != "random" and color != "rand":
+      if color.isColor():
+        color = $(color).parseColor()
+        break checks
 
-    for i in 6..9:
-      if $i in color:
-        styledEcho fgRed, "Invalid color code"
+      if color[0] != '#': 
+        color = '#' & color
+
+      if not color.isColor():
+        styledEcho fgRed, fmt "{color} is an invalid color."
         return
-
-    for i in 'g'..'z':
-      if $i in color:
-        styledEcho fgRed, "Invalid color code"
-        return
-
-    #if ('6' in color) or ('g' in color):
-    #  styledEcho fgRed, "Invalid color code"
-    #  return
 
   var client = newHttpClient(headers=newHttpHeaders({"Govee-API-Key": apiKey}))
 
@@ -235,12 +248,13 @@ proc color(device: int = 0, color: string = "") =
     g = rand(255)
     b = rand(255)
   else:
-    r = strutils.fromHex[int]("0x" & color[1 .. 2])
-    g = strutils.fromHex[int]("0x" & color[3 .. 4])
-    b = strutils.fromHex[int]("0x" & color[5 .. 6])
+    let rgb = parseColor(color).extractRGB()
+    r = rgb[0]
+    g = rgb[1]
+    b = rgb[2]
 
 
-  let body = &"""
+  let body = fmt"""
   {{
     "device": "{deviceName}",
     "model": "{model}",
@@ -250,23 +264,19 @@ proc color(device: int = 0, color: string = "") =
         "r": {r},
         "g": {g},
         "b": {b}
-
       }}
     }}
   }}
   """
 
-  let re = client.put("https://developer-api.govee.com/v1/devices/control", body)
+  let re = client.put(ControlURI, body)
 
   sendCompletionMsg int(re.code()), parseJson(re.body())["message"], re.code()
 
 proc brightness(device = 0, brightness: int = -1) =
   ## Set device brightness
 
-  if not isSetup(): return
-  if device notin 0 ..< num_devices:
-    styledEcho fgRed, &"Invalid device '{device}'. You have {num_devices} device(s)."
-    return
+  if not isSetup() or not checkDevices(device): return
 
   let apiKey = readFile(".KEY")
 
@@ -301,7 +311,7 @@ proc brightness(device = 0, brightness: int = -1) =
 
   client.headers = newHttpHeaders({"Govee-API-Key": apiKey, "Content-Type": "application/json"})
 
-  let body = &"""
+  let body = fmt"""
   {{
     "device": "{deviceName}",
     "model": "{model}",
@@ -312,17 +322,14 @@ proc brightness(device = 0, brightness: int = -1) =
   }}
   """
 
-  let re = client.put("https://developer-api.govee.com/v1/devices/control", body)
+  let re = client.put(ControlURI, body)
 
   sendCompletionMsg int(re.code()), parseJson(re.body())["message"], re.code()
 
-proc `color-tem`(device = 0, temperature: int) =
+proc color_tem(device = 0, temperature: int) =
   ## Set device color temperature
 
-  if not isSetup(): return
-  if device notin 0 ..< num_devices:
-    styledEcho fgRed, &"Invalid device '{device}'. You have {num_devices} device(s)."
-    return
+  if not isSetup() or not checkDevices(device): return
 
   let apiKey = readFile(".KEY")
 
@@ -356,27 +363,24 @@ proc `color-tem`(device = 0, temperature: int) =
   }}
   """
 
-  let re = client.put("https://developer-api.govee.com/v1/devices/control", body)
+  let re = client.put(ControlURI, body)
 
   sendCompletionMsg int(re.code()), parseJson(re.body())["message"], re.code()
 
 proc state(device: int = 0) =
   ## Return state of device
 
-  if not isSetup(): return
-  if device notin 0 ..< num_devices:
-    styledEcho fgRed, &"Invalid device '{device}'. You have {num_devices} device(s)."
-    return
+  if not isSetup() or not checkDevices(device): return
 
   let apiKey = readFile(".KEY")
 
   var
     client = newHttpClient(headers=newHttpHeaders({"Govee-API-Key": apiKey}))
     colorJson: JsonNode
-    colorTem: int = 0
-  let resp = json.parseJson(client.get(DevicesURI).body)
+    colorTem: int = 0 
 
   let
+    resp = json.parseJson(client.get(DevicesURI).body)
     info = getDeviceInfo(resp, device)
     deviceName = info[0]
     model = info[1]
@@ -386,7 +390,6 @@ proc state(device: int = 0) =
       ).body
     )
 
-  let
     properties = response["data"]["properties"]
 
   try:
@@ -403,22 +406,22 @@ proc state(device: int = 0) =
     color = fmt"#{r.toHex()[^2 .. ^1]}{g.toHex()[^2 .. ^1]}{b.toHex()[^2 .. ^1]}"
 
   styledEcho styleItalic, "DEVICE ", $device
+  echo "  Mac Address: ", response["data"]["device"]
+  echo "  Model: ", response["data"]["model"]
   echo "  Online: ", capitalizeAscii($properties[0]["online"].getBool()), " (may be incorrect)"
   echo "  Power State: ", properties[1]["powerState"].getStr().capitalizeAscii()
   echo "  Brightness: ", properties[2]["brightness"].getInt()
-  echo "  Color: ", color, fmt" or rgb({r}, {g}, {b})"
+  echo fmt"  Color: {color} or rgb({r}, {g}, {b})"
   echo "  Color Temperature: ", colorTem, " (if not 0, color will be #000000)"
 
 proc rgb(rgb: seq[int], device: int = 0) =
   ## Same as command `color` but uses rgb instead of HTML codes, although it doesn't support random colors.
   ## NOTE: when called with no parameters, the device's current color will be rgb(0, 0, 0) if:
-  ## 1. Music mode is on. 2. color temperature is not 0. or 3. A scene is playing on the device.
+  ## 1. Music mode is on. 
+  ## 2. color temperature is not 0. 
+  ## or 3. A scene is playing on the device.
 
-  if not isSetup(): return
-  if device notin 0 ..< num_devices:
-    styledEcho fgRed, &"Invalid device '{device}'. You have {num_devices} device(s)."
-    return
-
+  if not isSetup() or not checkDevices(device): return
   let apiKey = readFile(".KEY")
 
   var rgb = rgb
@@ -427,7 +430,7 @@ proc rgb(rgb: seq[int], device: int = 0) =
     rgb = @[-1, -1, -1]
 
   if len(rgb) > 3:
-    styledEcho fgRed, "RGB is too long, can only be of length 3 or less."
+    styledEcho fgRed, "RGB is too long, it can only be of length 3 or less."
     return
   elif len(rgb) < 3:
     for i in 1..(3-len(rgb)):
@@ -452,6 +455,7 @@ proc rgb(rgb: seq[int], device: int = 0) =
       colorJson = response["data"]["properties"][3]["color"]
     except KeyError:
       colorJson = json.parseJson("""{"r": 0, "g": 0,"b": 0}""")
+
     let r = colorJson["r"].getInt()
     let g = colorJson["g"].getInt()
     let b = colorJson["b"].getInt()
@@ -474,7 +478,7 @@ proc rgb(rgb: seq[int], device: int = 0) =
 
   client.headers = newHttpHeaders({"Govee-API-Key": apiKey, "Content-Type": "application/json"})
 
-  let body = &"""
+  let body = fmt"""
   {{
     "device": "{deviceName}",
     "model": "{model}",
@@ -489,7 +493,7 @@ proc rgb(rgb: seq[int], device: int = 0) =
   }}
   """
 
-  let re = client.put("https://developer-api.govee.com/v1/devices/control", body)
+  let re = client.put(ControlURI, body)
 
   sendCompletionMsg int(re.code()), parseJson(re.body())["message"], re.code()
 
@@ -504,10 +508,10 @@ proc devices() =
   let resp = json.parseJson(client.get(DevicesURI).body)
 
   for dev, i in resp["data"]["devices"].getElems():
-    var scmd = ""
+    var scmd: seq[string]
 
     for i in i["supportCmds"].items():
-      scmd.add(i.getStr() & ' ')
+      scmd.add(i.getStr())
 
     styledEcho styleItalic, "DEVICE ", $dev
     echo "  Address: ", i["device"].getStr()
@@ -515,7 +519,7 @@ proc devices() =
     echo "  Device Name: ", i["deviceName"].getStr()
     echo "  Controllable: ", capitalizeAscii($(i["controllable"].getBool()))
     echo "  Retrievable: ", capitalizeAscii($(i["retrievable"].getBool()))
-    echo "  Supported Commands: ", scmd
+    echo "  Supported Commands: ", scmd.join(", ")
 
     echo ""
 
@@ -526,6 +530,7 @@ proc device(device: int = 0) =
 proc version() =
   ## Get Nova current version
   echo "Nova version ", Version
+
 proc about() =
   ## Nova about
   echo "Nova ", Version
@@ -583,7 +588,7 @@ dispatchMulti(
     }
   ],
   [
-    `color-tem`,
+    color_tem,
     cmdName="color-tem",
     help={
       "temperature": "The color temperature you want to set on the device. " &
