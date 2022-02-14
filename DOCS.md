@@ -3,7 +3,7 @@
 Documentation for the Nova CLI.
 
 ## Contents
-See the three lines near the file name (DOCS.md)? Click on them to access the table of contents.
+Click on the three lines on the file header to access the table of contents.
 
 ## Supported Devices
 Not all Govee devices are supported by Nova. The devices supported by Nova are:
