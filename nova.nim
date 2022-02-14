@@ -67,7 +67,7 @@ const
     "repo",
     "license",
     "docs"
-  ] ## Full list off commands. Not used but does help during development
+  ] ## Full list of commands. Not used but does help during development
 
 
 # set num_devices
