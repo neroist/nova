@@ -3,51 +3,7 @@
 Documentation for the Nova CLI.
 
 ## Contents
-- [Commands](https://github.com/nonimportant/nova/blob/main/DOCS.md#commands)
-- [Supported Devices](https://github.com/nonimportant/nova/blob/main/DOCS.md#supported-devices)
-- [Notes](https://github.com/nonimportant/nova/blob/main/DOCS.md#notes)
-  - [Setup](https://github.com/nonimportant/nova/blob/main/DOCS.md#setup)
-    - [Usage](https://github.com/nonimportant/nova/blob/main/DOCS.md#usage)
-  - [Turn](https://github.com/nonimportant/nova/blob/main/DOCS.md#turn)
-    - [Options](https://github.com/nonimportant/nova/blob/main/DOCS.md#options)
-    - [Usage](https://github.com/nonimportant/nova/blob/main/DOCS.md#usage-1)
-    - [Examples](https://github.com/nonimportant/nova/blob/main/DOCS.md#examples)
-  - [Brightness](https://github.com/nonimportant/nova/blob/main/DOCS.md#brightness)
-    - [Options](https://github.com/nonimportant/nova/blob/main/DOCS.md#options-1)
-    - [Usage](https://github.com/nonimportant/nova/blob/main/DOCS.md#usage-2)
-    - [Examples](https://github.com/nonimportant/nova/blob/main/DOCS.md#examples-1)
-  - [Color](https://github.com/nonimportant/nova/blob/main/DOCS.md#color)
-    - [Options](https://github.com/nonimportant/nova/blob/main/DOCS.md#options-2)
-    - [Usage](https://github.com/nonimportant/nova/blob/main/DOCS.md#usage-3)
-    - [Examples](https://github.com/nonimportant/nova/blob/main/DOCS.md#examples-2)
-  - [Color-tem](https://github.com/nonimportant/nova/blob/main/DOCS.md#color-tem)
-    - [Options](https://github.com/nonimportant/nova/blob/main/DOCS.md#options-3)
-    - [Usage](https://github.com/nonimportant/nova/blob/main/DOCS.md#usage-4)
-    - [Examples](https://github.com/nonimportant/nova/blob/main/DOCS.md#examples-3)
-  - [State](https://github.com/nonimportant/nova/blob/main/DOCS.md#state)
-    - [Options](https://github.com/nonimportant/nova/blob/main/DOCS.md#options-4)
-    - [Usage](https://github.com/nonimportant/nova/blob/main/DOCS.md#usage-5)
-    - [Examples](https://github.com/nonimportant/nova/blob/main/DOCS.md#examples-4)
-  - [Rgb](https://github.com/nonimportant/nova/blob/main/DOCS.md#rgb)
-    - [Options](https://github.com/nonimportant/nova/blob/main/DOCS.md#options-5)
-    - [Usage](https://github.com/nonimportant/nova/blob/main/DOCS.md#usage-6)
-    - [Examples](https://github.com/nonimportant/nova/blob/main/DOCS.md#examples-5)
-  - [Devices](https://github.com/nonimportant/nova/blob/main/DOCS.md#devices)
-    - [Usage](https://github.com/nonimportant/nova/blob/main/DOCS.md#usage-7)
-  - [Version](https://github.com/nonimportant/nova/blob/main/DOCS.md#version)
-    - [Usage](https://github.com/nonimportant/nova/blob/main/DOCS.md#usage-8)
-  - [About](https://github.com/nonimportant/nova/blob/main/DOCS.md#about)
-    - [Usage](https://github.com/nonimportant/nova/blob/main/DOCS.md#usage-9)
-  - [Description](https://github.com/nonimportant/nova/blob/main/DOCS.md#description)
-    - [Usage](https://github.com/nonimportant/nova/blob/main/DOCS.md#usage-10)
-  - [Source](https://github.com/nonimportant/nova/blob/main/DOCS.md#source)
-    - [Usage](https://github.com/nonimportant/nova/blob/main/DOCS.md#usage-11)
-  - [Repo](https://github.com/nonimportant/nova/blob/main/DOCS.md#repo)
-    - [Usage](https://github.com/nonimportant/nova/blob/main/DOCS.md#usage-12)
-  - [License](https://github.com/nonimportant/nova/blob/main/DOCS.md#license)
-    - [Usage](https://github.com/nonimportant/nova/blob/main/DOCS.md#usage-13)
-  - [Docs](https://github.com/nonimportant/nova/blob/main/DOCS.md#docs)
-    - [Usage](https://github.com/nonimportant/nova/blob/main/DOCS.md#usage-14)
+See the three lines near the file name (DOCS.md)? Click on them to access the table of contents.
 
 ## Supported Devices
 Not all Govee devices are supported by Nova. The devices supported by Nova are:
@@ -64,13 +20,18 @@ H619Z, H61A0, H7060, H610A, H6059, H7028, H6198, H6049.
 
 Only Wi-Fi devices are supported.
 
-## Notes
-**Important - Positional arguments are not supported.** For example: `nova color 0 "aliceblue"` will not work and throw an error. You will have to explicitly declare every argument you pass into the command. For example: `nova color -d 0 -c "aliceblue"`.
+## Important Notes
+**Positional arguments are not supported.** For example: `nova color 0 "aliceblue"` will not work and throw an error. You will have to explicitly declare every argument you pass into the command. For example: `nova color -d 0 -c "aliceblue"`. Also, see [`setup`](https://github.com/nonimportant/nova/blob/main/README.md#setup).
 
 ## Commands:
 
 ## Setup
-Setup is a command for setting up Nova. Nova is reqired to be setup for the commands to work.
+`setup` is a command for setting up Nova. Nova is reqired to be setup for Nova to work.[^2][^3]
+
+
+[^2]: **Note: you *may* need to give your shell root/administrator permissions for this command to work.**
+[^3]: If this command still doesn't work, make a file called ".KEY" in the same directory that Nova is in and put your Govee API key in it.
+
 ### Usage
 ```
 nova setup
@@ -85,6 +46,9 @@ Has to be the string "on" or "off." If left blank, the command will print the cu
 
 <`-d`, `--device`> `device` - **Type: int/integer. Optional.**
 The device to perform the command on. Defaults to '0.' '0' refers to the first device on your account, '1' refers to the second, ect.
+
+<`-o`, `--output`> `output` - **Type: boolean (true/false/on/off). Optional.**
+Whether or not the command will produce output. This also silences errors and will make the command fail silently.
 ### Usage
 ```
 nova turn --device:[device] --state:[state]
@@ -97,7 +61,7 @@ nova turn
 ```
 
 ## Brightness
-`brightness` is a command for controlling and retrieving a Govee light strip's brightness.
+`brightness` is a command for controlling or retrieving a Govee light strip's brightness.
 ### Options
 <`-b`, `--brightness`> `brightness` - **Type: int/integer. Optional.**
 The brightness you want to set on the device. Supports values 1-100 only.
@@ -105,6 +69,10 @@ If left blank, the command will print the current brightness of the device.
 
 <`-d`, `--device`> `device` - **Type: int/integer. Optional.**
 The device to perform the command on. Defaults to '0.' '0' refers to the first device on your account, '1' refers to the second, ect.
+
+<`-o`, `--output`> `output` - **Type: boolean (true/false/on/off). Optional.**
+Whether or not the command will produce output. This also silences errors and will make the command fail silently.
+
 ### Usage
 ```
 nova brightness --device:[device] -brightness:[brightness]
@@ -116,7 +84,7 @@ nova brightness
 nova brightness -b:1 -d:3
 ```
 ## Color
-`color` is a command for controlling and retrieving a Govee light strip's color.
+`color` is a command for controlling or retrieving a Govee light strip's color.
 With this command you can also change a Govee device's color to a random one.
 
 **NOTE**: When called with no parameters, the device's current color will be #000000 if:
@@ -126,11 +94,14 @@ With this command you can also change a Govee device's color to a random one.
 
 ### Options
 <`-c`, `--color`> `color` - **Type: str/string. Optional.**
-The color you want to set on the device. Has to be an HTML/hex color code (a "#" is optional), a color name [(click here to see a list of color names)](https://www.w3schools.com/colors/colors_hex.asp), or the string "rand" or "random."
+The color you want to set on the device. Has to be an HTML/hex color code (a "#" is optional), a color name ([click here to see a list of color names](https://www.w3schools.com/colors/colors_hex.asp)), or the string "rand" or "random."
 If the string "rand" or "random" is passed, a random color will be chosen. If left blank, the command will print the current color of the device.
 
 <`-d`, `--device`> `device` - **Type: int/integer. Optional.**
 The device to perform the command on. Defaults to '0.' '0' refers to the first device on your account, '1' refers to the second, ect.
+
+<`-o`, `--output`> `output` - **Type: boolean (true/false/on/off). Optional.**
+Whether or not the command will produce output. This also silences errors and will make the command fail silently.
 
 ### Usage
 ```
@@ -155,6 +126,9 @@ The color temperature you want to set on the device. Has to be in the valid rang
 
 <`-d`, `--device`> `device` - **Type: int/integer. Optional.**
 The device to perform the command on. Defaults to '0.' '0' refers to the first device on your account, '1' refers to the second, ect.
+
+<`-o`, `--output`> `output` - **Type: boolean (true/false/on/off). Optional.**
+Whether or not the command will produce output. This also silences errors and will make the command fail silently.
 
 ### Usage
 ```
@@ -188,8 +162,7 @@ nova state -d:5
 ```
 
 ## Rgb
-`rgb` is a command for controlling and retrieving a Govee light strip's color.
-With this command you can also change a Govee device's color to a random one.
+`rgb` is a command for controlling or retrieving a Govee light strip's color.
 
 **NOTE**: When called with no parameters, the device's current color will be rgb(0, 0, 0) if:
 1. Music mode is on.
@@ -198,12 +171,15 @@ With this command you can also change a Govee device's color to a random one.
 
 ### Options
 `rgb` - **Type: list/sequence. Optional.**
-The color you want to set on the device. Has to be 3 numbers seperated by a space.
-This option has no `-x` or `--x` ~~thing~~, a list of numbers/integers are just given to the command.
-If left blank, the command will print the current color in an rgb function.
+The color you want to set on the device. Has to be 3 or less numbers seperated by a space.
+This option has no `--rgb` option, just a list of numbers/integers are just passed to the command.
+If left blank, the command will print the current color in an rgb format.
 
 <`-d`, `--device`> `device` - **Type: int/integer. Optional.**
 The device to perform the command on. Defaults to '0.' '0' refers to the first device on your account, '1' refers to the second, ect.
+
+<`-o`, `--output`> `output` - **Type: boolean (true/false/on/off). Optional.**
+Whether or not the command will produce output. This also silences errors and will make the command fail silently.
 
 ### Usage
 ```
