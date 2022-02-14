@@ -10,7 +10,6 @@ import strformat
 import strutils
 import terminal
 import browsers
-import tables
 
 # NOTE: rgb and color will be 0 if
 # 1. music mode is on
