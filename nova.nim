@@ -1,6 +1,8 @@
 from uri import encodeUrl
 from os import fileExists, execShellCmd, getAppDir
 from random import rand, randomize
+from colors import parseColor, isColor, extractRGB, `$`
+
 import cligen
 import httpclient
 import json
@@ -8,7 +10,7 @@ import strformat
 import strutils
 import terminal
 import browsers
-from colors import parseColor, isColor, extractRGB, `$`
+import tables
 
 # NOTE: rgb and color will be 0 if
 # 1. music mode is on
@@ -33,15 +35,41 @@ let
   KeyDir = getAppDir() & "\\.KEY"
   
 const
-  DeviceHelp = "The device to perform the action/command on. Defaults to '0'." &
-  "'0' refers to the first device on your account, '1' refers to the second, ect. " &
-  "See the full list of devices with `nova devices`."
-  NotSetupErrorMsg = "Nova is not setup properly. Use the command `nova setup` to setup Nova."
-  Version = "v1.2.0"
-  Description = "Nova is a CLI for controlling Govee light strips based off of Bandev's Lux."
-  DevicesURI = "https://developer-api.govee.com/v1/devices"
-  ControlURI = DevicesURI & "/control"
-  Author = "Alice/Grace"
+  DeviceHelp = "The device to perform the action/command on. Defaults to '0'. " &
+    "'0' refers to the first device on your account, '1' refers to the second, ect. " &
+    "See the full list of devices with `nova devices`." ## "Device" option help text.
+
+  OutputHelp = "Whether or not the command will produce output. " &
+    "This also silences errors and will make commands fail silently." ## "Output" option help text.
+
+  NotSetupErrorMsg* = "Nova is not setup properly. Use the command `nova setup` to setup Nova." ## Error message when
+  ## Nova is not setup properly.
+
+  Version = "v1.3.0" ## Nova version
+
+  Description = "Nova is a CLI for controlling Govee light strips based off of Bandev's Lux." ## Nova description
+
+  DevicesURI = "https://developer-api.govee.com/v1/devices" ## The base URI used to get device information.
+
+  ControlURI = DevicesURI & "/control" ## The base URI used to control devices.
+
+  Author = "Alice/Grace" ## The creator of Nova (me!).
+
+  Commands {.used.} = [
+    "setup",
+    "turn",
+    "color",
+    "color-tem",
+    "state",
+    "rgb",
+    "devices",
+    "version",
+    "about",
+    "repo",
+    "license",
+    "docs"
+  ] ## Full list off commands. Not used but does help during development
+
 
 # set num_devices
 if isSetup(echoMsg=false):
@@ -79,18 +107,38 @@ proc sendCompletionMsg(code: int, message: JsonNode, code_msg: HttpCode) =
   echo "Message: ", message
   echo "Code: ", code_msg
 
-proc checkDevices(device: int): bool = 
+proc checkDevices(device: int, output: bool = on): bool =
   if device notin 0 ..< num_devices:
-    styledEcho fgRed, fmt"Invalid device '{device}'. You have {num_devices} device(s)."
+    if output:
+      styledEcho fgRed, fmt"Invalid device '{device}'. You have {num_devices} device(s)."
     return false
   
   return true
 
+proc editFileVisibility(file: string, hidden: bool) =
+  var
+    winoption = "+h"
+    macoption = "hidden"
+
+  if defined(windows) and (not hidden):
+    winoption = "-h"
+  elif (defined(macos) or defined(macosx)) and (not hidden):
+    macoption = "nohidden"
+
+  when defined windows:
+    discard execShellCmd(fmt"attrib {winoption} {file}") # add "hidden" attribute to file
+  elif defined macos:
+    discard execShellCmd(fmt"chflags {macoption} {file}") # set "hidden" flag on file
+  elif defined macosx:
+    discard execShellCmd(fmt"chflags {macoption} {file}") # same as above
+
 # commands
+
 proc setup() =
   ## Setup Nova
 
   echo "Enter Govee API Key:"
+
   let 
     apiKey = readLine(stdin)
     client = newHttpClient(headers=newHttpHeaders({"Govee-API-Key": apiKey}))
@@ -108,25 +156,23 @@ proc setup() =
     codeKey = "status"
 
   if response[codeKey].getInt() == 200:
-    writeFile(KeyDir, apiKey)
-    styledEcho fgGreen, "\nSetup completed successfully.\nWelcome to Nova."
+    if fileExists KeyDir:
+      editFileVisibility(KeyDir, hidden=false)
 
-    when defined windows:
-      discard execShellCmd(fmt"attrib -r +h {KeyDir}") # remove "read-only" attribute and add "hidden" attribute
-    elif defined macos:
-      discard execShellCmd(fmt"chflags hidden {KeyDir}") # set "hidden" flag on file
-    elif defined macosx:
-        discard execShellCmd(fmt"chflags hidden {KeyDir}") # same as above
+    writeFile(KeyDir, apiKey)
+    editFileVisibility KeyDir, hidden=true
+
+    styledEcho fgGreen, "\nSetup completed successfully.\nWelcome to Nova."
     return
   else:
     styledEcho fgRed, "\nCode: ", $response[codeKey]
     styledEcho fgRed, response["message"].getStr()[0..^1], "."
     return
 
-proc turn(device: int = 0, state: string = "") =
+proc turn(device: int = 0, state: string = "", output: bool = on): string =
   ## Turn device on or off
 
-  if not isSetup() or not checkDevices(device): return
+  if not isSetup() or not checkDevices(device, output = output): return
 
   let apiKey = readFile(KeyDir)
 
@@ -143,9 +189,9 @@ proc turn(device: int = 0, state: string = "") =
           &"https://developer-api.govee.com/v1/devices/state?device={encodeUrl(deviceName, false)}&model={model}"
         ).body
       )
-
-    echo fmt"Device {device} Power state: ", response["data"]["properties"][1]["powerState"].getStr()
-    return
+    if output:
+      echo fmt"Device {device} Power state: ", response["data"]["properties"][1]["powerState"].getStr()
+    return response["data"]["properties"][1]["powerState"].getStr()
 
   let state = state.toLowerAscii()
 
@@ -176,16 +222,19 @@ proc turn(device: int = 0, state: string = "") =
 
   let re = client.put(ControlURI, body)
 
-  sendCompletionMsg int(re.code()), parseJson(re.body())["message"], re.code()
+  if output:
+    sendCompletionMsg int(re.code()), parseJson(re.body())["message"], re.code()
 
-proc color(device: int = 0, color: string = "") =
+  return state
+
+proc color(device: int = 0, color: string = "", output: bool = on): string =
   ## Set device color with an HTML/hex color code.
   ## NOTE: when called with no parameters, the device's current color will be #000000 if:
   ## 1. Music mode is on. 
   ## 2. color temperature is not 0. 
   ## or 3. A scene is playing on the device.
 
-  if not isSetup() or not checkDevices(device): return
+  if not isSetup() or not checkDevices(device, output = output): return
 
   let apiKey = readFile(KeyDir)
 
@@ -197,8 +246,8 @@ proc color(device: int = 0, color: string = "") =
     b: int
 
   if color == "":
-    var client = newHttpClient(headers=newHttpHeaders({"Govee-API-Key": apiKey}))
     let
+      client = newHttpClient(headers=newHttpHeaders({"Govee-API-Key": apiKey}))
       resp = json.parseJson(client.get(DevicesURI).body)
       info = getDeviceInfo(resp, device)
       deviceName = info[0]
@@ -219,8 +268,10 @@ proc color(device: int = 0, color: string = "") =
         $colorJson["g"].getInt().toHex()[^2 .. ^1] &
         $colorJson["b"].getInt().toHex()[^2 .. ^1]
 
-    echo fmt"Device {device} color: ", color
-    return
+    if output:
+      echo fmt"Device {device} color: ", color
+
+    return color
 
   block checks:
     if color != "random" and color != "rand":
@@ -232,7 +283,9 @@ proc color(device: int = 0, color: string = "") =
         color = '#' & color
 
       if not color.isColor():
-        styledEcho fgRed, fmt "{color} is an invalid color."
+        if output:
+          styledEcho fgRed, fmt "{color[1..^1]} is an invalid color."
+
         return
 
   var client = newHttpClient(headers=newHttpHeaders({"Govee-API-Key": apiKey}))
@@ -273,12 +326,15 @@ proc color(device: int = 0, color: string = "") =
 
   let re = client.put(ControlURI, body)
 
-  sendCompletionMsg int(re.code()), parseJson(re.body())["message"], re.code()
+  if output:
+    sendCompletionMsg int(re.code()), parseJson(re.body())["message"], re.code()
 
-proc brightness(device = 0, brightness: int = -1) =
+  return color
+
+proc brightness(device = 0, brightness: int = -1, output: bool = true) : int =
   ## Set device brightness
 
-  if not isSetup() or not checkDevices(device): return
+  if not isSetup() or not checkDevices(device, output = output): return
 
   let apiKey = readFile(KeyDir)
 
@@ -295,15 +351,18 @@ proc brightness(device = 0, brightness: int = -1) =
           &"https://developer-api.govee.com/v1/devices/state?device={encodeUrl(deviceName, false)}&model={model}"
         ).body
       )
+    if output:
+      echo fmt"Device {device} brightness: ", response["data"]["properties"][2]["brightness"].getInt()
+    return response["data"]["properties"][2]["brightness"].getInt()
 
-    echo fmt"Device {device} brightness: ", response["data"]["properties"][2]["brightness"].getInt()
+  if brightness notin 1..100 :
+    if output:
+      styledEcho fgRed, "Invalid brightness, is not in the range [1-100]"
+
     return
 
-  if brightness > 100 or brightness < 1:
-    styledEcho fgRed, "Invalid brightness, is not in the range [1-100]"
-    return
-
-  var client = newHttpClient(headers=newHttpHeaders({"Govee-API-Key": apiKey}))
+  var
+    client = newHttpClient(headers=newHttpHeaders({"Govee-API-Key": apiKey}))
 
   let
     resp = json.parseJson(client.get(DevicesURI).body)
@@ -326,12 +385,15 @@ proc brightness(device = 0, brightness: int = -1) =
 
   let re = client.put(ControlURI, body)
 
-  sendCompletionMsg int(re.code()), parseJson(re.body())["message"], re.code()
+  if output:
+    sendCompletionMsg int(re.code()), parseJson(re.body())["message"], re.code()
+  else:
+    return brightness
 
-proc color_tem(device = 0, temperature: int) =
+proc color_tem(device = 0, output: bool = on, temperature: int): int =
   ## Set device color temperature
 
-  if not isSetup() or not checkDevices(device): return
+  if not isSetup() or not checkDevices(device, output = output): return
 
   let apiKey = readFile(KeyDir)
 
@@ -343,7 +405,9 @@ proc color_tem(device = 0, temperature: int) =
     colorTemRange = [jsonColorTemRange["min"].getInt(), jsonColorTemRange["max"].getInt()]
 
   if temperature notin colorTemRange[0]..colorTemRange[1]:
-    styledEcho fgRed, fmt"Color temperature ({temperature}) out of supported range: {colorTemRange[0]}-{colorTemRange[1]}"
+    if output:
+      styledEcho fgRed, fmt"Color temperature ({temperature}) out of supported range: {colorTemRange[0]}-{colorTemRange[1]}"
+
     return
 
   let
@@ -367,7 +431,10 @@ proc color_tem(device = 0, temperature: int) =
 
   let re = client.put(ControlURI, body)
 
-  sendCompletionMsg int(re.code()), parseJson(re.body())["message"], re.code()
+  if output:
+    sendCompletionMsg int(re.code()), parseJson(re.body())["message"], re.code()
+
+  return temperature
 
 proc state(device: int = 0) =
   ## Return state of device
@@ -416,7 +483,7 @@ proc state(device: int = 0) =
   echo fmt"  Color: {color} or rgb({r}, {g}, {b})"
   echo "  Color Temperature: ", colorTem, " (if not 0, color will be #000000)"
 
-proc rgb(rgb: seq[int], device: int = 0) =
+proc rgb(rgb: seq[int], device: int = 0, output: bool = on): array[3, int] =
   ## Same as command `color` but uses rgb instead of HTML codes, although it doesn't support random colors.
   ## NOTE: when called with no parameters, the device's current color will be rgb(0, 0, 0) if:
   ## 1. Music mode is on. 
@@ -453,6 +520,7 @@ proc rgb(rgb: seq[int], device: int = 0) =
         &"https://developer-api.govee.com/v1/devices/state?device={encodeUrl(deviceName, false)}&model={model}"
       ).body
     )
+
     try:
       colorJson = response["data"]["properties"][3]["color"]
     except KeyError:
@@ -462,12 +530,16 @@ proc rgb(rgb: seq[int], device: int = 0) =
     let g = colorJson["g"].getInt()
     let b = colorJson["b"].getInt()
 
-    echo fmt"Device {device} color: rgb({r}, {g}, {b})"
-    return
+    if output:
+      echo fmt"Device {device} color: rgb({r}, {g}, {b})"
+
+    return [r, g, b]
 
   for i in rgb:
     if i < 0 or i > 255:
-      styledEcho fgRed, "Invalid value(s)"
+      if output:
+        styledEcho fgRed, "Invalid value(s)"
+
       return
 
   var client = newHttpClient(headers=newHttpHeaders({"Govee-API-Key": apiKey}))
@@ -497,20 +569,23 @@ proc rgb(rgb: seq[int], device: int = 0) =
 
   let re = client.put(ControlURI, body)
 
-  sendCompletionMsg int(re.code()), parseJson(re.body())["message"], re.code()
+  if output:
+    sendCompletionMsg int(re.code()), parseJson(re.body())["message"], re.code()
+
+  return [rgb[0], rgb[1], rgb[2]]
 
 proc devices() =
   ## Get list of devices and their properties
 
   if not isSetup(): return
 
-  let apiKey = readFile(KeyDir)
-
-  var client = newHttpClient(headers=newHttpHeaders({"Govee-API-Key": apiKey}))
-  let resp = json.parseJson(client.get(DevicesURI).body)
+  let
+    apiKey = readFile(KeyDir)
+    client = newHttpClient(headers=newHttpHeaders({"Govee-API-Key": apiKey}))
+    resp = json.parseJson(client.get(DevicesURI).body)
 
   for dev, i in resp["data"]["devices"].getElems():
-    var scmd: seq[string]
+    var scmd: seq[string] # seq of all supported commands of the device
 
     for i in i["supportCmds"].items():
       scmd.add(i.getStr())
@@ -523,7 +598,7 @@ proc devices() =
     echo "  Retrievable: ", capitalizeAscii($(i["retrievable"].getBool()))
     echo "  Supported Commands: ", scmd.join(", ")
 
-    echo ""
+    echo "" # print newline
 
 proc device(device: int = 0) =
   ## Alias for `state`
@@ -568,16 +643,20 @@ dispatchMulti(
     help={
       "state": "The state you want to put the device in. Has to be the string \"on\" or \"off.\" " &
         " If left blank, the command will print the current power state of the device.",
-      "device": $DeviceHelp
-    }
+      "device": $DeviceHelp,
+      "output": $OutputHelp
+    },
+    noAutoEcho=true
   ],
   [
     brightness,
     help={
       "brightness": "The brightness you want to set on the device. Supports values 1-100 only. "&
         "If left blank, the command will print the current brightness of the device.",
-      "device": $DeviceHelp
-    }
+      "device": $DeviceHelp,
+      "output": $OutputHelp
+    },
+    noAutoEcho=true
   ],
   [
     color,
@@ -586,8 +665,10 @@ dispatchMulti(
         "Has to be a hex/HTML color code, optionally prefixed with '#', or the string \"rand\" or \"random.\" " &
         "If left blank, will return the current color of the device. " &
         "If `color` is \"rand\" or \"random\" a random color will be displayed on the device",
-      "device": $DeviceHelp
-    }
+      "device": $DeviceHelp,
+      "output": $OutputHelp
+    },
+    noAutoEcho=true
   ],
   [
     color_tem,
@@ -595,8 +676,10 @@ dispatchMulti(
     help={
       "temperature": "The color temperature you want to set on the device. " &
         "Has to be in the valid range your Govee device supports.",
-      "device": $DeviceHelp
-    }
+      "device": $DeviceHelp,
+      "output": $OutputHelp
+    },
+    noAutoEcho=true
   ],
   [
     state,
