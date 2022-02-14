@@ -37,7 +37,7 @@ const
   "'0' refers to the first device on your account, '1' refers to the second, ect. " &
   "See the full list of devices with `nova devices`."
   NotSetupErrorMsg = "Nova is not setup properly. Use the command `nova setup` to setup Nova."
-  Version = "v1.1.1"
+  Version = "v1.2.0"
   Description = "Nova is a CLI for controlling Govee light strips based off of Bandev's Lux."
   DevicesURI = "https://developer-api.govee.com/v1/devices"
   ControlURI = DevicesURI & "/control"
