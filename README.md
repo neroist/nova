@@ -1,13 +1,13 @@
 # Nova
-Nova is a CLI for controlling Govee light strips inspired by [Bandev's Lux](https://github.com/BanDev/Lux).
+Nova is a CLI for controlling Govee light strips. Inspired by [Bandev's Lux](https://github.com/BanDev/Lux).
 Made in Nim.
 
-Not affiliated with Govee or Bandev.
+Not affiliated with Govee.
 
 ## Contents
-- [Supported Devices](https://github.com/nonimportant/nova/blob/main/README.md#supported-devices)
-- [Notes](https://github.com/nonimportant/nova/blob/main/README.md#important-notes)
-- [Installation](https://github.com/nonimportant/nova/blob/main/README.md#installation)
+- [Supported Devices](https://github.com/nonimportant/nova#supported-devices)
+- [Notes](https://github.com/nonimportant/nova#important-notes)
+- [Installation](https://github.com/nonimportant/nova#installation)
 - [Deletion](https://github.com/nonimportant/nova/blob/main/README.md#deletion)
 - [Commands](https://github.com/nonimportant/nova/blob/main/README.md#commands)
     - [Setup](https://github.com/nonimportant/nova/blob/main/README.md#setup)
@@ -73,21 +73,25 @@ Only Wi-Fi devices are supported.
 **Positional arguments are not supported.** For example: `nova color 0 "aliceblue"` will not work and throw an error. You will have to explicitly declare every argument you pass into the command. For example: `nova color -d 0 -c "aliceblue"`. Also, see [`setup`](https://github.com/nonimportant/nova/blob/main/README.md#setup).
 
 ## Installation
-1. Download the .exe from the [most recent version](https://github.com/nonimportant/nova/releases/latest) (If your browser or antivirus raises a warning, ignore it and let it bypass. If you don't, there might be problems with step 4).
-2. Create a directory in your root or home directory, then move the file into that directory (the location doesn't actually matter just don't leave it in the Downloads folder. I suggest this directory only have the file in and nothing else because of the next step).
-3. Add the directory to your `Path` environment variable, or else you'll have to go to and find the directory and open a terminal in that directory just to use Nova.
-4. Run `nova setup` in your terminal/shell, and you're good to go (see [`setup`](https://github.com/nonimportant/nova/blob/main/README.md#setup)'s docs if there are any problems).
+1. Download your OS's execuable from the [most recent version](https://github.com/nonimportant/nova/releases/latest) (If your browser or antivirus raises a warning, ignore it and let it bypass. If you don't, there might be problems with step 4 and 5).
+2. Rename the file name to `nova`. Leave the file extension unchanged.
+3. Create a directory in your root or home directory, then move the file into that directory (the location doesn't actually matter just don't leave it in the Downloads folder. I suggest this directory only have the file in it and nothing else because of the next step).
+4. Add the directory to your `Path` environment variable, or else you'll have to go to and find the directory and open a terminal in that directory just to use Nova.
+5. Run `nova setup` in your terminal/shell, and you're good to go (see [`setup`](https://github.com/nonimportant/nova/blob/main/README.md#setup)'s docs if there are any problems).
 
 ## Deletion
-1. Delete nova.exe from whatever directory you put it in.
-###### Thats it!
+1. Delete nova.exe from whatever directory you put it in (or delete the directory itself).[^1]
+
+[^1]: Thats it!
 
 ## Commands:
 
 ## Setup
-`setup` is a command for setting up Nova. Nova is reqired to be setup for Nova to work. 
-###### **Note: you *may* need to give your shell root/administrator permissions for this command to work.**
-###### If this command still doesn't work, make a file called ".KEY" in the same directory that nova.exe is in and put your Govee API key in it.
+`setup` is a command for setting up Nova. Nova is reqired to be setup for Nova to work.[^2][^3]
+
+
+[^2]: **Note: you *may* need to give your shell root/administrator permissions for this command to work.**
+[^3]: If this command still doesn't work, make a file called ".KEY" in the same directory that Nova is in and put your Govee API key in it.
 
 ### Usage
 ```
@@ -103,6 +107,9 @@ Has to be the string "on" or "off." If left blank, the command will print the cu
 
 <`-d`, `--device`> `device` - **Type: int/integer. Optional.**
 The device to perform the command on. Defaults to '0.' '0' refers to the first device on your account, '1' refers to the second, ect.
+
+<`-o`, `--output`> `output` - **Type: boolean (true/false/on/off). Optional.**
+Whether or not the command will produce output. This also silences errors and will make the command fail silently.
 ### Usage
 ```
 nova turn --device:[device] --state:[state]
@@ -115,7 +122,7 @@ nova turn
 ```
 
 ## Brightness
-`brightness` is a command for controlling and retrieving a Govee light strip's brightness.
+`brightness` is a command for controlling or retrieving a Govee light strip's brightness.
 ### Options
 <`-b`, `--brightness`> `brightness` - **Type: int/integer. Optional.**
 The brightness you want to set on the device. Supports values 1-100 only.
@@ -123,6 +130,10 @@ If left blank, the command will print the current brightness of the device.
 
 <`-d`, `--device`> `device` - **Type: int/integer. Optional.**
 The device to perform the command on. Defaults to '0.' '0' refers to the first device on your account, '1' refers to the second, ect.
+
+<`-o`, `--output`> `output` - **Type: boolean (true/false/on/off). Optional.**
+Whether or not the command will produce output. This also silences errors and will make the command fail silently.
+
 ### Usage
 ```
 nova brightness --device:[device] -brightness:[brightness]
@@ -134,7 +145,7 @@ nova brightness
 nova brightness -b:1 -d:3
 ```
 ## Color
-`color` is a command for controlling and retrieving a Govee light strip's color.
+`color` is a command for controlling or retrieving a Govee light strip's color.
 With this command you can also change a Govee device's color to a random one.
 
 **NOTE**: When called with no parameters, the device's current color will be #000000 if:
@@ -144,11 +155,14 @@ With this command you can also change a Govee device's color to a random one.
 
 ### Options
 <`-c`, `--color`> `color` - **Type: str/string. Optional.**
-The color you want to set on the device. Has to be an HTML/hex color code (a "#" is optional), a color name [(click here to see a list of color names)](https://www.w3schools.com/colors/colors_hex.asp), or the string "rand" or "random."
+The color you want to set on the device. Has to be an HTML/hex color code (a "#" is optional), a color name ([click here to see a list of color names](https://www.w3schools.com/colors/colors_hex.asp)), or the string "rand" or "random."
 If the string "rand" or "random" is passed, a random color will be chosen. If left blank, the command will print the current color of the device.
 
 <`-d`, `--device`> `device` - **Type: int/integer. Optional.**
 The device to perform the command on. Defaults to '0.' '0' refers to the first device on your account, '1' refers to the second, ect.
+
+<`-o`, `--output`> `output` - **Type: boolean (true/false/on/off). Optional.**
+Whether or not the command will produce output. This also silences errors and will make the command fail silently.
 
 ### Usage
 ```
@@ -173,6 +187,9 @@ The color temperature you want to set on the device. Has to be in the valid rang
 
 <`-d`, `--device`> `device` - **Type: int/integer. Optional.**
 The device to perform the command on. Defaults to '0.' '0' refers to the first device on your account, '1' refers to the second, ect.
+
+<`-o`, `--output`> `output` - **Type: boolean (true/false/on/off). Optional.**
+Whether or not the command will produce output. This also silences errors and will make the command fail silently.
 
 ### Usage
 ```
@@ -206,8 +223,7 @@ nova state -d:5
 ```
 
 ## Rgb
-`rgb` is a command for controlling and retrieving a Govee light strip's color.
-With this command you can also change a Govee device's color to a random one.
+`rgb` is a command for controlling or retrieving a Govee light strip's color.
 
 **NOTE**: When called with no parameters, the device's current color will be rgb(0, 0, 0) if:
 1. Music mode is on.
@@ -216,12 +232,15 @@ With this command you can also change a Govee device's color to a random one.
 
 ### Options
 `rgb` - **Type: list/sequence. Optional.**
-The color you want to set on the device. Has to be 3 numbers seperated by a space.
-This option has no `-x` or `--x` ~~thing~~, a list of numbers/integers are just given to the command.
-If left blank, the command will print the current color in an rgb function.
+The color you want to set on the device. Has to be 3 or less numbers seperated by a space.
+This option has no `--rgb` option, just a list of numbers/integers are just passed to the command.
+If left blank, the command will print the current color in an rgb format.
 
 <`-d`, `--device`> `device` - **Type: int/integer. Optional.**
 The device to perform the command on. Defaults to '0.' '0' refers to the first device on your account, '1' refers to the second, ect.
+
+<`-o`, `--output`> `output` - **Type: boolean (true/false/on/off). Optional.**
+Whether or not the command will produce output. This also silences errors and will make the command fail silently.
 
 ### Usage
 ```
