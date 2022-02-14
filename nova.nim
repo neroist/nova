@@ -695,8 +695,10 @@ dispatchMulti(
       "device": $DeviceHelp,
       "rgb": "The color you want to set on the device in an RGB format. " &
         "Has to be 3 numbers seperated by a space. " &
-        "If left blank, the command will print the current color in an RGB function."
-    }
+        "If left blank, the command will print the current color in an RGB function.",
+      "output": $OutputHelp
+    },
+    noAutoEcho=true
   ],
   [devices],
   [version],
