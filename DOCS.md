@@ -23,7 +23,7 @@ Only Wi-Fi devices are supported.
 ## Important Notes
 **Positional arguments are not supported.** For example: `nova color 0 "aliceblue"` will not work and throw an error. You will have to explicitly declare every argument you pass into the command. For example: `nova color -d 0 -c "aliceblue"`. Also, see [`setup`](https://github.com/nonimportant/nova/blob/main/README.md#setup).
 
-## Commands:
+## Commands
 
 ## Setup
 `setup` is a command for setting up Nova. Nova is reqired to be setup for Nova to work.[^2][^3]
