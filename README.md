@@ -78,13 +78,13 @@ If you have Windows you can just download the installer from the [most recent ve
 Else, follow these steps:
 
 1. Download your OS's execuable from the [most recent version](https://github.com/nonimportant/nova/releases/latest) (If your browser or antivirus raises a warning, ignore it and let it bypass. If you don't, there might be problems with step 4 and 5).
-2. Rename the file name to `nova`. Leave the file extension unchanged.
+2. Rename the file name to `nova`.
 3. Create a directory in your root or home directory, then move the file into that directory (the location doesn't actually matter just don't leave it in the Downloads folder. I suggest this directory only have the file in it and nothing else because of the next step).
 4. Add the directory to your `Path` environment variable, or else you'll have to go to and find the directory and open a terminal in that directory just to use Nova.
 5. Run `nova setup` in your terminal/shell, and you're good to go (see [`setup`](https://github.com/nonimportant/nova/blob/main/README.md#setup)'s docs if there are any problems).
 
 ## Deletion
-1. Delete nova.exe from whatever directory you put it in (or delete the directory itself).[^1]
+1. Delete Nova from whatever directory you put it in (or delete the directory itself).[^1]
 
 Or, if you installed with the installer, open Settings, go to Apps, then search for "Nova." When you see Nova, click the three dots and hit "Uninstall."
 
