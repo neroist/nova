@@ -40,12 +40,3 @@ Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
 
 [Registry]
 Root: HKCU; Subkey: "Environment"; ValueType: expandsz; ValueName: "Path"; ValueData: "{olddata};{app}"
-
-[Code]
-function notInPath(Param: String): Boolean;
-begin
-  if RegValueExists(HKEY_CURRENT_USER, 'Path', '{app}') then
-    result := false
-  else
-    result := true
-end;
