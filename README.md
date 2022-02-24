@@ -74,6 +74,9 @@ Only Wi-Fi devices are supported.
 **Positional arguments are not supported.** For example: `nova color 0 "aliceblue"` will not work and throw an error. You will have to explicitly declare every argument you pass into the command. For example: `nova color -d 0 -c "aliceblue"`. Also, see [`setup`](https://github.com/nonimportant/nova/blob/main/README.md#setup).
 
 ## Installation
+If you have Windows you can just download the installer from the [most recent version](https://github.com/nonimportant/nova/releases/latest).
+Else, follow these steps:
+
 1. Download your OS's execuable from the [most recent version](https://github.com/nonimportant/nova/releases/latest) (If your browser or antivirus raises a warning, ignore it and let it bypass. If you don't, there might be problems with step 4 and 5).
 2. Rename the file name to `nova`. Leave the file extension unchanged.
 3. Create a directory in your root or home directory, then move the file into that directory (the location doesn't actually matter just don't leave it in the Downloads folder. I suggest this directory only have the file in it and nothing else because of the next step).
@@ -82,6 +85,8 @@ Only Wi-Fi devices are supported.
 
 ## Deletion
 1. Delete nova.exe from whatever directory you put it in (or delete the directory itself).[^1]
+
+Or, if you installed with the installer, open Settings, go to Apps, then search for "Nova." When you see Nova, click the three dots and hit "Uninstall."
 
 [^1]: Thats it!
 
