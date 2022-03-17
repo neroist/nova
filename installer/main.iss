@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Nova"
-#define MyAppVersion "1.4.0"
+#define MyAppVersion "1.3.0"
 #define MyAppPublisher "Alice"
 #define MyAppExeName "Nova.exe"
 
@@ -21,6 +21,7 @@ LicenseFile=LICENSE.txt
 InfoAfterFile=README.txt
 PrivilegesRequired=lowest
 OutputDir=bin
+UsePreviousAppDir=no
 OutputBaseFilename=Nova Installer
 Compression=lzma
 SolidCompression=yes
@@ -40,3 +41,12 @@ Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
 
 [Registry]
 Root: HKCU; Subkey: "Environment"; ValueType: expandsz; ValueName: "Path"; ValueData: "{olddata};{app}"
+
+[Code]
+function notInPath(Param: String): Boolean;
+begin
+  if RegValueExists(HKEY_CURRENT_USER, 'Path', '{app}') then
+    result := false
+  else
+    result := true
+end;
