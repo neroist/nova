@@ -596,7 +596,7 @@ proc devices =
       scmd = collect(for i in i["supportCmds"].items(): i.str)
       ## seq of all supported commands of the device
 
-    echo "\e[1m", "DEVICE ", $dev
+    echo "\e[1m", "DEVICE ", $dev, Esc
     echo "  Address: ", i["device"].getStr()
     echo "  Model: ", i["model"].getStr()
     echo "  Device Name: ", i["deviceName"].getStr()
