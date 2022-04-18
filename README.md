@@ -28,7 +28,7 @@ H619Z, H61A0, H7060, H610A, H6059, H7028, H6198, H6049.
 Only Wi-Fi devices are supported.
 
 ## Important Notes
-**Positional arguments are not supported.** For example: `nova color 0 "aliceblue"` will not work and throw an error. You will have to explicitly declare every argument you pass into the command. For example: `nova color -d 0 -c "aliceblue"`. Also, see [`setup`](https://github.com/nonimportant/nova/blob/main/README.md#setup).
+**Positional arguments are not supported.** For example: `nova color 0 "aliceblue"` will not work and throw an error. You will have to explicitly declare every argument you pass into the command. For example: `nova color -d 0 -c "aliceblue"`. Also, see [`setup`](DOCS.md#setup).
 
 ## Installation
 If you have Windows you can just download the installer from the [most recent version](https://github.com/nonimportant/nova/releases/latest).
@@ -41,11 +41,9 @@ Else, follow these steps:
 5. Run `nova setup` in your terminal/shell, and you're good to go (see [`setup`](https://github.com/nonimportant/nova/blob/main/README.md#setup)'s docs if there are any problems).
 
 ## Deletion
-1. Delete Nova from whatever directory you put it in (or delete the directory itself).[^1]
+1. Delete Nova from whatever directory you put it in (or delete the directory itself).
 
 Or, if you installed with the installer, open Settings, go to Apps, then search for "Nova." When you see Nova, click the three dots and hit "Uninstall."
-
-[^1]: Thats it!
 
 ## Documentation
 See [DOCS.md](DOCS.md)
