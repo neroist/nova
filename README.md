@@ -25,7 +25,7 @@ Not affiliated with Govee.
         - [Options](#options-2)
         - [Usage](#usage-3)
         - [Examples](#examples-2)
-    - [Color-tem](#color-tem)
+    - [Color-temp](#color-temp)
         - [Options](#options-3)
         - [Usage](#usage-4)
         - [Examples](#examples-3)
@@ -188,7 +188,7 @@ nova color -d=2
 nova color 
 ```
 
-## Color-tem
+## Color-temp
 `color-tem` is a command for controlling the color temperature of a Govee light strip.
 
 ### Options
@@ -203,13 +203,13 @@ Whether or not the command will produce output. This also silences errors and wi
 
 ### Usage
 ```
-nova color-tem --device:[device] --temperature:[temperature]
+nova color-temp --device:[device] --temperature:[temperature]
 ```
 
 ### Examples
 ```
-nova color-tem -t:5000
-nova color-tem -d:2 -t:4675
+nova color-temp -t:5000
+nova color-temp -d:2 -t:4675
 ```
 
 ## State
