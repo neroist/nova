@@ -1,5 +1,5 @@
 from uri import encodeUrl
-from os import fileExists, execShellCmd, getAppDir
+from os import fileExists, execShellCmd, getAppDir, sleep
 from random import rand, randomize
 from termui import termuiAsk
 
@@ -604,7 +604,7 @@ proc devices =
     echo "  Retrievable: ", capitalizeAscii($(i["retrievable"].getBool()))
     echo "  Supported Commands: ", scmd.join(", "), "\n"
 
-proc view(device: int = 0; property: string = "color"; output: bool = true) =
+proc view*(device: int = 0; property: string = "color"; output: bool = true) =
   ## View a color property of a device (e.g. color, color-temp)
 
   proc viewColor(c: colors.Color) = 
@@ -619,7 +619,14 @@ proc view(device: int = 0; property: string = "color"; output: bool = true) =
     of "color", "rgb":
       viewColor parseColor(color(0, "", false))
     of "temperature", "temp", "color-temp":
-      let gold = kelvinToRgb(color_temp(0, output=off)) 
+      let 
+        temp = color_temp(0, output=off)
+        gold = kelvinToRgb(temp)
+
+      if temp == 0:
+        echo "\e[33m", "Color temperature is 0K, viewing color temp 2000K", Esc
+        sleep 1500
+
       viewColor rgb(gold.r, gold.b, gold.g)
     else:
       if output:
