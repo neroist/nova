@@ -1,0 +1,10 @@
+version       = "1.5.0"
+author        = "Grace"
+description   = "Nova is a CLI for controlling Govee light strips, inspired by Bandev's Lux."
+license       = "EPL"
+srcDir        = "src"
+
+requires "nim >= 1.4.4"
+requires "cligen"
+requires "termui"
+requires "fidget"
