@@ -193,6 +193,31 @@ nova rgb -d:2
 nova rgb 217 140 180
 ```
 
+## View
+`view` is a command for viewing a specific color property of a device (e.g. color or color-temp). This command is a beta for a "`picker`" command of some sort which allows you to pick a color through a GUI.
+
+### Options
+<`-d`, `--device`> `device` - **Type: int/integer. Optional.**
+The device to perform the command on. Defaults to '0.' '0' refers to the first device on your account, '1' refers to the second, ect.
+
+<`-o`, `--output`> `output` - **Type: boolean (true/false/on/off). Optional.**
+Whether or not the command will produce output. This also silences errors and will make the command fail silently.
+
+<`-p`, `--property`> `property` - **Type: string/text. Optional**
+The property to view, defaults to "color."
+*Supported properties*: color, rgb, temperature, temp, color-temp
+
+### Usage
+```
+nova view --device:[device] --property:[color|rgb|temperature|temp|color-temp]
+```
+
+### Examples
+```
+nova view -p color
+nova view -d 0 -p temp
+```
+
 ## Devices
 `devices` is a command for getting the list of Govee devices on your account.
 
