@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Nova"
-#define MyAppVersion "1.3.0"
+#define MyAppVersion "1.5.0"
 #define MyAppPublisher "Grace"
 #define MyAppExeName "Nova.exe"
 
