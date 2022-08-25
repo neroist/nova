@@ -3,7 +3,7 @@
 
 #define MyAppName "Nova"
 #define MyAppVersion "1.3.0"
-#define MyAppPublisher "Alice"
+#define MyAppPublisher "Grace"
 #define MyAppExeName "Nova.exe"
 
 [Setup]
@@ -39,14 +39,17 @@ Source: "/../bin/nova.exe"; DestDir: "{app}"; Flags: ignoreversion
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
 Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
 
+[Files]
+Source: "C:\msys64\mingw64\bin\libwinpthread-1.dll"; DestDir: "{app}"
+
 [Registry]
 Root: HKCU; Subkey: "Environment"; ValueType: expandsz; ValueName: "Path"; ValueData: "{olddata};{app}"
 
-[Code]
-function notInPath(Param: String): Boolean;
-begin
-  if RegValueExists(HKEY_CURRENT_USER, 'Path', '{app}') then
-    result := false
-  else
-    result := true
-end;
+;[Code]
+;function notInPath(Param: String): Boolean;
+;begin
+;  if RegValueExists(HKEY_CURRENT_USER, 'Path', '{app}') then
+;    result := false
+;  else
+;    result := true
+;end;
