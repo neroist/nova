@@ -47,3 +47,5 @@ Or, if you installed with the installer, open Settings, go to Apps, then search 
 
 ## Documentation
 See [DOCS.md](DOCS.md)
+
+###### Made with ❤️ with Nim
