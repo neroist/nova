@@ -1,25 +1,44 @@
-from uri import encodeUrl
-from os import fileExists, execShellCmd, getAppDir, sleep
-from random import rand, randomize
-from termui import termuiAsk
+#[
 
-import std/[
-  httpclient,
-  strformat,
-  strutils,
-  terminal,
-  browsers,
-  colors,
-  sugar,
-  json
-]
+  Nova, a program to control Govee light strips from the command line
+  Copyright (C) 2023 Jasmine
 
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+]#
+
+import std/httpclient
+import std/strformat
+import std/strutils
+import std/terminal
+import std/browsers
+import std/random
+import std/colors
+import std/sugar
+import std/json
+import std/uri
+import std/os
+
+import tinydialogs
+import termui
 import cligen
+#import fidget
 
-import helpers
-import fidget
+import ./helpers
 
-# NOTE: rgb and color will be 0 if
+
+#* NOTE: rgb and color will be 0 if
 # 1. music mode is on
 # 2. color temperature is not 0
 # 3. a scene is playing on the device
@@ -42,28 +61,28 @@ const
     "See the full list of devices with `nova devices`." ## "Device" option help text.
 
   OutputHelp = "Whether or not the command will produce output. " &
-    "This also silences errors and will make commands fail silently." ## "Output" option help text.
+    "This also silences errors and will let commands fail silently." ## "Output" option help text.
 
-  NotSetupErrorMsg = "Nova is not setup properly. Use the command `nova setup` to setup Nova." ## Error message when
-  ## Nova is not setup properly.
+  NotSetupErrorMsg = "Nova is not setup properly. Use the command `nova setup` to setup Nova." 
+  ## Error message when Nova is not setup properly.
 
   Version = "v1.5.0" ## Nova version
 
   Description = "Nova is a CLI for controlling Govee light strips based off of Bandev's Lux." ## Nova description
 
-  DevicesURI = "https://developer-api.govee.com/v1/devices/" ## The base URI used to get device information.
+  DevicesURI = parseUri "https://developer-api.govee.com/v1/devices" ## The base URI used to get device information.
 
-  ControlURI = DevicesURI & "control/" ## The base URI used to control devices.
+  ControlURI = DevicesURI / "control" ## The base URI used to control devices.
 
-  Author = "Grace" ## The creator of Nova (me!).
+  Author = "Jasmine" ## The creator of Nova (me!)
 
-  SupportedProperties = [
+  #[SupportedProperties = [
       "color",
       "rgb",
       "temperature",
       "temp",
       "color-temp"
-    ]
+    ]]#
 
   Esc = "\e[0m" ## Escape ANSI code
 
@@ -73,8 +92,9 @@ let
   checkDevices = (device: int, output: bool) => checkDevices(device, num_devices, output)
 
 using
-  device: int
+  device: int 
   output: bool
+
 
 # set num_devices
 if isSetup(output=false):
@@ -86,7 +106,10 @@ if isSetup(output=false):
 
   num_devices = data["data"]["devices"].getElems().len
 
+
 # ---- commands ----
+
+{. push discardable .}
 
 proc setup =
   ## Setup Nova
@@ -99,7 +122,7 @@ proc setup =
     response: JsonNode
     codeKey: string
 
-  response = json.parseJson(client.get(DevicesURI).body)
+  response = parseJson(client.get(DevicesURI).body)
   
   try: 
     discard response["code"]
@@ -121,7 +144,7 @@ proc setup =
     styledEcho fgRed, response["message"].getStr()[0..^1], "."
     return
 
-proc turn*(device = 0; state: string = ""; output = on): string =
+proc turn(device = 0; state: string = ""; output = on): string =
   ## Turn device on or off
 
   if not isSetup(output) or (not checkDevices(device, output = output)): return
@@ -138,7 +161,7 @@ proc turn*(device = 0; state: string = ""; output = on): string =
 
       response = parseJson(
         client.get(
-          &"https://developer-api.govee.com/v1/devices/state?device={encodeUrl(deviceName, false)}&model={model}"
+          fmt"https://developer-api.govee.com/v1/devices/state?device={encodeUrl(deviceName, false)}&model={model}"
         ).body
       )
     if output:
@@ -179,7 +202,7 @@ proc turn*(device = 0; state: string = ""; output = on): string =
 
   return state
 
-proc color*(device = 0; color: string = ""; output = on): string =
+proc color(device = 0; color: string = ""; output = on): string =
   ## Set device color with an HTML/hex color code.
   ## NOTE: when called with no parameters, the device's current color will be #000000 if:
   ## 
@@ -288,7 +311,7 @@ proc color*(device = 0; color: string = ""; output = on): string =
 
   return color
 
-proc brightness*(device = 0; brightness = -1; output = on) : int =
+proc brightness(device = 0; brightness = -1; output = on): int =
   ## Set device brightness
 
   if not isSetup(output) or not checkDevices(device, output = output): return
@@ -345,10 +368,10 @@ proc brightness*(device = 0; brightness = -1; output = on) : int =
 
   if output:
     sendCompletionMsg int(re.code()), parseJson(re.body())["message"], re.code()
-  else:
-    return brightness
+  
+  return brightness
 
-proc color_temp*(device = 0; output: bool = on; temperature: int = -1): int =
+proc color_temp(device = 0; output = on; temperature: int = -1): int =
   ## Set device color temperature in kelvin
 
   if not isSetup(output) or not checkDevices(device, output = output): return
@@ -430,7 +453,7 @@ proc color_temp*(device = 0; output: bool = on; temperature: int = -1): int =
 
   return temperature
 
-proc state*(device = 0) =
+proc state(device = 0) =
   ## Output state of device
 
   if not isSetup(true) or not checkDevices(device, true): return
@@ -480,7 +503,7 @@ proc state*(device = 0) =
   echo fmt"  Color: {ansi}{color}{Esc} or {ansi}rgb({r}, {g}, {b}){Esc}"
   echo "  Color Temperature: ", kelvinAnsi, colorTem, Esc, " (if not 0, color will be #000000)"
 
-proc rgb_cli*(rgb: seq[int]; device = 0; output = on): tuple[r, g, b: int] =
+proc rgb_cmd(rgb: seq[int]; device = 0; output = on): tuple[r, g, b: int] =
   ## Same as command `color` but uses rgb instead of HTML codes, although it doesn't support random colors.
   ## NOTE: when called with no parameters, the device's current color will be rgb(0, 0, 0) if:
   ## 
@@ -509,6 +532,7 @@ proc rgb_cli*(rgb: seq[int]; device = 0; output = on): tuple[r, g, b: int] =
     var
       client = newHttpClient(headers=newHttpHeaders({"Govee-API-Key": apiKey}))
       colorJson: JsonNode
+
     let
       resp = json.parseJson(client.get(DevicesURI).body)
       info = getDeviceInfo(resp, device)
@@ -604,16 +628,18 @@ proc devices =
     echo "  Retrievable: ", capitalizeAscii($(i["retrievable"].getBool()))
     echo "  Supported Commands: ", scmd.join(", "), "\n"
 
-proc view*(device: int = 0; property: string = "color"; output: bool = true) =
+#[
+proc view(device = 0; property: string = "color"; output = on) =
   ## View a color property of a device (e.g. color, color-temp)
 
   proc viewColor(c: colors.Color) = 
     proc draw =
       frame "main":
-        box 0, 0, 16777215, 16777215 # same max size as a QT widget
+        box 0, 0, 16777215, 16777215 # same max size as a Qt widget
         fill $c
 
     startFidget(draw, w=800)
+    discard
 
   case property.toLowerAscii:
     of "color", "rgb":
@@ -632,40 +658,62 @@ proc view*(device: int = 0; property: string = "color"; output: bool = true) =
       if output:
         styledEcho fgRed, &"The property, \"{property}\" is not supported."
         echo "Supported properties: ", SupportedProperties.join(", ")
-      
+]#
+
+proc picker(device = 0; set_property: bool = true; output = on) = 
+  ## Pick a color through a GUI (your OS's default color picker dialog)
+
+  let pickedColor = colorChooser("Pick a color", [rand(0..255).byte, rand(0..255).byte, rand(0..255).byte])
+
+  if output:
+    echo "Picked ", colorToAnsi(parseColor(pickedColor.hex)), pickedColor.hex, Esc
+
+  if set_property:
+    if output: echo ""
+
+    color device, pickedColor.hex, output
+
 proc version =
   ## Get Nova current version
+
   echo "Nova ", Version
 
 proc about =
   ## Nova about
+
   echo "Nova ", Version
   echo Description
   echo "Made by ", Author
 
-func description: string =
+proc description: string =
   ## Prints Nova's description
+
   return Description
 
 proc source =
   ## View Nova's source code
-  openDefaultBrowser("https://github.com/nonimportant/Nova/blob/main/nova.nim")
+
+  openDefaultBrowser("https://github.com/neroist/Nova/blob/main/nova.nim")
 
 proc repo =
   ## View Nova's GitHub repository
-  openDefaultBrowser("https://github.com/nonimportant/Nova/")
+
+  openDefaultBrowser("https://github.com/neroist/Nova/")
 
 proc license =
   ## View Nova's license
-  openDefaultBrowser("https://github.com/nonimportant/Nova/blob/main/LICENSE")
+
+  openDefaultBrowser("https://github.com/neroist/Nova/blob/main/LICENSE")
 
 proc docs =
   ## View Nova's documentation
+
   openDefaultBrowser("https://github.com/nonimportant/Nova/blob/main/DOCS.md")
 
+{. pop .}
+
 when isMainModule:
-  # String consts are cast into strings becuase of a bug that prints out the variable's name
-  # instead of its value
+  # String consts are cast into strings becuase if I dont it throws an error
 
   const 
     Commands {.used.} = (
@@ -674,8 +722,7 @@ when isMainModule:
       nova.color, # name collision so we qualify the cmd
       color_temp,
       state,
-      rgb_cli,
-      view,
+      rgb_cmd,
       devices,
       version,
       about,
@@ -688,27 +735,27 @@ when isMainModule:
     [setup],
     [
       turn,
-      help={
+      help = {
         "state": "The state you want to put the device in. Has to be the string \"on\" or \"off.\" " &
           " If left blank, the command will print the current power state of the device.",
         "device": $DeviceHelp,
         "output": $OutputHelp
       },
-      noAutoEcho=true
+      noAutoEcho = true
     ],
     [
       brightness,
-      help={
+      help = {
         "brightness": "The brightness you want to set on the device. Supports values 1-100 only. "&
           "If left blank, the command will print the current brightness of the device.",
         "device": $DeviceHelp,
         "output": $OutputHelp
       },
-      noAutoEcho=true
+      noAutoEcho = true
     ],
     [
       nova.color,
-      help={
+      help = {
         "color": "The color that you want to display on the device. " &
           "Has to be a hex/HTML color code, optionally prefixed with '#', or the string \"rand\" or \"random.\" " &
           "If left blank, will return the current color of the device. " &
@@ -716,50 +763,48 @@ when isMainModule:
         "device": $DeviceHelp,
         "output": $OutputHelp
       },
-      noAutoEcho=true
+      noAutoEcho = true
     ],
     [
       color_temp,
-      cmdName="color-temp",
-      help={
+      cmdName = "color-temp",
+      help = {
         "temperature": "The color temperature you want to set on the device. " &
           "Has to be in the valid range your Govee device supports.",
         "device": $DeviceHelp,
         "output": $OutputHelp
       },
-      noAutoEcho=true
+      noAutoEcho = true
     ],
     [
       state,
-      help={"device": $DeviceHelp}
+      help = {"device": $DeviceHelp}
     ],
     [
       state,
-      cmdName="device",
-      doc="Alias for state",
-      help={"device": $DeviceHelp}
+      cmdName = "device",
+      doc = "Alias for state",
+      help = {"device": $DeviceHelp}
     ],
     [
-      rgb_cli,
-      help={
+      rgb_cmd,
+      help = {
         "device": $DeviceHelp,
         "rgb": "The color you want to set on the device in an RGB format. " &
           "Has to be 3 numbers seperated by a space. " &
           "If left blank, the command will print the current color in an RGB function.",
         "output": $OutputHelp
       },
-      noAutoEcho=true,
-      cmdName="rgb"
+      noAutoEcho = true,
+      cmdName = "rgb"
     ],
     [
-      view,
-      help={
-        "device": $DeviceHelp,
-        "output": $OutputHelp,
-        "property": "The property to view. Supported properties: " & static(SupportedProperties.join(", "))
-        # if we dont use static here, it throws an error.
-      },
-      noAutoEcho=true
+      picker,
+      help = {
+        "device": DeviceHelp,
+        "output": OutputHelp,
+        "set_property": "Whether or not to set `device`'s color to the color chosen."
+      }
     ],
     [devices],
     [version],

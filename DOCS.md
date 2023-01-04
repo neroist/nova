@@ -193,8 +193,8 @@ nova rgb -d:2
 nova rgb 217 140 180
 ```
 
-## View
-`view` is a command for viewing a specific color property of a device (e.g. color or color-temp). This command is a beta for a "`picker`" command of some sort which allows you to pick a color through a GUI.
+## Picker
+Pick a color through a GUI and set it to `device`'s color 
 
 ### Options
 <`-d`, `--device`> `device` - **Type: int/integer. Optional.**
@@ -203,19 +203,19 @@ The device to perform the command on. Defaults to '0.' '0' refers to the first d
 <`-o`, `--output`> `output` - **Type: boolean (true/false/on/off). Optional.**
 Whether or not the command will produce output. This also silences errors and will make the command fail silently.
 
-<`-p`, `--property`> `property` - **Type: string/text. Optional**
-The property to view, defaults to "color."
-*Supported properties*: color, rgb, temperature, temp, color-temp
+<`-p`, `--property_set`> `property` - **Type: string/text. Optional.**
+Whether or not to set `device`'s color upon picking a color. 
+Defaults to `true`
 
 ### Usage
 ```
-nova view --device:[device] --property:[color|rgb|temperature|temp|color-temp]
+nova picker --device:[device] --output:[true|false] --property_set:[true|false]
 ```
 
 ### Examples
 ```
-nova view -p color
-nova view -d 0 -p temp
+nova picker -p:false
+nova picker -d:1 -o:false
 ```
 
 ## Devices

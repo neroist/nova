@@ -1,19 +1,37 @@
 ## This module contains helper functions so Nova can run properly
 
-from httpclient import HttpCode, `$`
+#[
 
-import std/[
-  strformat,
-  terminal,
-  colors,
-  json,
-  math,
-  os
-]
+  Nova, a program to control Govee light strips from the command line
+  Copyright (C) 2023 Jasmine
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+]#
+
+import std/httpclient
+import std/strformat
+import std/terminal
+import std/colors
+import std/json
+import std/math
+import std/os
 
 using
   device: int
   output: bool
+
 
 func kelvinToRgb*(temp: int): tuple[r, g, b: range[0..255]] = 
   ## Converts color temperature to rgb
