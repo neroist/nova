@@ -1,1 +1,0 @@
-Nova installer source code.
