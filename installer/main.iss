@@ -41,6 +41,8 @@ Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
 
 [Files]
 Source: "C:\msys64\mingw64\bin\libwinpthread-1.dll"; DestDir: "{app}"
+Source: "C:\msys64\mingw64\bin\libssl-1_1-x64.dll"; DestDir: "{app}"
+Source: "C:\msys64\mingw64\bin\libcrypto-1_1-x64.dll"; DestDir: "{app}"
 
 [Registry]
 Root: HKCU; Subkey: "Environment"; ValueType: expandsz; ValueName: "Path"; ValueData: "{olddata};{app}"
