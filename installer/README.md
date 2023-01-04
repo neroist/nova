@@ -1,1 +1,1 @@
-Nova installer source code. Made with Inno Setup.
+Nova installer source code.
