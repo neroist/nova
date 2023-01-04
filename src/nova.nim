@@ -63,8 +63,7 @@ const
   OutputHelp = "Whether or not the command will produce output. " &
     "This also silences errors and will let commands fail silently." ## "Output" option help text.
 
-  NotSetupErrorMsg = "Nova is not setup properly. Use the command `nova setup` to setup Nova." 
-  ## Error message when Nova is not setup properly.
+  NotSetupErrorMsg = "Nova is not setup properly. Use the command `nova setup` to setup Nova." ## Error message when Nova is not setup properly.
 
   Version = "v1.5.0" ## Nova version
 
@@ -108,8 +107,6 @@ if isSetup(output=false):
 
 
 # ---- commands ----
-
-{. push discardable .}
 
 proc setup =
   ## Setup Nova
@@ -671,7 +668,7 @@ proc picker(device = 0; set_property: bool = true; output = on) =
   if set_property:
     if output: echo ""
 
-    color device, pickedColor.hex, output
+    discard color(device, pickedColor.hex, output)
 
 proc version =
   ## Get Nova current version
@@ -710,7 +707,6 @@ proc docs =
 
   openDefaultBrowser("https://github.com/nonimportant/Nova/blob/main/DOCS.md")
 
-{. pop .}
 
 when isMainModule:
   # String consts are cast into strings becuase if I dont it throws an error
@@ -738,8 +734,8 @@ when isMainModule:
       help = {
         "state": "The state you want to put the device in. Has to be the string \"on\" or \"off.\" " &
           " If left blank, the command will print the current power state of the device.",
-        "device": $DeviceHelp,
-        "output": $OutputHelp
+        "device": DeviceHelp,
+        "output": OutputHelp
       },
       noAutoEcho = true
     ],
@@ -748,8 +744,8 @@ when isMainModule:
       help = {
         "brightness": "The brightness you want to set on the device. Supports values 1-100 only. "&
           "If left blank, the command will print the current brightness of the device.",
-        "device": $DeviceHelp,
-        "output": $OutputHelp
+        "device": DeviceHelp,
+        "output": OutputHelp
       },
       noAutoEcho = true
     ],
@@ -760,8 +756,8 @@ when isMainModule:
           "Has to be a hex/HTML color code, optionally prefixed with '#', or the string \"rand\" or \"random.\" " &
           "If left blank, will return the current color of the device. " &
           "If `color` is \"rand\" or \"random\" a random color will be displayed on the device",
-        "device": $DeviceHelp,
-        "output": $OutputHelp
+        "device": DeviceHelp,
+        "output": OutputHelp
       },
       noAutoEcho = true
     ],
@@ -771,29 +767,29 @@ when isMainModule:
       help = {
         "temperature": "The color temperature you want to set on the device. " &
           "Has to be in the valid range your Govee device supports.",
-        "device": $DeviceHelp,
-        "output": $OutputHelp
+        "device": DeviceHelp,
+        "output": OutputHelp
       },
       noAutoEcho = true
     ],
     [
       state,
-      help = {"device": $DeviceHelp}
+      help = {"device": DeviceHelp}
     ],
     [
       state,
       cmdName = "device",
       doc = "Alias for state",
-      help = {"device": $DeviceHelp}
+      help = {"device": DeviceHelp}
     ],
     [
       rgb_cmd,
       help = {
-        "device": $DeviceHelp,
+        "device": DeviceHelp,
         "rgb": "The color you want to set on the device in an RGB format. " &
           "Has to be 3 numbers seperated by a space. " &
           "If left blank, the command will print the current color in an RGB function.",
-        "output": $OutputHelp
+        "output": OutputHelp
       },
       noAutoEcho = true,
       cmdName = "rgb"
