@@ -86,7 +86,7 @@ const
   Esc = "\e[0m" ## Escape ANSI code
 
 let
-  KeyDir = getAppDir() & "\\.KEY"
+  KeyDir = getAppDir() / ".KEY"
   isSetup = (output: bool) => isSetup(output, KeyDir, NotSetupErrorMsg) ## shorter method of `isSetup`
   checkDevices = (device: int, output: bool) => checkDevices(device, num_devices, output)
 
@@ -663,7 +663,7 @@ proc picker(device = 0; set_property: bool = true; output = on) =
   let pickedColor = colorChooser("Pick a color", [rand(0..255).byte, rand(0..255).byte, rand(0..255).byte])
 
   if output:
-    echo "Picked ", colorToAnsi(parseColor(pickedColor.hex)), pickedColor.hex, Esc
+    echo "Picked ", colorToAnsi(parseColor(pickedColor.hex)), toUpper pickedColor.hex, Esc
 
   if set_property:
     if output: echo ""
