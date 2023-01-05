@@ -33,6 +33,18 @@ using
   output: bool
 
 
+template success*(args: varargs[untyped]) = styledEcho fgGreen, args, resetStyle
+template error*(args: varargs[untyped]) = styledEcho fgRed, args, resetStyle
+
+func getErrorMsg*(code: int): string =
+  case code:
+    of 403:
+      return "Invalid API key. Run `nova setup` to re-enter your API key."
+    of 500..599:
+      return "Govee internal error. Try running this command again another time."
+    else:
+      return "OK"
+
 func kelvinToRgb*(temp: int): tuple[r, g, b: range[0..255]] = 
   ## Converts color temperature to rgb
   ## Algorithm from https://tannerhelland.com/2012/09/18/convert-temperature-rgb-algorithm-code.html
