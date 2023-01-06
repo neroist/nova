@@ -11,6 +11,7 @@ Not affiliated with Govee.
 - [Installation](#installation)
 - [Deletion](#deletion)
 - [Documentation](#documentation)
+- [Build From Source](#build-from-source)
 
 ## Supported Devices
 Not all Govee devices are supported by Nova. The devices supported by Nova are:
