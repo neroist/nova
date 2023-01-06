@@ -101,7 +101,7 @@ if isSetup(output=false):
     data = parseJson(
       fetch(
         DevicesURI,
-        headers = @{"Govee-API-Key": apiKey}
+        @{"Govee-API-Key": apiKey}
       )
     )
 
@@ -142,7 +142,7 @@ proc turn(device = 0; state: string = ""; output = on): string =
 
   if state == "":
     let
-      resp = parseJson fetch(DevicesURI, headers = @{"Govee-API-Key": apiKey})
+      resp = parseJson fetch(DevicesURI, @{"Govee-API-Key": apiKey})
       info = getDeviceInfo(resp, device)
       deviceName = info[0]
       model = info[1]
@@ -150,7 +150,7 @@ proc turn(device = 0; state: string = ""; output = on): string =
       response = parseJson(
         fetch(
           fmt"https://developer-api.govee.com/v1/devices/state?device={encodeUrl(deviceName, false)}&model={model}",
-          headers = @{"Govee-API-Key": apiKey}
+          @{"Govee-API-Key": apiKey}
         )
       )
 
@@ -167,7 +167,7 @@ proc turn(device = 0; state: string = ""; output = on): string =
     return
 
   let
-    resp = parseJson fetch(DevicesURI, headers = @{"Govee-API-Key": apiKey})
+    resp = parseJson fetch(DevicesURI, @{"Govee-API-Key": apiKey})
     info = getDeviceInfo(resp, device)
     deviceName = info[0]
     model = info[1]
@@ -211,7 +211,7 @@ proc color(device = 0; color: string = ""; output = on): string =
 
   if color == "":
     let
-      resp = parseJson fetch(DevicesURI, headers = @{"Govee-API-Key": apiKey})
+      resp = parseJson fetch(DevicesURI, @{"Govee-API-Key": apiKey})
       info = getDeviceInfo(resp, device)
       deviceName = info[0]
       model = info[1]
@@ -219,7 +219,7 @@ proc color(device = 0; color: string = ""; output = on): string =
       response = parseJson(
         fetch(
           fmt"https://developer-api.govee.com/v1/devices/state?device={encodeUrl(deviceName, false)}&model={model}",
-          headers = @{"Govee-API-Key": apiKey}
+          @{"Govee-API-Key": apiKey}
         )
       )
 
