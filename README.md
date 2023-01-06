@@ -48,4 +48,22 @@ Or, if you installed with the installer, open Settings, go to Apps, then search 
 ## Documentation
 See [DOCS.md](DOCS.md)
 
+## Build from source
+### Reqirements
+- [Nim](https://nim-lang.org) >= 1.6.8
+- Mingw installed from [MSYS2](https://www.msys2.org) MSYS (only needed if you want to build windows installer)
+- [Inno Setup](https://jrsoftware.org/isdl.php#stable) (again, only needed for windows installer)
+
+### Build
+In order to build, cd into the base directory and run:
+
+```shell
+nimble tinydialogs cligen puppy
+nim c src/nova.nim
+
+iscc installer/installer.iss # skip if you dont want to build installer
+```
+
+The compilied binaries will be avalible in the `bin/` directory.
+
 ###### Made with ❤️ with Nim
