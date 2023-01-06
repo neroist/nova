@@ -9,6 +9,7 @@ Not affiliated with Govee.
 - [Supported Devices](#supported-devices)
 - [Notes](#important-notes)
 - [Installation](#installation)
+- [How To Get Govee API Key](#how-to-get-govee-api-key)
 - [Deletion](#deletion)
 - [Documentation](#documentation)
 - [Build From Source](#build-from-source)
@@ -32,8 +33,8 @@ Only Wi-Fi devices are supported.
 **Positional arguments are not supported.** For example: `nova color 0 "aliceblue"` will not work and throw an error. You will have to explicitly declare every argument you pass into the command. For example: `nova color -d 0 -c "aliceblue"`. Also, see [`setup`](DOCS.md#setup).
 
 ## Installation
-If you have Windows you can just download the installer from the [most recent version](https://github.com/nonimportant/nova/releases/latest).
-Else, follow these steps:
+You can just download the installer from the [most recent version](https://github.com/nonimportant/nova/releases/latest).
+However you can also install like so:
 
 1. Download your OS's execuable from the [most recent version](https://github.com/nonimportant/nova/releases/latest) (If your browser or antivirus raises a warning, ignore it and let it bypass. If you don't, there might be problems with step 4 and 5).
 2. Rename the file name to `nova`.
@@ -41,10 +42,20 @@ Else, follow these steps:
 4. Add the directory to your `Path` environment variable, or else you'll have to go to and find the directory and open a terminal in that directory just to use Nova.
 5. Run `nova setup` in your terminal/shell, and you're good to go (see [`setup`](https://github.com/nonimportant/nova/blob/main/README.md#setup)'s docs if there are any problems).
 
+## How to get Govee API key
+See https://twitter.com/goveeofficial/status/1383962664217444353?lang=en
+
+However, essentially:
+1. Open the Govee Home mobile app.
+2. Go to the "My Profile" tab, press "About us", press "Apply for API key"
+3. Fill out your name and your reason (For the reason you can just write "I would like to control my LEDs with a CLI" and it should be fine) and submit.
+
+You should recive an email with your API key soon or at most a few days
+
 ## Deletion
 1. Delete Nova from whatever directory you put it in (or delete the directory itself).
 
-Or, if you installed with the installer, open Settings, go to Apps, then search for "Nova." When you see Nova, click the three dots and hit "Uninstall."
+Or, if you installed with the Windows installer, open Settings, go to Apps, then search for "Nova." When you see Nova, click the three dots and hit "Uninstall."
 
 ## Documentation
 See [DOCS.md](DOCS.md)
@@ -59,7 +70,7 @@ See [DOCS.md](DOCS.md)
 In order to build, cd into the base directory and run:
 
 ```shell
-nimble tinydialogs cligen puppy
+nimble install tinydialogs cligen puppy
 nim c src/nova.nim
 
 iscc installer/installer.iss # skip if you dont want to build installer
