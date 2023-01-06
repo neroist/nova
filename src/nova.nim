@@ -85,6 +85,9 @@ const
     ]]#
 
 let
+  esc = if isTrueColorSupported(): ansiResetCode
+        else: ""
+
   KeyDir = getAppDir() / ".KEY"
   isSetup = (output: bool) => isSetup(output, KeyDir, NotSetupErrorMsg) ## shorter method of `isSetup`
   checkDevices = (device: int, output: bool) => checkDevices(device, num_devices, output)
@@ -236,7 +239,7 @@ proc color(device = 0; color: string = ""; output = on): string =
       )
 
     if output:
-      echo fmt"Device {device} color: ", colorToAnsi(parseColor(color)), color, ansiResetCode
+      echo fmt"Device {device} color: ", colorToAnsi(parseColor(color)), color, esc
 
     return color
 
@@ -290,7 +293,7 @@ proc color(device = 0; color: string = ""; output = on): string =
   let re = put(ControlURI, @{"Govee-API-Key": apiKey, "Content-Type": "application/json"}, body)
 
   if output:
-    echo fmt"Set device {device}'s color to ", colorToAnsi(rgb(r, g, b)), rgb(r, g, b), ansiResetCode, '\n'
+    echo fmt"Set device {device}'s color to ", colorToAnsi(rgb(r, g, b)), rgb(r, g, b), esc, '\n'
     sendCompletionMsg re.code, parseJson(re.body)["message"], HttpCode(re.code)
 
   return color
@@ -384,7 +387,7 @@ proc color_temp(device = 0; output = on; temperature: int = -1): int =
       ansi = colorToAnsi(ccolor)
 
     if output:
-      echo fmt"Device {device}'s color temperature is {ansi}", temp, 'K', ansiResetCode
+      echo fmt"Device {device}'s color temperature is {ansi}", temp, 'K', esc
 
     return temp
 
@@ -422,7 +425,7 @@ proc color_temp(device = 0; output = on; temperature: int = -1): int =
     ccolor = colorToAnsi color
 
   if output:
-    echo fmt"Set device {device}'s color temperature to {ccolor}{temperature}K{ansiResetCode}", '\n'
+    echo fmt"Set device {device}'s color temperature to {ccolor}{temperature}K{esc}", '\n'
 
     sendCompletionMsg re.code, parseJson(re.body)["message"], HttpCode(re.code)
 
@@ -476,8 +479,8 @@ proc state(device = 0) =
   echo "  Online: ", capitalizeAscii($properties[0]["online"].getBool()), " (may be incorrect)"
   echo "  Power State: ", properties[1]["powerState"].getStr().capitalizeAscii()
   echo "  Brightness: ", properties[2]["brightness"].getInt()
-  echo fmt"  Color: {ansi}{color}{ansiResetCode} or {ansi}rgb({r}, {g}, {b}){ansiResetCode}"
-  echo "  Color Temperature: ", kelvinAnsi, colorTem, ansiResetCode, " (if not 0, color will be #000000)"
+  echo fmt"  Color: {ansi}{color}{esc} or {ansi}rgb({r}, {g}, {b}){esc}"
+  echo "  Color Temperature: ", kelvinAnsi, colorTem, esc, " (if not 0, color will be #000000)"
 
 proc rgb_cmd(rgb: seq[int]; device = 0; output = on): tuple[r, g, b: int] =
   ## Same as command `color` but uses rgb instead of HTML codes, although it doesn't support random colors.
@@ -533,7 +536,7 @@ proc rgb_cmd(rgb: seq[int]; device = 0; output = on): tuple[r, g, b: int] =
       color = colorToAnsi rgb(r, g, b)
 
     if output:
-      echo fmt"Device {device} color: {color}rgb({r}, {g}, {b}){ansiResetCode}"
+      echo fmt"Device {device} color: {color}rgb({r}, {g}, {b}){esc}"
 
     return (r: r, g: g, b: b)
 
@@ -570,7 +573,7 @@ proc rgb_cmd(rgb: seq[int]; device = 0; output = on): tuple[r, g, b: int] =
   let re = put(ControlURI, @{"Govee-API-Key": apiKey, "Content-Type": "application/json"}, body)
 
   if output:
-    echo fmt"Set device {device}'s color to {color}rgb({rgb[0]}, {rgb[1]}, {rgb[2]}){ansiResetCode}", '\n'
+    echo fmt"Set device {device}'s color to {color}rgb({rgb[0]}, {rgb[1]}, {rgb[2]}){esc}", '\n'
 
     sendCompletionMsg re.code, parseJson(re.body)["message"], HttpCode(re.code)
 
@@ -636,7 +639,7 @@ proc picker(device = 0; set_property: bool = true; output = on) =
   let pickedColor = colorChooser("Pick a color", [rand(0..255).byte, rand(0..255).byte, rand(0..255).byte])
 
   if output:
-    echo "Picked ", colorToAnsi(parseColor(pickedColor.hex)), toUpper pickedColor.hex, ansiResetCode
+    echo "Picked ", colorToAnsi(parseColor(pickedColor.hex)), toUpper pickedColor.hex, esc
 
   if set_property:
     if output: echo ""

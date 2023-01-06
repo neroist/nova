@@ -38,12 +38,12 @@ template error*(args: varargs[untyped]) = styledEcho fgRed, args, resetStyle
 
 func getErrorMsg*(code: int): string =
   case code:
-    of 403:
+    of 401, 403:
       return "Invalid API key. Run `nova setup` to re-enter your API key."
     of 500..599:
       return "Govee internal error. Try running this command again another time."
     else:
-      return "OK"
+      return $code & " error"
 
 func kelvinToRgb*(temp: int): tuple[r, g, b: range[0..255]] = 
   ## Converts color temperature to rgb
@@ -68,7 +68,7 @@ func kelvinToRgb*(temp: int): tuple[r, g, b: range[0..255]] =
 proc checkDevices*(device; num_devices: int; output: bool = on): bool =
   if device notin 0 ..< num_devices:
     if output:
-      styledEcho fgRed, fmt"Invalid device '{device}'. You have {num_devices} device(s)."
+      error fmt"Invalid device '{device}'. You have {num_devices} device(s)."
 
     return false
   
@@ -82,23 +82,29 @@ proc isSetup*(output: bool = on; keydir, errmsg: string): bool =
       return true
   else:
     if output:
-      styledEcho fgRed, errmsg
+      error errmsg
 
     return false
 
-func colorToAnsi*(color: colors.Color; foreground: bool = true): string =
-  result.add '\e'
+proc colorToAnsi*(color: colors.Color; foreground: bool = true): string =
+  
+  let trueColor = isTrueColorSupported()
 
-  let
-    rgb = color.extractRGB
-    r = rgb.r
-    g = rgb.g
-    b = rgb.b
-    start = if foreground: 38 else: 48
+  if trueColor:
+    result.add '\e'
 
-  result.add fmt"[{start};2;{r};{g};{b}m"
+    let
+      rgb = color.extractRGB
+      r = rgb.r
+      g = rgb.g
+      b = rgb.b
+      start = if foreground: 38 else: 48
 
-func colorToAnsi*(color: tuple[r, g, b: range[0..255]]; foreground: bool = true): string = 
+    result.add fmt"[{start};2;{r};{g};{b}m"
+  else:
+    result = ""
+
+proc colorToAnsi*(color: tuple[r, g, b: range[0..255]]; foreground: bool = true): string = 
   colorToAnsi(rgb(color.r, color.g, color.b), foreground)
 
 func getDeviceInfo*(jsonData: JsonNode; device): tuple[deviceName, model: string] =
@@ -110,9 +116,9 @@ func getDeviceInfo*(jsonData: JsonNode; device): tuple[deviceName, model: string
 
 proc sendCompletionMsg*(code: int; message: JsonNode; codeMsg: HttpCode) =
   if code == 200:
-    styledEcho fgGreen, "Successfully executed command"
+    success "Successfully executed command"
   else:
-    styledEcho fgRed, "Error executing command"
+    error "Error executing command"
  
   echo "Message: ", message
   echo "Code: ", codeMsg
