@@ -115,11 +115,13 @@ if isSetup(output=false):
 
 proc setup =
   ## Setup Nova
+  
+  echo "See https://github.com/neroist/Nova#how-to-get-govee-api-key if you dont't have your Govee API key\n"
 
   let apiKey = termuiAsk "Enter your Govee API key:"
 
   var
-    response  = get(DevicesURI, @{"Govee-API-Key": apiKey})
+    response = get(DevicesURI, @{"Govee-API-Key": apiKey})
     code = response.code
 
   if code == 200:
