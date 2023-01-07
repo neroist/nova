@@ -54,7 +54,7 @@ randomize()
 
 # globals
 var
-  num_devices: int
+  numDevices: int
   
 const
   DeviceHelp = "The device to perform the action/command on. Defaults to '0'. " &
@@ -88,9 +88,9 @@ let
   esc = if isTrueColorSupported(): ansiResetCode
         else: ""
 
-  KeyDir = getAppDir() / ".KEY"
-  isSetup = (output: bool) => isSetup(output, KeyDir, NotSetupErrorMsg) ## shorter method of `isSetup`
-  checkDevices = (device: int, output: bool) => checkDevices(device, num_devices, output)
+  keyDir = getAppDir() / ".KEY"
+  isSetup = (output: bool) => isSetup(output, keyDir, NotSetupErrorMsg) ## shorter method of `isSetup`
+  checkDevices = (device: int, output: bool) => checkDevices(device, numDevices, output)
 
 using
   device: int 
@@ -100,7 +100,7 @@ using
 # set num_devices
 if isSetup(output=false):
   let
-    apiKey = readFile(KeyDir)
+    apiKey = readFile(keyDir)
     data = parseJson(
       fetch(
         DevicesURI,
@@ -108,7 +108,7 @@ if isSetup(output=false):
       )
     )
 
-  num_devices = data["data"]["devices"].getElems().len
+  numDevices = data["data"]["devices"].getElems().len
 
 
 # ---- commands ----
@@ -125,11 +125,11 @@ proc setup =
     code = response.code
 
   if code == 200:
-    if fileExists KeyDir:
-      editFileVisibility(KeyDir, hidden=false)
+    if fileExists keyDir:
+      editFileVisibility(keyDir, hidden=false)
 
-    writeFile(KeyDir, apiKey)
-    editFileVisibility(KeyDir, hidden=true)
+    writeFile(keyDir, apiKey)
+    editFileVisibility(keyDir, hidden=true)
 
     success "\nSetup completed successfully.\nWelcome to Nova."
     return
@@ -143,7 +143,7 @@ proc turn(device = 0; state: string = ""; output = on): string =
 
   if not isSetup(output) or (not checkDevices(device, output = output)): return
 
-  let apiKey = readFile(KeyDir)
+  let apiKey = readFile(keyDir)
 
   if state == "":
     let
@@ -205,7 +205,7 @@ proc color(device = 0; color: string = ""; output = on): string =
 
   if not isSetup(output) or not checkDevices(device, output = output): return
 
-  let apiKey = readFile(KeyDir)
+  let apiKey = readFile(keyDir)
 
   var
     color = color.replace(" ").toLowerAscii()
@@ -305,7 +305,7 @@ proc brightness(device = 0; brightness = -1; output = on): int =
 
   if not isSetup(output) or not checkDevices(device, output = output): return
 
-  let apiKey = readFile(KeyDir)
+  let apiKey = readFile(keyDir)
 
   if brightness == -1:  # if brightness is default value
     let
@@ -356,12 +356,12 @@ proc brightness(device = 0; brightness = -1; output = on): int =
   
   return brightness
 
-proc color_temp(device = 0; output = on; temperature: int = -1): int =
+proc colorTemp(device = 0; output = on; temperature: int = -1): int =
   ## Set device color temperature in kelvin
 
   if not isSetup(output) or not checkDevices(device, output = output): return
 
-  let apiKey = readFile(KeyDir) 
+  let apiKey = readFile(keyDir) 
 
   if temperature <= -1:
     var temp: int
@@ -438,7 +438,7 @@ proc state(device = 0) =
 
   if not isSetup(true) or not checkDevices(device, true): return
 
-  let apiKey = readFile(KeyDir)
+  let apiKey = readFile(keyDir)
 
   var
     colorJson: JsonNode
@@ -484,10 +484,10 @@ proc state(device = 0) =
   echo "  Color: ", fmt"{ansi}{color}{esc} or {ansi}rgb({r}, {g}, {b}){esc}"
   echo "  Color Temperature: ", kelvinAnsi, colorTem, esc, " (if not 0, color will be #000000)"
 
-proc rgb_cmd(rgb: seq[int]; device = 0; output = on): tuple[r, g, b: int] =
+proc rgbCmd(rgb: seq[int]; device = 0; output = on): tuple[r, g, b: int] =
   ## Same as command `color` but uses rgb instead of HTML codes, although it doesn't support random colors.
-  ## NOTE: when called with no parameters, the device's current color will be rgb(0, 0, 0) if:
   ## 
+  ## NOTE: when called with no parameters, the device's current color will be rgb(0, 0, 0) if:
   ## 1. Music mode is on. 
   ## 2. color temperature is not 0. 
   ## 3. A scene is playing on the device.
@@ -495,7 +495,7 @@ proc rgb_cmd(rgb: seq[int]; device = 0; output = on): tuple[r, g, b: int] =
   # named rgb_cli because of name collision with the `colors` module
 
   if not isSetup(output) or not checkDevices(device, output): return
-  let apiKey = readFile(KeyDir)
+  let apiKey = readFile(keyDir)
 
   var rgb = rgb
 
@@ -587,7 +587,7 @@ proc devices =
   if not isSetup(true): return
 
   let
-    apiKey = readFile(KeyDir)
+    apiKey = readFile(keyDir)
     resp = parseJson fetch(DevicesURI, @{"Govee-API-Key": apiKey})
 
   for dev, i in resp["data"]["devices"].getElems():
@@ -635,7 +635,7 @@ proc view(device = 0; property: string = "color"; output = on) =
         echo "Supported properties: ", SupportedProperties.join(", ")
 ]#
 
-proc picker(device = 0; set_property: bool = true; output = on) = 
+proc picker(device = 0; setProperty: bool = true; output = on) = 
   ## Pick a color through a GUI (your OS's default color picker dialog)
 
   let pickedColor = colorChooser("Pick a color", [rand(0..255).byte, rand(0..255).byte, rand(0..255).byte])
@@ -643,7 +643,7 @@ proc picker(device = 0; set_property: bool = true; output = on) =
   if output:
     echo "Picked ", colorToAnsi(parseColor(pickedColor.hex)), toUpper pickedColor.hex, esc
 
-  if set_property:
+  if setProperty:
     if output: echo ""
 
     discard color(device, pickedColor.hex, output)
@@ -694,9 +694,9 @@ when isMainModule:
       setup,
       turn,
       nova.color, # name collision so we qualify the cmd
-      color_temp,
+      colorTemp,
       state,
-      rgb_cmd,
+      rgbCmd,
       devices,
       version,
       about,
@@ -740,7 +740,7 @@ when isMainModule:
       noAutoEcho = true
     ],
     [
-      color_temp,
+      colorTemp,
       cmdName = "color-temp",
       help = {
         "temperature": "The color temperature you want to set on the device. " &
@@ -761,7 +761,7 @@ when isMainModule:
       help = {"device": DeviceHelp}
     ],
     [
-      rgb_cmd,
+      rgbCmd,
       help = {
         "device": DeviceHelp,
         "rgb": "The color you want to set on the device in an RGB format. " &

@@ -65,8 +65,8 @@ func kelvinToRgb*(temp: int): tuple[r, g, b: range[0..255]] =
   else:
     result.b = int (138.5177312231 * ln(temp - 10) - 305.0447927307).clamp(0.0, 255.0)
 
-proc checkDevices*(device; num_devices: int; output: bool = on): bool =
-  if device notin 0 ..< num_devices:
+proc checkDevices*(device; numDevices: int; output: bool = on): bool =
+  if device notin 0 ..< numDevices:
     if output:
       error fmt"Invalid device '{device}'. You have {num_devices} device(s)."
 
@@ -74,7 +74,7 @@ proc checkDevices*(device; num_devices: int; output: bool = on): bool =
   
   return true
 
-proc isSetup*(output: bool = on; keydir, errmsg: string): bool =
+proc isSetup*(output: bool = on; keyDir, errmsg: string): bool =
   ## Checks if Nova is setup properly
 
   if fileExists(keyDir):
