@@ -37,20 +37,16 @@ You can just download the installer from the [most recent version](https://githu
 However you can also install like so:
 
 1. Download your OS's execuable from the [most recent version](https://github.com/nonimportant/nova/releases/latest) (If your browser or antivirus raises a warning, ignore it and let it bypass. If you don't, there might be problems with step 4 and 5).
-2. Rename the file name to `nova`.
-3. Create a directory in your root or home directory, then move the file into that directory (the location doesn't actually matter just don't leave it in the Downloads folder. I suggest this directory only have the file in it and nothing else because of the next step).
-4. Add the directory to your `Path` environment variable, or else you'll have to go to and find the directory and open a terminal in that directory just to use Nova.
-5. Run `nova setup` in your terminal/shell, and you're good to go (see [`setup`](https://github.com/nonimportant/nova/blob/main/README.md#setup)'s docs if there are any problems).
+2. Create a directory in your root or home directory, then move the file into that directory (the location doesn't actually matter just don't leave it in the Downloads folder. I suggest this directory only have the file in it and nothing else because of the next step).
+3. Add the directory to your `Path` environment variable, or else you'll have to go to and find the directory and open a terminal in that directory just to use Nova.
+4. Run `nova setup` in your terminal/shell, and you're good to go (see [`setup`](https://github.com/nonimportant/nova/blob/main/README.md#setup)'s docs if there are any problems).
 
 ## How to get Govee API key
-See https://twitter.com/goveeofficial/status/1383962664217444353?lang=en
-
-However, essentially:
 1. Open the Govee Home mobile app.
-2. Go to the "My Profile" tab, press "About us", press "Apply for API key"
-3. Fill out your name and your reason (For the reason you can just write "I would like to control my LEDs with a CLI" and it should be fine) and submit.
+2. Go to the "My Profile" tab, go to settings (the gear in the top right), press "Apply for API key"
+3. Fill out your name and your reason (for the reason you can just write "I would like to control my LEDs with a CLI" and it should be fine) and submit.
 
-You should recive an email with your API key soon or at most a few days
+You should recive an email with your API key soo
 
 ## Deletion
 1. Delete Nova from whatever directory you put it in (or delete the directory itself).
