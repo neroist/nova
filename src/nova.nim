@@ -481,7 +481,7 @@ proc state(device = 0) =
   echo "  Online: ", capitalizeAscii($properties[0]["online"].getBool()), " (may be incorrect)"
   echo "  Power State: ", properties[1]["powerState"].getStr().capitalizeAscii()
   echo "  Brightness: ", properties[2]["brightness"].getInt()
-  echo fmt"  Color: {ansi}{color}{esc} or {ansi}rgb({r}, {g}, {b}){esc}"
+  echo "  Color: ", fmt"{ansi}{color}{esc} or {ansi}rgb({r}, {g}, {b}){esc}"
   echo "  Color Temperature: ", kelvinAnsi, colorTem, esc, " (if not 0, color will be #000000)"
 
 proc rgb_cmd(rgb: seq[int]; device = 0; output = on): tuple[r, g, b: int] =
