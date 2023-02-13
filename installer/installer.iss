@@ -51,6 +51,7 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Source: "/../bin/nova.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\msys64\mingw64\bin\libwinpthread-1.dll"; DestDir: "{app}"
 Source: "C:\msys64\mingw64\bin\libcrypto-1_1-x64.dll"; DestDir: "{app}"
+Source: "C:\msys64\mingw64\bin\libssl-1_1-x64.dll"; DestDir: "{app}"
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
