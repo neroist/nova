@@ -42,7 +42,9 @@ Only Wi-Fi devices are supported.
 In addition, please refrain from calling commands too quickly or freqently.
 
 ## Installation
-You can just download the installer from the [most recent version](https://github.com/nonimportant/nova/releases/latest).
+You can just download the installer from the [most recent version](https://github.com/nonimportant/nova/releases/latest), or from `winget` by running:
+```winget install Jasmine.Nova```.
+
 However you can also install like so:
 
 1. Download your OS's execuable from the [most recent version](https://github.com/nonimportant/nova/releases/latest) (If your browser or antivirus raises a warning, ignore it and let it bypass. If you don't, there might be problems with step 4 and 5).
