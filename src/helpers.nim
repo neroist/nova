@@ -32,7 +32,6 @@ using
   device: int
   output: bool
 
-
 template success*(args: varargs[untyped]) = styledEcho fgGreen, args, resetStyle
 template error*(args: varargs[untyped]) = styledEcho fgRed, args, resetStyle
 
