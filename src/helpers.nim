@@ -66,7 +66,7 @@ func kelvinToRgb*(temp: int): tuple[r, g, b: range[0..255]] =
     result.b = int (138.5177312231 * ln(temp - 10) - 305.0447927307).clamp(0.0, 255.0)
 
 proc checkDevices*(device; numDevices: int; output: bool = on): bool =
-  if device notin 0 ..< numDevices:
+  if device notin 0..<numDevices:
     if output:
       error fmt"Invalid device '{device}'. You have {num_devices} device(s)."
 
