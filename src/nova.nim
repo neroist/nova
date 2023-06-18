@@ -402,7 +402,7 @@ proc colorTemp(device = 0; output = on; temperature: int = -1): int =
   }
 
   let 
-    re = put(ControlURI, @{"Govee-API-Key": apiKey, "Content-Type": "application/json"}, body)
+    re = put(ControlURI, @{"Govee-API-Key": apiKey, "Content-Type": "application/json"}, $body)
 
     color = kelvinToRgb(temperature)
     ccolor = colorToAnsi color
