@@ -8,6 +8,13 @@ srcDir        = "src"
 bin           = @["nova"]
 
 
+# Tasks
+
+task installer, "Build Windows installer for Nova":
+  selfExec"c src/nova.nim"
+  exec"iscc installer/installer.iss"
+
+
 # Dependencies
 
 requires "nim >= 1.6.8"
