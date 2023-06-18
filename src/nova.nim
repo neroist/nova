@@ -57,7 +57,7 @@ const
 
   Version = "v1.6.2" ## Nova version
 
-  Description = "Nova is a CLI for controlling Govee light strips, inspired by Bandev's Lux." ## Nova description
+  Description = "Nova is a CLI for controlling Govee light strips, inspired by Jack Devey's Lux." ## Nova description
 
   DevicesURI = "https://developer-api.govee.com/v1/devices" ## The base URI used to get device information.
 
