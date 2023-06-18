@@ -603,9 +603,9 @@ proc version =
 proc about =
   ## Nova about
 
-  echo "Nova ", Version
+  echo "Nova ", Version, '\n'
   echo Description
-  echo "Made by ", Author
+  echo "Made by ", Author, '.'
 
 proc description: string =
   ## Prints Nova's description
