@@ -635,7 +635,7 @@ proc docs =
 
 
 when isMainModule:
-  # String consts are cast into strings becuase if I dont it throws an error
+  clCfg.version = "Nova " & Version
 
   const 
     Commands {.used.} = (
