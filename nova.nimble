@@ -3,7 +3,7 @@
 version       = "1.6.1"
 author        = "Jasmine"
 description   = "Nova is a CLI for controlling Govee light strips, inspired by Bandev's Lux."
-license       = "GPL-3.0-only"
+license       = "MIT"
 srcDir        = "src"
 bin           = @["nova"]
 
