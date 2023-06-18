@@ -12,5 +12,6 @@ jobs:
         with:
           identifier: Jasmine.Nova
           installers-regex: 'Nova-Installer.exe$'
-          max-versions-to-keep: 5
+          version: ${{ github.event.release.tag_name }}
+          max-versions-to-keep: 3
           token: ${{ secrets.WINGET_TOKEN }}
