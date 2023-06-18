@@ -124,6 +124,10 @@ proc sendCompletionMsg*(code: int; message: JsonNode; codeMsg: HttpCode) =
   echo "Code: ", codeMsg
 
 proc editFileVisibility*(file: string; hidden: bool) =
+  ## Edit file visibility of the file `file`. Only edits for Windows and
+  ## MacOS, as you can hide a file in linux by simply adding a period before
+  ## the file name (and show a file by removing the period).
+
   var
     winoption = "+h"
     macoption = "hidden"
