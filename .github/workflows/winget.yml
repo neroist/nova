@@ -2,11 +2,6 @@ name: Publish to WinGet
 on:
   release:
     types: [released]
-  workflow_dispatch:
-    inputs:
-      version:
-        required: true
-        type: string
 
 jobs:
   publish:
@@ -16,6 +11,5 @@ jobs:
         with:
           identifier: Jasmine.Nova
           installers-regex: '\.exe$'
-          release-tag: ${{ inputs.version }}
           max-versions-to-keep: 3
           token: ${{ secrets.WINGET_TOKEN }}
