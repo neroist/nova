@@ -49,6 +49,9 @@ import ./helpers
 # becuase some commands need to generate random values
 randomize()
 
+# enable true color, needed so commands look prettyyy
+enableTrueColors()
+
 # globals
 var
   numDevices: int
