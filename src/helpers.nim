@@ -77,7 +77,8 @@ proc checkDevices*(device; numDevices: int; output: bool = on): bool =
 proc isSetup*(output: bool = on; keyDir, errmsg: string): bool =
   ## Checks if Nova is setup properly
 
-  if fileExists(keyDir):
+  # nested so we don't read froma file that doesnt exist
+  if fileExists(keyDir): 
     if readFile(keyDir) != "":
       return true
   else:
