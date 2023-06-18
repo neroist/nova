@@ -423,7 +423,7 @@ proc state(device = 0) =
 
   var
     colorJson: JsonNode
-    colorTem: int = 0 
+    colorTem = 0 
 
   let
     resp = parseJson fetch(DevicesURI, @{"Govee-API-Key": apiKey})
