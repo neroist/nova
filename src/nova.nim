@@ -378,11 +378,12 @@ proc colorTemp(device = 0; output = on; temperature: int = -1): int =
   let
     resp = parseJson fetch(DevicesURI, @{"Govee-API-Key": apiKey})
     jsonColorTemRange = resp["data"]["devices"][device]["properties"]["colorTem"]["range"]
-    colorTemRange = [jsonColorTemRange["min"].getInt(), jsonColorTemRange["max"].getInt()]
+    colorTemRange = jsonColorTemRange["min"].getInt() .. jsonColorTemRange["max"].getInt()
 
-  if temperature notin colorTemRange[0]..colorTemRange[1]:
+  if temperature notin colorTemRange:
     if output:
-      error fmt"Color temperature {temperature}K out of supported range: {colorTemRange[0]}K-{colorTemRange[1]}K"
+      # .a is slice lower bound, .b is slice upper bound
+      error fmt"Color temperature {temperature}K out of supported range: {colorTemRange.a}K-{colorTemRange.b}K"
 
     return
 
