@@ -280,6 +280,7 @@ proc color(device = 0; color: string = ""; output = on): string =
 
   if output:
     echo fmt"Set device {device}'s color to ", colorToAnsi(rgb(r, g, b)), rgb(r, g, b), esc, '\n'
+    
     sendCompletionMsg re.code, parseJson(re.body)["message"], HttpCode(re.code)
 
   return color
@@ -452,7 +453,7 @@ proc state(device = 0) =
     b = colorJson["b"].getInt()
 
     color = fmt"#{r.toHex()[^2..^1]}{g.toHex()[^2..^1]}{b.toHex()[^2..^1]}"
-    ansi =  colorToAnsi rgb(r, g, b)
+    ansi = colorToAnsi rgb(r, g, b)
     krgb = kelvinToRgb(colorTem)
     kelvinAnsi = colorToAnsi(krgb)
 
@@ -476,6 +477,7 @@ proc rgbCmd(rgb: seq[int]; device = 0; output = on): tuple[r, g, b: int] =
   # named rgb_cli because of name collision with the `colors` module
 
   if not isSetup(output) or not checkDevices(device, output): return
+  
   let apiKey = readFile(keyDir)
 
   var rgb = rgb
