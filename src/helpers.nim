@@ -135,11 +135,8 @@ proc editFileVisibility*(file: string; hidden: bool) =
 
   when defined windows:
     discard execShellCmd(fmt"attrib {winoption} {file}") # add "hidden" attribute to file
-  elif defined macos:
+  elif defined macos or defined macosx:
     discard execShellCmd(fmt"chflags {macoption} {file}") # set "hidden" flag on file
-  elif defined macosx:
-    discard execShellCmd(fmt"chflags {macoption} {file}") # same as above
-
 
 when isMainModule:
   import std/random
