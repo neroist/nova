@@ -483,11 +483,11 @@ proc rgbCmd(rgb: seq[int]; device = 0; output = on): tuple[r, g, b: int] =
   if rgb == @[]:
     rgb = @[-1, -1, -1]
 
-  if len(rgb) > 3:
+  if len(rgb) > 3: # RGB is too long
     error "RGB is too long, it can only be of length 3 or less."
     return
-  elif len(rgb) < 3:
-    for _ in 1..(3-len(rgb)):
+  elif len(rgb) < 3: # RGB is too short
+    for _ in 1..(3-len(rgb)): # fill with 0s to compensate
       rgb.add 0
 
   if rgb == @[-1 ,-1, -1]:
