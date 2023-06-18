@@ -11,7 +11,7 @@ jobs:
       - uses: vedantmgoyal2009/winget-releaser@v2
         with:
           identifier: Jasmine.Nova
-          installers-regex: 'Nova-Installer\.exe'
+          installers-regex: '\.exe$'
           release-tag: 1.6.2
           max-versions-to-keep: 3
           token: ${{ secrets.WINGET_TOKEN }}
