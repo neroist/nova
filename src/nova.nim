@@ -653,6 +653,8 @@ when isMainModule:
       docs
     ) ## Full list of all commands. Not used but does help during development
 
+  # String consts are cast into strings becuase if I dont it throws an error
+  # or prints out the name of the const
   dispatchMulti(
     [setup],
     [
