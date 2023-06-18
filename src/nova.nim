@@ -575,7 +575,7 @@ proc devices =
       ## seq of all supported commands of the device
 
     echo "\e[1m", "DEVICE ", $dev, ansiResetCode
-    echo "  Address: ", i["device"].getStr()
+    echo "  Mac Address: ", i["device"].getStr()
     echo "  Model: ", i["model"].getStr()
     echo "  Device Name: ", i["deviceName"].getStr()
     echo "  Controllable: ", capitalizeAscii($(i["controllable"].getBool()))
