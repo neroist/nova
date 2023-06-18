@@ -65,14 +65,6 @@ const
 
   Author = "Jasmine" ## The creator of Nova (me!)
 
-  #[SupportedProperties = [
-      "color",
-      "rgb",
-      "temperature",
-      "temp",
-      "color-temp"
-    ]]#
-
 let
   esc = if isTrueColorSupported(): ansiResetCode
         else: ""
@@ -84,7 +76,6 @@ let
 using
   device: int 
   output: bool
-
 
 # set num_devices
 if isSetup(output=false):
