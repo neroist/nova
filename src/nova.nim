@@ -195,7 +195,7 @@ proc color(device = 0; color: string = ""; output = on): string =
   let apiKey = readFile(keyDir)
 
   var
-    color = color.replace(" ").toLowerAscii()
+    color = color.replace(" ").normalize()
     colorJson: JsonNode
     r: int
     g: int
