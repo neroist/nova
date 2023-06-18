@@ -12,6 +12,6 @@ jobs:
         with:
           identifier: Jasmine.Nova
           installers-regex: 'Nova-Installer.exe$'
-          release-tag: ${{ inputs.version }}
+          release-tag: 1.6.2
           max-versions-to-keep: 3
           token: ${{ secrets.WINGET_TOKEN }}
