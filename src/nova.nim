@@ -49,9 +49,6 @@ import ./helpers
 # becuase some commands need to generate random values
 randomize()
 
-# enable true color 
-# enableTrueColors()
-
 # globals
 var
   numDevices: int
@@ -177,18 +174,16 @@ proc turn(device = 0; state: string = ""; output = on): string =
     deviceName = info[0]
     model = info[1]
 
-  let body = fmt"""
-  {{
-    "device": "{deviceName}",
-    "model": "{model}",
-    "cmd": {{
+  let body = %* {
+    "device": deviceName,
+    "model": model,
+    "cmd": {
       "name": "turn",
-      "value": "{state}"
-    }}
-  }}
-  """
+      "value": state
+    }
+  }
 
-  let re = put(ControlURI, @{"Govee-API-Key": apiKey, "Content-Type": "application/json"}, body)
+  let re = put(ControlURI, @{"Govee-API-Key": apiKey, "Content-Type": "application/json"}, $body)
 
   if output:
     sendCompletionMsg re.code, parseJson(re.body)["message"], HttpCode(re.code)
@@ -231,7 +226,7 @@ proc color(device = 0; color: string = ""; output = on): string =
     try:
       colorJson = response["data"]["properties"][3]["color"]
     except KeyError:
-      colorJson = parseJson("""{"r": 0, "g": 0, "b": 0}""")
+      colorJson = %* {"r": 0, "g": 0, "b": 0}
 
     let
       color = $rgb(
@@ -276,23 +271,20 @@ proc color(device = 0; color: string = ""; output = on): string =
     g = rgb[1]
     b = rgb[2]
 
-
-  let body = fmt"""
-  {{
-    "device": "{deviceName}",
-    "model": "{model}",
-    "cmd": {{
+  let body = %* {
+    "device": deviceName,
+    "model": model,
+    "cmd": {
       "name": "color",
-      "value": {{
-        "r": {r},
-        "g": {g},
-        "b": {b}
-      }}
-    }}
-  }}
-  """
+      "value": {
+        "r": r,
+        "g": g,
+        "b": b
+      }
+    }
+  }
 
-  let re = put(ControlURI, @{"Govee-API-Key": apiKey, "Content-Type": "application/json"}, body)
+  let re = put(ControlURI, @{"Govee-API-Key": apiKey, "Content-Type": "application/json"}, $body)
 
   if output:
     echo fmt"Set device {device}'s color to ", colorToAnsi(rgb(r, g, b)), rgb(r, g, b), esc, '\n'
@@ -337,19 +329,17 @@ proc brightness(device = 0; brightness = -1; output = on): int =
     info = getDeviceInfo(resp, device)
     deviceName = info[0]
     model = info[1]
-
-  let body = fmt"""
-  {{
-    "device": "{deviceName}",
-    "model": "{model}",
-    "cmd": {{
+ 
+  let body = %* {
+    "device": deviceName,
+    "model": model,
+    "cmd": {
       "name": "brightness",
-      "value": {brightness}
-    }}
-  }}
-  """
+      "value": brightness
+    }
+  }
 
-  let re = put(ControlURI, @{"Govee-API-Key": apiKey, "Content-Type": "application/json"}, body)
+  let re = put(ControlURI, @{"Govee-API-Key": apiKey, "Content-Type": "application/json"}, $body)
 
   if output:
     sendCompletionMsg re.code, parseJson(re.body)["message"], HttpCode(re.code)
@@ -409,16 +399,14 @@ proc colorTemp(device = 0; output = on; temperature: int = -1): int =
     deviceName = info[0]
     model = info[1]
 
-  let body = fmt"""
-  {{
-    "device": "{deviceName}",
-    "model": "{model}",
-    "cmd": {{
+  let body = %* {
+    "device": deviceName,
+    "model": model,
+    "cmd": {
       "name": "colorTem",
-      "value": {temperature}
-    }}
-  }}
-  """
+      "value": temperature
+    }
+  }
 
   let 
     re = put(ControlURI, @{"Govee-API-Key": apiKey, "Content-Type": "application/json"}, body)
@@ -463,7 +451,7 @@ proc state(device = 0) =
     colorJson = properties[3]["color"]
   except KeyError:
     colorTem = properties[4]["colorTem"].getInt()
-    colorJson = parseJson("""{"r": 0, "g": 0, "b": 0}""")
+    colorJson = %* {"r": 0, "g": 0, "b": 0}
 
   let
     r = colorJson["r"].getInt()
@@ -528,7 +516,7 @@ proc rgbCmd(rgb: seq[int]; device = 0; output = on): tuple[r, g, b: int] =
     try:
       colorJson = response["data"]["properties"][3]["color"]
     except KeyError:
-      colorJson = json.parseJson("""{"r": 0, "g": 0,"b": 0}""")
+      colorJson = %* {"r": 0, "g": 0, "b": 0}
 
     let 
       r = colorJson["r"].getInt()
@@ -557,22 +545,20 @@ proc rgbCmd(rgb: seq[int]; device = 0; output = on): tuple[r, g, b: int] =
 
     color = colorToAnsi rgb(rgb[0], rgb[1], rgb[2])
 
-  let body = fmt"""
-  {{
-    "device": "{deviceName}",
-    "model": "{model}",
-    "cmd": {{
+  let body = %* {
+    "device": deviceName,
+    "model": model,
+    "cmd": {
       "name": "color",
-      "value": {{
-        "r": {rgb[0]},
-        "g": {rgb[1]},
-        "b": {rgb[2]}
-      }}
-    }}
-  }}
-  """
+      "value": {
+        "r": rgb[0],
+        "g": rgb[1],
+        "b": rgb[2]
+      }
+    }
+  }
 
-  let re = put(ControlURI, @{"Govee-API-Key": apiKey, "Content-Type": "application/json"}, body)
+  let re = put(ControlURI, @{"Govee-API-Key": apiKey, "Content-Type": "application/json"}, $body)
 
   if output:
     echo fmt"Set device {device}'s color to {color}rgb({rgb[0]}, {rgb[1]}, {rgb[2]}){esc}", '\n'
