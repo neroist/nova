@@ -87,10 +87,7 @@ proc isSetup*(output: bool = on; keyDir, errmsg: string): bool =
     return false
 
 proc colorToAnsi*(color: colors.Color; foreground: bool = true): string =
-  
-  let trueColor = isTrueColorSupported()
-
-  if trueColor:
+  if isTrueColorSupported():
     result.add '\e'
 
     let
