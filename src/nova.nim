@@ -570,8 +570,8 @@ proc devices =
     resp = parseJson fetch(DevicesURI, @{"Govee-API-Key": apiKey})
 
   for dev, i in resp["data"]["devices"].getElems():
-    var 
-      scmd = collect(for i in i["supportCmds"].items(): i.str)
+    let 
+      cmds = collect(for i in i["supportCmds"].items(): i.str)
       ## seq of all supported commands of the device
 
     echo "\e[1m", "DEVICE ", $dev, ansiResetCode
@@ -580,39 +580,7 @@ proc devices =
     echo "  Device Name: ", i["deviceName"].getStr()
     echo "  Controllable: ", capitalizeAscii($(i["controllable"].getBool()))
     echo "  Retrievable: ", capitalizeAscii($(i["retrievable"].getBool()))
-    echo "  Supported Commands: ", scmd.join(", "), "\n"
-
-#[
-proc view(device = 0; property: string = "color"; output = on) =
-  ## View a color property of a device (e.g. color, color-temp)
-
-  proc viewColor(c: colors.Color) = 
-    proc draw =
-      frame "main":
-        box 0, 0, 16777215, 16777215 # same max size as a Qt widget
-        fill $c
-
-    startFidget(draw, w=800)
-    discard
-
-  case property.toLowerAscii:
-    of "color", "rgb":
-      viewColor parseColor(color(0, "", false))
-    of "temperature", "temp", "color-temp":
-      let 
-        temp = color_temp(0, output=off)
-        gold = kelvinToRgb(temp)
-
-      if temp == 0:
-        echo "\e[33m", "Color temperature is 0K, viewing color temp 2000K", ansiResetCode
-        sleep 1500
-
-      viewColor rgb(gold.r, gold.b, gold.g)
-    else:
-      if output:
-        error &"The property, \"{property}\" is not supported."
-        echo "Supported properties: ", SupportedProperties.join(", ")
-]#
+    echo "  Supported Commands: ", cmds.join(", "), "\n"
 
 proc picker(device = 0; setProperty: bool = true; output = on) = 
   ## Pick a color through a GUI (your OS's default color picker dialog)
