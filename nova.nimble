@@ -11,7 +11,7 @@ bin           = @["nova"]
 # Dependencies
 
 requires "nim >= 1.6.8"
-requires "tinydialogs"
-requires "cligen"
-requires "termui"
-requires "puppy"
+requires "tinydialogs ~= 1.0.0"
+requires "cligen >= 1.0.0"
+requires "termui >= 0.1.0"
+requires "puppy >= 2.0.0"
