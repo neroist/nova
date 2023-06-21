@@ -51,7 +51,7 @@ const
     "See the full list of devices with `nova devices`." ## "Device" option help text.
 
   OutputHelp = "Whether or not the command will produce output. " &
-    "This also silences errors and will let commands fail silently." ## "Output" option help text.
+    "This also silences errors and will allow the command to fail silently." ## "Output" option help text.
 
   NotSetupErrorMsg = "Nova is not setup properly. Use the command `nova setup` to setup Nova." ## Error message when Nova is not setup properly.
 
