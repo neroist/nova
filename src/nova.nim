@@ -1,5 +1,4 @@
 #[
-
   Nova, a program to control Govee light strips from the command line
   Copyright (C) 2023 neroist
 
@@ -337,8 +336,6 @@ proc colorTemp(device = 0; output = on; temperature: int = -1): int =
   let apiKey = readFile(keyDir) 
 
   if temperature <= -1:
-    var temp: int
-
     let
       resp = parseJson fetch(DevicesURI, @{"Govee-API-Key": apiKey})
       info = getDeviceInfo(resp, device)
@@ -352,10 +349,7 @@ proc colorTemp(device = 0; output = on; temperature: int = -1): int =
         )
       )
 
-    try:
-      temp = response["data"]["properties"][3]["colorTemInKelvin"].getInt()
-    except KeyError:
-      temp = 0
+      temp = response["data"]["properties"][3]["colorTemInKelvin"].getInt(0)
 
     let 
       ccolor = kelvinToRgb(temp)
