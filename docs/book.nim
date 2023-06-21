@@ -7,7 +7,7 @@ var book = initBookWithToc:
     entry("Turn", "commands/turn.md")
     entry("Brightness", "commands/brightness.md")
     entry("Color", "commands/color.md")
-    entry("Color Tem", "commands/color-tem.md")
+    entry("Color Temp", "commands/color-temp.md")
     entry("State", "commands/state.md")
     entry("RGB", "commands/rgb.md")
     entry("Picker", "commands/picker.md")
