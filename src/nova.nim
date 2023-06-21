@@ -608,10 +608,13 @@ proc repo =
 
   openDefaultBrowser("https://github.com/neroist/Nova/")
 
-proc license =
+proc license(browser: bool = false) =
   ## View Nova's license
-
-  openDefaultBrowser("https://github.com/neroist/Nova/blob/main/LICENSE")
+  
+  if browser:
+    openDefaultBrowser("https://github.com/neroist/Nova/blob/main/LICENSE")
+  else:
+    echo fetch("https://raw.githubusercontent.com/neroist/Nova/main/LICENSE")
 
 proc docs =
   ## View Nova's documentation
@@ -721,6 +724,12 @@ when isMainModule:
     [description],
     [source],
     [repo],
-    [license],
+    [
+      license,
+      help = {
+        "browser": "Whether or not to open the license in the default" &
+                   "browser, or to just print the license text to the terminal"
+      }
+    ],
     [docs]
   )
