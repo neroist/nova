@@ -26,7 +26,7 @@ after build:
 # Dependencies
 
 requires "nim >= 1.6.8"
-requires "tinydialogs ~= 1.0.0"
+requires "tinydialogs >= 1.0.0"
 requires "cligen >= 1.0.0"
 requires "termui >= 0.1.0"
 requires "puppy >= 2.0.0"
