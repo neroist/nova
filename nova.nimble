@@ -19,6 +19,9 @@ task docs, "Build Nova documentation":
     selfExec"r -d:danger -d:release book init"
     selfExec"r -d:danger -d:release book build"
 
+after build:
+  when defined(windows):
+    exec"iscc installer/installer.iss"
 
 # Dependencies
 
