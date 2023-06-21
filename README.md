@@ -42,14 +42,18 @@ Only Wi-Fi devices are supported.
 
 ## Important Notes
 
-**Positional arguments are not supported.** For example: `nova color 0 "aliceblue"` will not work and throw an error. You will have to explicitly declare every argument you pass into the command. For example: `nova color -d 0 -c "aliceblue"`. Also, see [`setup`](DOCS.md#setup).
+**Positional arguments are not supported.** For example: `nova color 0 "aliceblue"` will not work and throw an error. You will have to explicitly declare every argument you pass into the command. For example: `nova color -d 0 -c "aliceblue"`. Also, see [`setup`](https://neroist.github.io/Nova/commands/setup.html).
 
 In addition, please refrain from calling commands too quickly or frequently.
 
 ## Installation
 
 You can just download the installer from the [most recent version](https://github.com/nonimportant/nova/releases/latest), or from `winget` by running:
-```winget install Jasmine.Nova```.
+
+```sh
+winget install Jasmine.Nova
+```
+
 
 However you can also install like so:
 
@@ -74,7 +78,7 @@ You should receive an email with your API key soon.
 
 ## Documentation
 
-See [DOCS.md](DOCS.md)
+See <https://neroist.github.io/Nova>
 
 ## Build from source
 
