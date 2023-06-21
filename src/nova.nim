@@ -616,8 +616,7 @@ proc license =
 proc docs =
   ## View Nova's documentation
 
-  # TODO Eventually move to nimibook docs
-  openDefaultBrowser("https://github.com/neroist/Nova/blob/main/DOCS.md")
+  openDefaultBrowser("https://neroist.github.io/Nova/")
 
 
 when isMainModule:
