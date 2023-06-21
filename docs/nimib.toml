@@ -1,0 +1,8 @@
+[nimib]
+srcDir = "book"
+homeDir = "../out"
+
+[nimibook]
+language = "en-us"
+title = "Nova"
+description = "Nova CLI Documentation"
