@@ -14,6 +14,11 @@ task installer, "Build Windows installer for Nova":
   selfExec"c src/nova.nim"
   exec"iscc installer/installer.iss"
 
+task docs, "Build Nova documentation":
+  withDir "docs":
+    selfExec"r -d:danger -d:release book init"
+    selfExec"r -d:danger -d:release book build"
+
 
 # Dependencies
 
