@@ -54,7 +54,7 @@ const
 
   NotSetupErrorMsg = "Nova is not setup properly. Use the command `nova setup` to setup Nova." ## Error message when Nova is not setup properly.
 
-  Version = "v1.6.2" ## Nova version
+  Version = "v1.7.0" ## Nova version
 
   Description = "Nova is a CLI for controlling Govee light strips, inspired by Jack Devey's Lux." ## Nova description
 
@@ -584,7 +584,7 @@ when isMainModule:
   const 
     Commands {.used.} = (
       setup,
-      turn,
+      turn, # add `all`
       nova.color, # name collision so we qualify the cmd
       colorTemp,
       state,
