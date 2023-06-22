@@ -616,8 +616,8 @@ when isMainModule:
     [
       brightness,
       help = {
-        "brightness": "The brightness you want to set on the device. Supports values 1-100 only. "&
-          "If left blank, the command will print the current brightness of the device.",
+        "brightness": "The brightness you want to set on the device. Supports values 1-100 only. " &
+                      "If left blank, the command will print the current brightness of the device.",
         "device": $DeviceHelp,
         "output": $OutputHelp
       },
@@ -640,7 +640,7 @@ when isMainModule:
       cmdName = "color-temp",
       help = {
         "temperature": "The color temperature you want to set on the device. " &
-          "Has to be in the valid range your Govee device supports.",
+                       "Has to be in the valid range your Govee device supports.",
         "device": $DeviceHelp,
         "output": $OutputHelp
       },
@@ -661,8 +661,8 @@ when isMainModule:
       help = {
         "device": $DeviceHelp,
         "rgb": "The color you want to set on the device in an RGB format. " &
-          "Has to be 3 numbers seperated by a space. " &
-          "If left blank, the command will print the current color in an RGB function.",
+               "Has to be 3 numbers seperated by a space. " &
+               "If left blank, the command will print the current color in an RGB function.",
         "output": $OutputHelp
       },
       noAutoEcho = true,
@@ -685,7 +685,7 @@ when isMainModule:
     [
       license,
       help = {
-        "browser": "Whether or not to open the license in the default" &
+        "browser": "Whether or not to open the license in the default " &
                    "browser, or to just print the license text to the terminal"
       }
     ],
