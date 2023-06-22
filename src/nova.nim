@@ -605,7 +605,9 @@ when isMainModule:
       turn,
       help = {
         "state": "The state you want to put the device in. Has to be the string \"on\" or \"off.\" " &
-          " If left blank, the command will print the current power state of the device.",
+                 "If left blank, the command will print the current power state of the device.",
+        "toggle": "Whether or not to toggle the power state of the device (if its on turn it off and " &
+                  "vice-versa). This flag takes precedence over the `state` option.",
         "device": $DeviceHelp,
         "output": $OutputHelp
       },
