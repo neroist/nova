@@ -98,6 +98,7 @@ proc setup =
 
   let apiKey = termuiAsk "Enter your Govee API key:"
 
+  # maybe just remove this part and to just print the success msg? 
   var
     response = get(DevicesURI, @{"Govee-API-Key": apiKey})
     code = response.code
@@ -116,21 +117,21 @@ proc setup =
     error getErrorMsg(code)
     return
 
-proc turn(device = 0; state: string = ""; output = on): string =
+proc turn(device = 0; state: string = ""; toggle: bool = false, output = on): string =
   ## Turn device on or off
 
   if not isSetup(output) or (not checkDevices(device, output = output)): return
 
   let apiKey = readFile(keyDir)
 
-  if state == "":
-    let
-      resp = parseJson fetch(DevicesURI, @{"Govee-API-Key": apiKey})
-      info = getDeviceInfo(resp, device)
-      deviceName = info[0]
-      model = info[1]
+  let
+    resp = parseJson fetch(DevicesURI, @{"Govee-API-Key": apiKey})
+    (deviceName, model) = getDeviceInfo(resp, device)
 
-      response = parseJson(
+  var state = state
+
+  if state == "" and not toggle:
+    let response = parseJson(
         fetch(
           fmt"https://developer-api.govee.com/v1/devices/state?device={encodeUrl(deviceName, false)}&model={model}",
           @{"Govee-API-Key": apiKey}
@@ -142,18 +143,19 @@ proc turn(device = 0; state: string = ""; output = on): string =
 
     return response["data"]["properties"][1]["powerState"].getStr()
 
+  if toggle:
+    let response = parseJson(
+        fetch(
+          fmt"https://developer-api.govee.com/v1/devices/state?device={encodeUrl(deviceName, false)}&model={model}",
+          @{"Govee-API-Key": apiKey}
+        )
+      )
 
-  let state = state.toLowerAscii()
+    state = response["data"]["properties"][1]["powerState"].getStr().toggle()
 
-  if state != "off" and state != "on":
+  if state notin ["off", "on"]:
     error "Invalid state, state has to be the string \"off\" or \"on\"."
     return
-
-  let
-    resp = parseJson fetch(DevicesURI, @{"Govee-API-Key": apiKey})
-    info = getDeviceInfo(resp, device)
-    deviceName = info[0]
-    model = info[1]
 
   let body = %* {
     "device": deviceName,
@@ -184,20 +186,16 @@ proc color(device = 0; color: string = ""; output = on): string =
   let apiKey = readFile(keyDir)
 
   var
-    color = color.replace(" ").normalize()
-    colorJson: JsonNode
-    r: int
-    g: int
-    b: int
+    color = color.replace(" ").replace("-").normalize()
+    colorJson = %* {"r": 0, "g": 0, "b": 0}
+    r, g, b: int
+
+  let
+    resp = parseJson fetch(DevicesURI, @{"Govee-API-Key": apiKey})
+    (deviceName, model) = getDeviceInfo(resp, device)
 
   if color == "":
-    let
-      resp = parseJson fetch(DevicesURI, @{"Govee-API-Key": apiKey})
-      info = getDeviceInfo(resp, device)
-      deviceName = info[0]
-      model = info[1]
-
-      response = parseJson(
+    let response = parseJson(
         fetch(
           fmt"https://developer-api.govee.com/v1/devices/state?device={encodeUrl(deviceName, false)}&model={model}",
           @{"Govee-API-Key": apiKey}
@@ -206,14 +204,13 @@ proc color(device = 0; color: string = ""; output = on): string =
 
     try:
       colorJson = response["data"]["properties"][3]["color"]
-    except KeyError:
-      colorJson = %* {"r": 0, "g": 0, "b": 0}
+    except CatchableError: discard
 
     let
       color = $rgb(
-        int(colorJson["r"].num), 
-        int(colorJson["g"].num), 
-        int(colorJson["b"].num)
+        colorJson["r"].getInt(), 
+        colorJson["g"].getInt(), 
+        colorJson["b"].getInt()
       )
 
     if output:
@@ -222,7 +219,7 @@ proc color(device = 0; color: string = ""; output = on): string =
     return color
 
   block checks:
-    if color != "random" and color != "rand":
+    if color notin ["random", "rand"]:
       if color.isColor():
         color = $(color).parseColor()
         break checks
@@ -232,17 +229,10 @@ proc color(device = 0; color: string = ""; output = on): string =
 
       if not color.isColor():
         if output:
-          error fmt "{color[1..^1]} is an invalid color."
+          error fmt"{color[1..^1]} is an invalid color."
 
-        return
 
-  let
-    resp = parseJson fetch(DevicesURI, @{"Govee-API-Key": apiKey})
-    info = getDeviceInfo(resp, device)
-    deviceName = info[0]
-    model = info[1]
-
-  if color == "random" or color == "rand":
+  if color in ["random", "rand"]:
     r = rand(255)
     g = rand(255)
     b = rand(255)
@@ -281,14 +271,12 @@ proc brightness(device = 0; brightness = -1; output = on): int =
 
   let apiKey = readFile(keyDir)
 
-  if brightness == -1:  # if brightness is default value
-    let
-      resp = parseJson fetch(DevicesURI, @{"Govee-API-Key": apiKey})
-      info = getDeviceInfo(resp, device)
-      deviceName = info[0]
-      model = info[1]
+  let
+    resp = parseJson fetch(DevicesURI, @{"Govee-API-Key": apiKey})
+    (deviceName, model) = getDeviceInfo(resp, device)
 
-      response = parseJson(
+  if brightness == -1:  # if brightness is default value
+    let response = parseJson(
         fetch(
           fmt"https://developer-api.govee.com/v1/devices/state?device={encodeUrl(deviceName, false)}&model={model}",
           @{"Govee-API-Key": apiKey}
@@ -306,12 +294,6 @@ proc brightness(device = 0; brightness = -1; output = on): int =
 
     return
 
-  let
-    resp = parseJson fetch(DevicesURI, @{"Govee-API-Key": apiKey})
-    info = getDeviceInfo(resp, device)
-    deviceName = info[0]
-    model = info[1]
- 
   let body = %* {
     "device": deviceName,
     "model": model,
@@ -335,13 +317,12 @@ proc colorTemp(device = 0; output = on; temperature: int = -1): int =
 
   let apiKey = readFile(keyDir) 
 
-  if temperature <= -1:
-    let
-      resp = parseJson fetch(DevicesURI, @{"Govee-API-Key": apiKey})
-      info = getDeviceInfo(resp, device)
-      deviceName = info[0]
-      model = info[1]
+  let
+    resp = parseJson fetch(DevicesURI, @{"Govee-API-Key": apiKey})
+    (deviceName, model) = getDeviceInfo(resp, device)
 
+  if temperature == -1:
+    let 
       response = parseJson(
         fetch(
           &"https://developer-api.govee.com/v1/devices/state?device={encodeUrl(deviceName, false)}&model={model}",
@@ -351,17 +332,14 @@ proc colorTemp(device = 0; output = on; temperature: int = -1): int =
 
       temp = response["data"]["properties"][3]["colorTemInKelvin"].getInt(0)
 
-    let 
-      ccolor = kelvinToRgb(temp)
-      ansi = colorToAnsi(ccolor)
+      ansi = colorToAnsi(kelvinToRgb(temp))
 
     if output:
-      echo fmt"Device {device}'s color temperature is {ansi}", temp, 'K', esc
+      echo fmt"Device {device}'s color temperature is ", ansi, temp, 'K', esc
 
     return temp
 
   let
-    resp = parseJson fetch(DevicesURI, @{"Govee-API-Key": apiKey})
     jsonColorTemRange = resp["data"]["devices"][device]["properties"]["colorTem"]["range"]
     colorTemRange = jsonColorTemRange["min"].getInt() .. jsonColorTemRange["max"].getInt()
 
@@ -371,11 +349,6 @@ proc colorTemp(device = 0; output = on; temperature: int = -1): int =
       error fmt"Color temperature {temperature}K out of supported range: {colorTemRange.a}K-{colorTemRange.b}K"
 
     return
-
-  let
-    info = getDeviceInfo(resp, device)
-    deviceName = info[0]
-    model = info[1]
 
   let body = %* {
     "device": deviceName,
@@ -389,8 +362,7 @@ proc colorTemp(device = 0; output = on; temperature: int = -1): int =
   let 
     re = put(ControlURI, @{"Govee-API-Key": apiKey, "Content-Type": "application/json"}, $body)
 
-    color = kelvinToRgb(temperature)
-    ccolor = colorToAnsi color
+    ccolor = colorToAnsi(kelvinToRgb(temperature))
 
   if output:
     echo fmt"Set device {device}'s color temperature to {ccolor}{temperature}K{esc}", '\n'
@@ -407,14 +379,12 @@ proc state(device = 0) =
   let apiKey = readFile(keyDir)
 
   var
-    colorJson: JsonNode
+    colorJson = %* {"r": 0, "g": 0, "b": 0}
     colorTem = 0 
 
   let
     resp = parseJson fetch(DevicesURI, @{"Govee-API-Key": apiKey})
-    info = getDeviceInfo(resp, device)
-    deviceName = info[0]
-    model = info[1]
+    (deviceName, model) = getDeviceInfo(resp, device)
 
     response = parseJson(
       fetch(
@@ -429,7 +399,6 @@ proc state(device = 0) =
     colorJson = properties[3]["color"]
   except KeyError:
     colorTem = properties[4]["colorTem"].getInt()
-    colorJson = %* {"r": 0, "g": 0, "b": 0}
 
   let
     r = colorJson["r"].getInt()
@@ -450,7 +419,7 @@ proc state(device = 0) =
   echo "  Color: ", fmt"{ansi}{color}{esc} or {ansi}rgb({r}, {g}, {b}){esc}"
   echo "  Color Temperature: ", kelvinAnsi, colorTem, esc, " (if not 0, color will be #000000)"
 
-proc rgbCmd(rgb: seq[int]; device = 0; output = on): tuple[r, g, b: int] =
+proc rgbCmd(rgb: seq[int] = @[-1, -1, -1]; device = 0; output = on): tuple[r, g, b: int] =
   ## Same as command `color` but uses rgb instead of HTML codes, although it doesn't support random colors.
   ## 
   ## NOTE: when called with no parameters, the device's current color will be rgb(0, 0, 0) if:
@@ -466,24 +435,16 @@ proc rgbCmd(rgb: seq[int]; device = 0; output = on): tuple[r, g, b: int] =
 
   var rgb = rgb
 
-  if rgb == @[]:
-    rgb = @[-1, -1, -1]
-
-  if len(rgb) > 3: # RGB is too long
-    error "RGB is too long, it can only be of length 3 or less."
+  if len(rgb) != 3:
+    error "RGB has to be 3 integers, no more, no less."
     return
-  elif len(rgb) < 3: # RGB is too short
-    for _ in 1..(3-len(rgb)): # fill with 0s to compensate
-      rgb.add 0
+
+  let
+    resp = parseJson fetch(DevicesURI, @{"Govee-API-Key": apiKey})
+    (deviceName, model) = getDeviceInfo(resp, device)
 
   if rgb == @[-1 ,-1, -1]:
-    var colorJson: JsonNode
-
-    let
-      resp = parseJson fetch(DevicesURI, @{"Govee-API-Key": apiKey})
-      info = getDeviceInfo(resp, device)
-      deviceName = info[0]
-      model = info[1]
+    var colorJson = %* {"r": 0, "g": 0, "b": 0}
 
     let response = parseJson(
       fetch(
@@ -495,7 +456,7 @@ proc rgbCmd(rgb: seq[int]; device = 0; output = on): tuple[r, g, b: int] =
     try:
       colorJson = response["data"]["properties"][3]["color"]
     except KeyError:
-      colorJson = %* {"r": 0, "g": 0, "b": 0}
+      discard
 
     let 
       r = colorJson["r"].getInt()
@@ -512,16 +473,11 @@ proc rgbCmd(rgb: seq[int]; device = 0; output = on): tuple[r, g, b: int] =
   for i in rgb:
     if i notin 1..255:
       if output:
-        error "Invalid value(s)"
+        error "Invalid value: ", $i, " not in range 1-255"
 
       return
 
   let
-    resp = parseJson fetch(DevicesURI, @{"Govee-API-Key": apiKey})
-    info = getDeviceInfo(resp, device)
-    deviceName = info[0]
-    model = info[1]
-
     color = colorToAnsi rgb(rgb[0], rgb[1], rgb[2])
 
   let body = %* {
@@ -557,7 +513,7 @@ proc devices =
 
   for dev, i in resp["data"]["devices"].getElems():
     let 
-      cmds = collect(for i in i["supportCmds"].items(): i.str)
+      cmds = collect(for i in i["supportCmds"]: i.getStr())
       ## seq of all supported commands of the device
 
     echo "\e[1m", "DEVICE ", $dev, ansiResetCode

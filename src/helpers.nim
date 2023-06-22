@@ -23,6 +23,11 @@ using
 template success*(args: varargs[untyped]) = styledEcho fgGreen, args, resetStyle
 template error*(args: varargs[untyped]) = styledEcho fgRed, args, resetStyle
 
+func toggle*(str: string): string = 
+  if str == "on": "off"
+  elif str == "off": "on"
+  else: str
+
 func getErrorMsg*(code: int): string =
   case code:
     of 401, 403:
