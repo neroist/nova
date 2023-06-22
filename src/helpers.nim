@@ -97,12 +97,12 @@ proc colorToAnsi*(color: colors.Color; foreground: bool = true): string =
 proc colorToAnsi*(color: tuple[r, g, b: range[0..255]]; foreground: bool = true): string = 
   colorToAnsi(rgb(color.r, color.g, color.b), foreground)
 
-func getDeviceInfo*(jsonData: JsonNode; device): tuple[deviceName, model: string] =
+func getDeviceInfo*(jsonData: JsonNode; device): tuple[deviceAddr, model: string] =
   let
-    deviceName = jsonData["data"]["devices"][device]["device"].getStr()
+    deviceAddr = jsonData["data"]["devices"][device]["device"].getStr()
     model = jsonData["data"]["devices"][device]["model"].getStr()
 
-  result = (deviceName: deviceName, model: model)
+  result = (deviceAddr: deviceAddr, model: model)
 
 proc sendCompletionMsg*(code: int; message: JsonNode; codeMsg: HttpCode) =
   if code == 200:
