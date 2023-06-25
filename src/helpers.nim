@@ -23,6 +23,14 @@ using
 template success*(args: varargs[untyped]) = styledEcho fgGreen, args, resetStyle
 template error*(args: varargs[untyped]) = styledEcho fgRed, args, resetStyle
 
+template getDeviceState*(deviceAddr, model, apiKey: string): JsonNode = 
+  parseJson(
+    fetch(
+      &"https://developer-api.govee.com/v1/devices/state?device={encodeUrl(deviceAddr, false)}&model={model}",
+      @{"Govee-API-Key": apiKey}
+    )
+  )
+
 func toggle*(str: string): string = 
   if str == "on": "off"
   elif str == "off": "on"
@@ -66,12 +74,12 @@ proc checkDevices*(device; numDevices: int; output: bool = on): bool =
   
   return true
 
-proc isSetup*(output: bool = on; keyDir, errmsg: string): bool =
+proc isSetup*(output: bool = on; keyDir, devicesDir, errmsg: string): bool =
   ## Checks if Nova is setup properly
 
   # nested so we don't read from a file that doesnt exist
-  if fileExists(keyDir): 
-    if readFile(keyDir) != "":
+  if fileExists(keyDir) and fileExists(devicesDir): 
+    if "" notin [readFile(keyDir), readFile(devicesDir)]:
       return true
   else:
     if output:
@@ -99,8 +107,8 @@ proc colorToAnsi*(color: tuple[r, g, b: range[0..255]]; foreground: bool = true)
 
 func getDeviceInfo*(jsonData: JsonNode; device): tuple[deviceAddr, model: string] =
   let
-    deviceAddr = jsonData["data"]["devices"][device]["device"].getStr()
-    model = jsonData["data"]["devices"][device]["model"].getStr()
+    deviceAddr = jsonData[device]["device"].getStr()
+    model = jsonData[device]["model"].getStr()
 
   result = (deviceAddr: deviceAddr, model: model)
 

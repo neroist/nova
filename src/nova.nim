@@ -136,12 +136,7 @@ proc turn(device = 0; state: string = ""; toggle: bool = false, output = on): st
   var state = state
 
   if state == "" and not toggle:
-    let response = parseJson(
-        fetch(
-          fmt"https://developer-api.govee.com/v1/devices/state?device={encodeUrl(deviceAddr, false)}&model={model}",
-          @{"Govee-API-Key": apiKey}
-        )
-      )
+    let response = getDeviceState(deviceAddr, model, apiKey)
 
     if output:
       echo fmt"Device {device} Power state: ", response["data"]["properties"][1]["powerState"].getStr()
@@ -149,12 +144,7 @@ proc turn(device = 0; state: string = ""; toggle: bool = false, output = on): st
     return response["data"]["properties"][1]["powerState"].getStr()
 
   if toggle:
-    let response = parseJson(
-        fetch(
-          fmt"https://developer-api.govee.com/v1/devices/state?device={encodeUrl(deviceAddr, false)}&model={model}",
-          @{"Govee-API-Key": apiKey}
-        )
-      )
+    let response = getDeviceState(deviceAddr, model, apiKey)
 
     state = response["data"]["properties"][1]["powerState"].getStr().toggle()
 
@@ -202,12 +192,7 @@ proc color(device = 0; color: string = ""; output = on): string =
     r, g, b: int
 
   if color == "":
-    let response = parseJson(
-        fetch(
-          fmt"https://developer-api.govee.com/v1/devices/state?device={encodeUrl(deviceAddr, false)}&model={model}",
-          @{"Govee-API-Key": apiKey}
-        )
-      )
+    let response = getDeviceState(deviceAddr, model, apiKey)
 
     try:
       colorJson = response["data"]["properties"][3]["color"]
@@ -282,12 +267,7 @@ proc brightness(device = 0; brightness = -1; output = on): int =
     (deviceAddr, model) = getDeviceInfo(devices, device)
 
   if brightness == -1:  # if brightness is default value
-    let response = parseJson(
-        fetch(
-          fmt"https://developer-api.govee.com/v1/devices/state?device={encodeUrl(deviceAddr, false)}&model={model}",
-          @{"Govee-API-Key": apiKey}
-        )
-      )
+    let response = getDeviceState(deviceAddr, model, apiKey)
 
     if output:
       echo fmt"Device {device} brightness: ", response["data"]["properties"][2]["brightness"].getInt(), '%'
@@ -328,12 +308,7 @@ proc colorTemp(device = 0; output = on; temperature: int = -1): int =
 
   if temperature == -1:
     let 
-      response = parseJson(
-        fetch(
-          &"https://developer-api.govee.com/v1/devices/state?device={encodeUrl(deviceAddr, false)}&model={model}",
-          @{"Govee-API-Key": apiKey}
-        )
-      )
+      response = getDeviceState(deviceAddr, model, apiKey)
 
       temp = response["data"]["properties"][3]["colorTemInKelvin"].getInt(0)
 
@@ -390,12 +365,7 @@ proc state(device = 0) =
     devices = parseJson readFile(devicesDir)
     (deviceAddr, model) = getDeviceInfo(devices, device)
 
-    response = parseJson(
-      fetch(
-        &"https://developer-api.govee.com/v1/devices/state?device={encodeUrl(deviceAddr)}&model={model}",
-        @{"Govee-API-Key": apiKey}
-      )
-    )
+    response = getDeviceState(deviceAddr, model, apiKey)
 
     properties = response["data"]["properties"]
 
@@ -449,12 +419,7 @@ proc rgbCmd(rgb: seq[int] = @[-1, -1, -1]; device = 0; output = on): tuple[r, g,
   if rgb == @[-1 ,-1, -1]:
     var colorJson = %* {"r": 0, "g": 0, "b": 0}
 
-    let response = parseJson(
-      fetch(
-        &"https://developer-api.govee.com/v1/devices/state?device={encodeUrl(deviceAddr, false)}&model={model}",
-        @{"Govee-API-Key": apiKey}
-      )
-    )
+    let response = getDeviceState(deviceAddr, model, apiKey)
 
     try:
       colorJson = response["data"]["properties"][3]["color"]
