@@ -22,5 +22,6 @@ var book = initBookWithToc:
     entry("Repo", "commands/repo.md")
     entry("License", "commands/license.md")
     entry("Docs", "commands/docs.md")
+  #entry("How to Get Govee API Key", "how_to_get_govee_api_key.md")
 
 nimibookCli(book)
