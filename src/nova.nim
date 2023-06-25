@@ -41,8 +41,7 @@ randomize()
 enableTrueColors()
 
 # globals
-var
-  numDevices: int
+
   
 const
   DeviceHelp = "The device to perform the action/command on. Defaults to '0'. " &
@@ -64,30 +63,26 @@ const
 
   Author = "Jasmine" ## The creator of Nova (me!)
 
+var
+  numDevices: int
+
 let
   esc = if isTrueColorSupported(): ansiResetCode
         else: ""
 
+  # TODO change these variable names 
   keyDir = getAppDir() / ".KEY"
-  isSetup = (output: bool) => isSetup(output, keyDir, NotSetupErrorMsg) ## shorter method of `isSetup`
+  devicesDir = getAppDir() / ".DEVICES"
+  isSetup = (output: bool) => isSetup(output, keyDir, devicesDir, NotSetupErrorMsg) ## shorter method of `isSetup`
   checkDevices = (device: int, output: bool) => checkDevices(device, numDevices, output)
 
 using
   device: int 
   output: bool
 
-# set num_devices
+# set numDevices
 if isSetup(output=false):
-  let
-    apiKey = readFile(keyDir)
-    data = parseJson(
-      fetch(
-        DevicesURI,
-        @{"Govee-API-Key": apiKey}
-      )
-    )
-
-  numDevices = data["data"]["devices"].getElems().len
+  numDevices = parseJson(readFile(devicesDir)).getElems().len
 
 # ---- commands ----
 
@@ -98,17 +93,27 @@ proc setup =
 
   let apiKey = termuiAsk "Enter your Govee API key:"
 
-  # maybe just remove this part and to just print the success msg? 
-  var
+  #// maybe just remove this part and to just print the success msg? 
+  # nvm, lets take this opportunity to cache the list of the devices 
+  let
     response = get(DevicesURI, @{"Govee-API-Key": apiKey})
     code = response.code
 
   if code == 200:
+    # we "un-hide" the the .KEY file incase it exists already because
+    # we cant write to a hidden file, apparently
     if fileExists keyDir:
       editFileVisibility(keyDir, hidden=false)
 
-    writeFile(keyDir, apiKey)
-    editFileVisibility(keyDir, hidden=true)
+    # same for .DEVICES
+    if fileExists devicesDir:
+      editFileVisibility(devicesDir, hidden=false)
+
+    writeFile(keyDir, apiKey) # write api key
+    writeFile(devicesDir, $parseJson(response.body)["data"]["devices"]) # cache devices
+
+    for file in [keyDir, devicesDir]:
+      editFileVisibility(file, hidden=true)
 
     success "\nSetup completed successfully.\nWelcome to Nova."
     return
@@ -186,16 +191,15 @@ proc color(device = 0; color: string = ""; output = on): string =
 
   if not isSetup(output) or not checkDevices(device, output = output): return
 
-  let apiKey = readFile(keyDir)
+  let 
+    apiKey = readFile(keyDir)
+    devices = parseJson readFile(devicesDir)
+    (deviceAddr, model) = getDeviceInfo(devices, device)
 
   var
     color = color.replace(" ").replace("-").normalize()
     colorJson = %* {"r": 0, "g": 0, "b": 0}
     r, g, b: int
-
-  let
-    resp = parseJson fetch(DevicesURI, @{"Govee-API-Key": apiKey})
-    (deviceAddr, model) = getDeviceInfo(resp, device)
 
   if color == "":
     let response = parseJson(
@@ -272,11 +276,10 @@ proc brightness(device = 0; brightness = -1; output = on): int =
 
   if not isSetup(output) or not checkDevices(device, output = output): return
 
-  let apiKey = readFile(keyDir)
-
-  let
-    resp = parseJson fetch(DevicesURI, @{"Govee-API-Key": apiKey})
-    (deviceAddr, model) = getDeviceInfo(resp, device)
+  let 
+    apiKey = readFile(keyDir)
+    devices = parseJson readFile(devicesDir)
+    (deviceAddr, model) = getDeviceInfo(devices, device)
 
   if brightness == -1:  # if brightness is default value
     let response = parseJson(
@@ -318,11 +321,10 @@ proc colorTemp(device = 0; output = on; temperature: int = -1): int =
 
   if not isSetup(output) or not checkDevices(device, output = output): return
 
-  let apiKey = readFile(keyDir) 
-
-  let
-    resp = parseJson fetch(DevicesURI, @{"Govee-API-Key": apiKey})
-    (deviceAddr, model) = getDeviceInfo(resp, device)
+  let 
+    apiKey = readFile(keyDir) 
+    devices = parseJson readFile(devicesDir)
+    (deviceAddr, model) = getDeviceInfo(devices, device)
 
   if temperature == -1:
     let 
@@ -343,7 +345,7 @@ proc colorTemp(device = 0; output = on; temperature: int = -1): int =
     return temp
 
   let
-    jsonColorTemRange = resp["data"]["devices"][device]["properties"]["colorTem"]["range"]
+    jsonColorTemRange = devices[device]["properties"]["colorTem"]["range"]
     colorTemRange = jsonColorTemRange["min"].getInt() .. jsonColorTemRange["max"].getInt()
 
   if temperature notin colorTemRange:
@@ -379,15 +381,14 @@ proc state(device = 0) =
 
   if not isSetup(true) or not checkDevices(device, true): return
 
-  let apiKey = readFile(keyDir)
-
   var
     colorJson = %* {"r": 0, "g": 0, "b": 0}
     colorTem = 0 
 
   let
-    resp = parseJson fetch(DevicesURI, @{"Govee-API-Key": apiKey})
-    (deviceAddr, model) = getDeviceInfo(resp, device)
+    apiKey = readFile(keyDir)
+    devices = parseJson readFile(devicesDir)
+    (deviceAddr, model) = getDeviceInfo(devices, device)
 
     response = parseJson(
       fetch(
@@ -433,8 +434,6 @@ proc rgbCmd(rgb: seq[int] = @[-1, -1, -1]; device = 0; output = on): tuple[r, g,
   # named rgb_cli because of name collision with the `colors` module
 
   if not isSetup(output) or not checkDevices(device, output): return
-  
-  let apiKey = readFile(keyDir)
 
   var rgb = rgb
 
@@ -443,8 +442,9 @@ proc rgbCmd(rgb: seq[int] = @[-1, -1, -1]; device = 0; output = on): tuple[r, g,
     return
 
   let
-    resp = parseJson fetch(DevicesURI, @{"Govee-API-Key": apiKey})
-    (deviceAddr, model) = getDeviceInfo(resp, device)
+    apiKey = readFile(keyDir)
+    devices = parseJson readFile(devicesDir)
+    (deviceAddr, model) = getDeviceInfo(devices, device)
 
   if rgb == @[-1 ,-1, -1]:
     var colorJson = %* {"r": 0, "g": 0, "b": 0}
@@ -510,11 +510,9 @@ proc devices =
 
   if not isSetup(true): return
 
-  let
-    apiKey = readFile(keyDir)
-    resp = parseJson fetch(DevicesURI, @{"Govee-API-Key": apiKey})
+  let devices = parseJson readFile(devicesDir) 
 
-  for dev, i in resp["data"]["devices"].getElems():
+  for dev, i in devices.getElems():
     let 
       cmds = collect(for i in i["supportCmds"]: i.getStr())
       ## seq of all supported commands of the device
@@ -530,7 +528,11 @@ proc devices =
 proc picker(device = 0; setProperty: bool = true; output = on) = 
   ## Pick a color through a GUI (your OS's default color picker dialog)
 
-  let pickedColor = colorChooser("Pick a color", [rand(0..255).byte, rand(0..255).byte, rand(0..255).byte])
+  let 
+    pickedColor = colorChooser(
+      "Pick a color", 
+      [rand(0..255).byte, rand(0..255).byte, rand(0..255).byte]
+    )
 
   if output:
     echo "Picked ", colorToAnsi(parseColor(pickedColor.hex)), toUpper pickedColor.hex, esc
@@ -539,6 +541,23 @@ proc picker(device = 0; setProperty: bool = true; output = on) =
     if output: echo ""
 
     discard color(device, pickedColor.hex, output)
+
+proc update(output = on) = 
+  ## Update the cached list of devices. Run whenever a new device is added
+  ## or modified.
+  
+  let
+    apiKey = readFile(keyDir) 
+    response = fetch(DevicesURI, @{"Govee-API-Key": apiKey})
+  
+  editFileVisibility(devicesDir, false)
+
+  writeFile(devicesDir, $parseJson(response)["data"]["devices"])
+
+  editFileVisibility(devicesDir, true)
+
+  if output:
+    success "Successfully updated devices! ✔️" # not all terminal support emojis...
 
 proc version =
   ## Get Nova current version
@@ -677,6 +696,12 @@ when isMainModule:
         "device": $DeviceHelp,
         "output": $OutputHelp,
         "set_property": "Whether or not to set `device`'s color to the color chosen."
+      }
+    ],
+    [
+      nova.update,
+      help = {
+        "output": $OutputHelp
       }
     ],
     [devices],
