@@ -41,8 +41,6 @@ randomize()
 enableTrueColors()
 
 # globals
-
-  
 const
   DeviceHelp = "The device to perform the action/command on. Defaults to '0'. " &
     "'0' refers to the first device on your account, '1' refers to the second, ect. " &
@@ -75,10 +73,6 @@ let
   devicesDir = getAppDir() / ".DEVICES"
   isSetup = (output: bool) => isSetup(output, keyDir, devicesDir, NotSetupErrorMsg) ## shorter method of `isSetup`
   checkDevices = (device: int, output: bool) => checkDevices(device, numDevices, output)
-
-using
-  device: int 
-  output: bool
 
 # set numDevices
 if isSetup(output=false):
@@ -567,22 +561,6 @@ proc docs =
 
 when isMainModule:
   clCfg.version = "Nova " & Version
-
-  const 
-    Commands {.used.} = (
-      setup,
-      turn, # add `all`
-      nova.color, # name collision so we qualify the cmd
-      colorTemp,
-      state,
-      rgbCmd,
-      devices,
-      version,
-      about,
-      repo,
-      license,
-      docs
-    ) ## Full list of all commands. Not used but does help during development
 
   # String consts are cast into strings becuase if I dont it throws an error
   # or prints out the name of the const
