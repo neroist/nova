@@ -1,7 +1,8 @@
 # Nova
 
 Nova is a CLI for controlling Govee light strips. Inspired by Jack Devey's [Lux](https://github.com/jackdevey/Lux).
-Made with Nim.
+
+Made with Nim 👑
 
 Not affiliated with Govee.
 
@@ -54,13 +55,11 @@ You can just download the installer from the [most recent version](https://githu
 winget install Jasmine.Nova
 ```
 
+For linux, download `installer.sh` and run
 
-However you can also install like so:
-
-1. Download your OS's executable from the [most recent version](https://github.com/neroist/nova/releases/latest) (If your browser or antivirus raises a warning, ignore it and let it bypass. If you don't, there might be problems with step 4 and 5).
-2. Create a directory in your root or home directory, then move the file into that directory (the location doesn't actually matter just don't leave it in the Downloads folder. I suggest this directory only have the file in it and nothing else because of the next step).
-3. Add the directory to your `Path` environment variable, or else you'll have to go to and find the directory and open a terminal in that directory just to use Nova.
-4. Run `nova setup` in your terminal/shell, and you're good to go (see [`setup`](https://github.com/neroist/nova/blob/main/README.md#setup)'s docs if there are any problems).
+```sh
+sudo sh installer.sh
+```
 
 ## How to get Govee API key
 
