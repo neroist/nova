@@ -174,7 +174,7 @@ proc turn(device = 0; state: string = ""; toggle: bool = false, output = on): st
   let re = put(ControlURI, @{"Govee-API-Key": apiKey, "Content-Type": "application/json"}, $body)
 
   if output:
-    echo "Set device power state to ", state
+    echo "Set device power state to \'", state, "\'"
     echo ""
 
     sendCompletionMsg re.code, parseJson(re.body)["message"], HttpCode(re.code)
