@@ -22,16 +22,8 @@ import tinydialogs
 import termui
 import cligen
 import puppy
-#import fidget
 
 import ./helpers
-
-
-#* NOTE: rgb and color will be 0 if
-# 1. music mode is on
-# 2. color temperature is not 0
-# 3. a scene is playing on the device
-# 4. a DIY is playing
 
 # initialize the default random number generator
 # becuase some commands need to generate random values
