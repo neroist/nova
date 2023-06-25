@@ -19,7 +19,10 @@ task docs, "Build Nova documentation":
     selfExec"r -d:danger -d:release book init"
     selfExec"r -d:danger -d:release book build"
 
-after build:
+task compil, "Build Nova":
+  selfExec"c src/nova"
+
+after compil:
   when defined(windows):
     exec"iscc installer/installer.iss"
 
