@@ -48,7 +48,7 @@ In addition, please refrain from calling commands too quickly or frequently.
 
 ## Installation
 
-You can just download the installer from the [most recent version](https://github.com/nonimportant/nova/releases/latest), or from `winget` by running:
+You can just download the installer from the [most recent version](https://github.com/neroist/nova/releases/latest), or from `winget` by running:
 
 ```sh
 winget install Jasmine.Nova
@@ -57,10 +57,10 @@ winget install Jasmine.Nova
 
 However you can also install like so:
 
-1. Download your OS's executable from the [most recent version](https://github.com/nonimportant/nova/releases/latest) (If your browser or antivirus raises a warning, ignore it and let it bypass. If you don't, there might be problems with step 4 and 5).
+1. Download your OS's executable from the [most recent version](https://github.com/neroist/nova/releases/latest) (If your browser or antivirus raises a warning, ignore it and let it bypass. If you don't, there might be problems with step 4 and 5).
 2. Create a directory in your root or home directory, then move the file into that directory (the location doesn't actually matter just don't leave it in the Downloads folder. I suggest this directory only have the file in it and nothing else because of the next step).
 3. Add the directory to your `Path` environment variable, or else you'll have to go to and find the directory and open a terminal in that directory just to use Nova.
-4. Run `nova setup` in your terminal/shell, and you're good to go (see [`setup`](https://github.com/nonimportant/nova/blob/main/README.md#setup)'s docs if there are any problems).
+4. Run `nova setup` in your terminal/shell, and you're good to go (see [`setup`](https://github.com/neroist/nova/blob/main/README.md#setup)'s docs if there are any problems).
 
 ## How to get Govee API key
 
@@ -93,7 +93,7 @@ See <https://neroist.github.io/Nova>
 In order to build, cd into the base directory and run:
 
 ```shell
-nimble build
+nimble compil
 ```
 
 The compiled binaries will be available in the `bin/` directory.
