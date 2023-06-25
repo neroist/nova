@@ -130,7 +130,7 @@ proc turn(device = 0; state: string = ""; toggle: bool = false, output = on): st
   let apiKey = readFile(keyDir)
 
   let
-    resp = parseJson fetch(DevicesURI, @{"Govee-API-Key": apiKey})
+    resp = parseJson readFile(devicesDir)
     (deviceAddr, model) = getDeviceInfo(resp, device)
 
   var state = state
