@@ -530,25 +530,25 @@ proc description: string =
 proc source =
   ## View Nova's source code
 
-  openDefaultBrowser("https://github.com/neroist/Nova/blob/main/nova.nim")
+  openDefaultBrowser("https://github.com/neroist/nova/blob/main/nova.nim")
 
 proc repo =
   ## View Nova's GitHub repository
 
-  openDefaultBrowser("https://github.com/neroist/Nova/")
+  openDefaultBrowser("https://github.com/neroist/nova/")
 
 proc license(browser: bool = false) =
   ## View Nova's license
   
   if browser:
-    openDefaultBrowser("https://github.com/neroist/Nova/blob/main/LICENSE")
+    openDefaultBrowser("https://github.com/neroist/nova/blob/main/LICENSE")
   else:
-    echo fetch("https://raw.githubusercontent.com/neroist/Nova/main/LICENSE")
+    echo fetch("https://raw.githubusercontent.com/neroist/nova/main/LICENSE")
 
 proc docs =
   ## View Nova's documentation
 
-  openDefaultBrowser("https://neroist.github.io/Nova/")
+  openDefaultBrowser("https://neroist.github.io/nova/")
 
 
 when isMainModule:
