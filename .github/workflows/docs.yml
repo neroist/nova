@@ -28,6 +28,9 @@ jobs:
         run: |
           nimble install -y nimibook
           nimble docs
+          
+          cd out
+          echo "nova.nim.town" > CNAME
 
       - name: Deploy to GitHub Pages
         if: success()
