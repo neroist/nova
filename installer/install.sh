@@ -11,7 +11,7 @@ fi
 echo "Installing to $novadir"
 
 mkdir -p $novadir
-wget -q -O "$novadir/nova" https://github.com/neroist/Nova/releases/download/1.7.0/nova
+wget -q -O "$novadir/nova" https://github.com/neroist/nova/releases/download/1.7.0/nova
 
 echo "Nova has been installed.\n"
 
