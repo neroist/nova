@@ -92,7 +92,7 @@ See <https://neroist.github.io/Nova>
 In order to build, cd into the base directory and run:
 
 ```shell
-nimble compil
+nimble nova
 ```
 
 The compiled binaries will be available in the `bin/` directory.
