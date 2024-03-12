@@ -143,9 +143,9 @@ proc editFileVisibility*(file: string; hidden: bool) =
   elif (defined(macos) or defined(macosx)) and (not hidden):
     macoption = "nohidden"
 
-  when defined windows:
+  when defined(windows):
     discard execShellCmd(fmt"attrib {winoption} {file}") # add "hidden" attribute to file
-  elif defined macos or defined macosx:
+  elif defined(macos) or defined(macosx):
     discard execShellCmd(fmt"chflags {macoption} {file}") # set "hidden" flag on file
 
 when isMainModule:
