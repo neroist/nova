@@ -27,7 +27,7 @@ after nova:
     exec "iscc installer/installer.iss"
 
 # Dependencies
-requires "https://github.com/neroist/nim-termui@#head"
+requires "https://github.com/neroist/nim-termui#head"
 
 requires "nim >= 1.6.8"
 requires "tinydialogs >= 1.0.0"
