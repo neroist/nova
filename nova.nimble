@@ -10,8 +10,11 @@ bin           = @["nova"]
 
 # Tasks
 
-task installer, "Build Windows installer for Nova":
-  exec "iscc installer/installer.iss"
+task installer, "Build installer for Nova":
+  when defined(windows):
+    exec "iscc installer/installer.iss"
+  else:
+    cpFile "installer/install.sh", "bin/install.sh"
 
 task docs, "Build Nova documentation":
   withDir "docs":
