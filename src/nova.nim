@@ -530,7 +530,7 @@ proc description: string =
 proc source =
   ## View Nova's source code
 
-  openDefaultBrowser("https://github.com/neroist/nova/blob/main/nova.nim")
+  openDefaultBrowser("https://github.com/neroist/nova/blob/main/src/nova.nim")
 
 proc repo =
   ## View Nova's GitHub repository
