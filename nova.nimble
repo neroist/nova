@@ -11,7 +11,6 @@ bin           = @["nova"]
 # Tasks
 
 task installer, "Build Windows installer for Nova":
-  selfExec "c -d:release src/nova.nim"
   exec "iscc installer/installer.iss"
 
 task docs, "Build Nova documentation":
@@ -27,7 +26,7 @@ after nova:
     exec "iscc installer/installer.iss"
 
 # Dependencies
-requires "https://github.com/neroist/nim-termui@#head"
+requires "https://github.com/neroist/nim-termui#head"
 
 requires "nim >= 1.6.8"
 requires "tinydialogs >= 1.0.0"
