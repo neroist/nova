@@ -77,7 +77,7 @@ You should receive an email with your API key soon.
 
 ## Documentation
 
-See <https://neroist.github.io/Nova>
+See <https://neroist.github.io/nova>
 
 ## Build from source
 
