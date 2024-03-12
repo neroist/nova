@@ -10,7 +10,7 @@
 #define MyAppName "Nova"
 #define MyAppVersion "1.7.0"
 #define MyAppPublisher "Jasmine"
-#define MyAppExeName "Nova.exe"
+#define MyAppExeName "nova.exe"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
@@ -27,7 +27,7 @@ LicenseFile=LICENSE.txt
 InfoAfterFile=thankyou.txt
 PrivilegesRequired=lowest
 OutputDir=../bin
-OutputBaseFilename=Nova-Installer
+OutputBaseFilename=nova-installer
 UsePreviousAppDir=no
 Compression=lzma
 SolidCompression=yes
