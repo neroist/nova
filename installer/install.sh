@@ -1,4 +1,4 @@
-novadir="/opt/Nova/"
+novadir="/opt/nova/"
 input=""
  
 read -p "What directory should Nova install to? (defaults to $novadir) " input
