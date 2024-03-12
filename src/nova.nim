@@ -1,6 +1,6 @@
 #[
   Nova, a program to control Govee light strips from the command line
-  Copyright (C) 2023 neroist
+  Copyright (C) 2024 neroist
 
   This software is released under the MIT License.
   https://opensource.org/licenses/MIT
@@ -60,15 +60,17 @@ let
   esc = if isTrueColorSupported(): ansiResetCode
         else: ""
 
-  # TODO change these variable names 
-  keyDir = getAppDir() / ".KEY"
-  devicesDir = getAppDir() / ".DEVICES"
-  isSetup = (output: bool) => isSetup(output, keyDir, devicesDir, NotSetupErrorMsg) ## shorter method of `isSetup`
+  keyFile = getAppDir() / ".KEY"
+  savesFile = getAppDir() / ".saves.yaml"
+  devicesFile = getAppDir() / ".DEVICES"
+
+  isSetup = (output: bool) => isSetup(output, keyFile, devicesFile, NotSetupErrorMsg)
+              ## shorter method of `isSetup`
   checkDevices = (device: int, output: bool) => checkDevices(device, numDevices, output)
 
 # set numDevices
-if isSetup(output=false):
-  numDevices = parseJson(readFile(devicesDir)).getElems().len
+if isSetup(false):
+  numDevices = parseJson(readFile(devicesFile)).getElems().len
 
 # ---- commands ----
 
@@ -79,8 +81,7 @@ proc setup =
 
   let apiKey = termuiAsk "Enter your Govee API key:"
 
-  #// maybe just remove this part and to just print the success msg? 
-  # nvm, lets take this opportunity to cache the list of the devices 
+  # lets take this opportunity to cache the list of the devices 
   let
     response = get(DevicesURI, @{"Govee-API-Key": apiKey})
     code = response.code
@@ -88,17 +89,17 @@ proc setup =
   if code == 200:
     # we "un-hide" the the .KEY file incase it exists already because
     # we cant write to a hidden file, apparently
-    if fileExists keyDir:
-      editFileVisibility(keyDir, hidden=false)
+    if fileExists keyFile:
+      editFileVisibility(keyFile, hidden=false)
 
     # same for .DEVICES
-    if fileExists devicesDir:
-      editFileVisibility(devicesDir, hidden=false)
+    if fileExists devicesFile:
+      editFileVisibility(devicesFile, hidden=false)
 
-    writeFile(keyDir, apiKey) # write api key
-    writeFile(devicesDir, $parseJson(response.body)["data"]["devices"]) # cache devices
+    writeFile(keyFile, apiKey) # write api key
+    writeFile(devicesFile, $parseJson(response.body)["data"]["devices"]) # cache devices
 
-    for file in [keyDir, devicesDir]:
+    for file in [keyFile, devicesFile]:
       editFileVisibility(file, hidden=true)
 
     success "\nSetup completed successfully.\nWelcome to Nova."
@@ -108,15 +109,15 @@ proc setup =
     error getErrorMsg(code)
     return
 
-proc turn(device = 0; state: string = ""; toggle: bool = false, output = on): string =
+proc turn(device: int = 0; state: string = ""; toggle: bool = false, output: bool = on): string =
   ## Turn device on or off
 
   if not isSetup(output) or (not checkDevices(device, output = output)): return
 
-  let apiKey = readFile(keyDir)
+  let apiKey = readFile(keyFile)
 
   let
-    resp = parseJson readFile(devicesDir)
+    resp = parseJson readFile(devicesFile)
     (deviceAddr, model) = getDeviceInfo(resp, device)
 
   var state = state
@@ -157,7 +158,7 @@ proc turn(device = 0; state: string = ""; toggle: bool = false, output = on): st
 
   return state
 
-proc color(device = 0; color: string = ""; output = on): string =
+proc color(device: int = 0; color: string = ""; output: bool = on): string =
   ## Set device color with an HTML/hex color code.
   ## NOTE: when called with no parameters, the device's current color will be #000000 if:
   ## 
@@ -168,8 +169,8 @@ proc color(device = 0; color: string = ""; output = on): string =
   if not isSetup(output) or not checkDevices(device, output = output): return
 
   let 
-    apiKey = readFile(keyDir)
-    devices = parseJson readFile(devicesDir)
+    apiKey = readFile(keyFile)
+    devices = parseJson readFile(devicesFile)
     (deviceAddr, model) = getDeviceInfo(devices, device)
 
   var
@@ -182,7 +183,7 @@ proc color(device = 0; color: string = ""; output = on): string =
 
     try:
       colorJson = response["data"]["properties"][3]["color"]
-    except CatchableError: discard
+    except KeyError: discard
 
     let
       color = $rgb(
@@ -199,7 +200,7 @@ proc color(device = 0; color: string = ""; output = on): string =
   block checks:
     if color notin ["random", "rand"]:
       if color.isColor():
-        color = $(color).parseColor()
+        color = $color.parseColor()
         break checks
 
       if color[0] != '#': 
@@ -209,16 +210,12 @@ proc color(device = 0; color: string = ""; output = on): string =
         if output:
           error fmt"{color[1..^1]} is an invalid color."
 
-
   if color in ["random", "rand"]:
     r = rand(255)
     g = rand(255)
     b = rand(255)
   else:
-    let rgb = parseColor(color).extractRGB()
-    r = rgb[0]
-    g = rgb[1]
-    b = rgb[2]
+    (r, g, b) = parseColor(color).extractRGB()
 
   let body = %* {
     "device": deviceAddr,
@@ -242,14 +239,14 @@ proc color(device = 0; color: string = ""; output = on): string =
 
   return color
 
-proc brightness(device = 0; brightness = -1; output = on): int =
+proc brightness(device: int = 0; brightness = -1; output: bool = on): int =
   ## Set device brightness
 
   if not isSetup(output) or not checkDevices(device, output = output): return
 
   let 
-    apiKey = readFile(keyDir)
-    devices = parseJson readFile(devicesDir)
+    apiKey = readFile(keyFile)
+    devices = parseJson readFile(devicesFile)
     (deviceAddr, model) = getDeviceInfo(devices, device)
 
   if brightness == -1:  # if brightness is default value
@@ -282,14 +279,14 @@ proc brightness(device = 0; brightness = -1; output = on): int =
   
   return brightness
 
-proc colorTemp(device = 0; output = on; temperature: int = -1): int =
+proc colorTemp(device: int = 0; output: bool = on; temperature: int = -1): int =
   ## Set device color temperature in kelvin
 
   if not isSetup(output) or not checkDevices(device, output = output): return
 
   let 
-    apiKey = readFile(keyDir) 
-    devices = parseJson readFile(devicesDir)
+    apiKey = readFile(keyFile) 
+    devices = parseJson readFile(devicesFile)
     (deviceAddr, model) = getDeviceInfo(devices, device)
 
   if temperature == -1:
@@ -337,7 +334,7 @@ proc colorTemp(device = 0; output = on; temperature: int = -1): int =
 
   return temperature
 
-proc state(device = 0) =
+proc state(device: int = 0) =
   ## Output state of device
 
   if not isSetup(true) or not checkDevices(device, true): return
@@ -347,8 +344,8 @@ proc state(device = 0) =
     colorTem = 0 
 
   let
-    apiKey = readFile(keyDir)
-    devices = parseJson readFile(devicesDir)
+    apiKey = readFile(keyFile)
+    devices = parseJson readFile(devicesFile)
     (deviceAddr, model) = getDeviceInfo(devices, device)
 
     response = getDeviceState(deviceAddr, model, apiKey)
@@ -379,7 +376,7 @@ proc state(device = 0) =
   echo "  Color: ", fmt"{ansi}{color}{esc} or {ansi}rgb({r}, {g}, {b}){esc}"
   echo "  Color Temperature: ", kelvinAnsi, colorTem, esc, " (if not 0, color will be #000000)"
 
-proc rgbCmd(rgb: seq[int] = @[-1, -1, -1]; device = 0; output = on): tuple[r, g, b: int] =
+proc rgbCmd(rgb: seq[int] = @[-1, -1, -1]; device: int = 0; output: bool = on): tuple[r, g, b: int] =
   ## Same as command `color` but uses rgb instead of HTML codes, although it doesn't support random colors.
   ## 
   ## NOTE: when called with no parameters, the device's current color will be rgb(0, 0, 0) if:
@@ -398,8 +395,8 @@ proc rgbCmd(rgb: seq[int] = @[-1, -1, -1]; device = 0; output = on): tuple[r, g,
     return
 
   let
-    apiKey = readFile(keyDir)
-    devices = parseJson readFile(devicesDir)
+    apiKey = readFile(keyFile)
+    devices = parseJson readFile(devicesFile)
     (deviceAddr, model) = getDeviceInfo(devices, device)
 
   if rgb == @[-1 ,-1, -1]:
@@ -461,7 +458,7 @@ proc devices =
 
   if not isSetup(true): return
 
-  let devices = parseJson readFile(devicesDir) 
+  let devices = parseJson readFile(devicesFile) 
 
   for dev, i in devices.getElems():
     let 
@@ -476,7 +473,7 @@ proc devices =
     echo "  Retrievable: ", capitalizeAscii($(i["retrievable"].getBool()))
     echo "  Supported Commands: ", cmds.join(", "), "\n"
 
-proc picker(device = 0; setProperty: bool = true; output = on) = 
+proc picker(device: int = 0; setProperty: bool = true; output: bool = on) = 
   ## Pick a color through a GUI (your OS's default color picker dialog)
 
   let 
@@ -493,19 +490,19 @@ proc picker(device = 0; setProperty: bool = true; output = on) =
 
     discard color(device, pickedColor.hex, output)
 
-proc update(output = on) = 
+proc update(output: bool = on) = 
   ## Update the cached list of devices. Run whenever a new device is added
   ## or modified.
   
   let
-    apiKey = readFile(keyDir) 
+    apiKey = readFile(keyFile) 
     response = fetch(DevicesURI, @{"Govee-API-Key": apiKey})
   
-  editFileVisibility(devicesDir, false)
+  editFileVisibility(devicesFile, false)
 
-  writeFile(devicesDir, $parseJson(response)["data"]["devices"])
+  writeFile(devicesFile, $parseJson(response)["data"]["devices"])
 
-  editFileVisibility(devicesDir, true)
+  editFileVisibility(devicesFile, true)
 
   if output:
     success "Successfully updated devices! ✔️" # not all terminal support emojis...
@@ -550,9 +547,9 @@ proc docs =
 
   openDefaultBrowser("https://neroist.github.io/nova/")
 
-
 when isMainModule:
   clCfg.version = "Nova " & Version
+  clCfg.sepChars = { '=', ':', ' ' }
 
   # String consts are cast into strings becuase if I dont it throws an error
   # or prints out the name of the const
@@ -581,7 +578,7 @@ when isMainModule:
       noAutoEcho = true
     ],
     [
-      nova.color,
+      nova.color, # name collision with std/colors
       help = {
         "color": "The color that you want to display on the device. " &
           "Has to be a hex/HTML color code, optionally prefixed with '#', or the string \"rand\" or \"random.\" " &

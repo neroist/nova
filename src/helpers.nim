@@ -16,6 +16,15 @@ import std/json
 import std/math
 import std/os
 
+import yanyl
+
+type
+  DeviceProperties* = object
+    powerState*: bool
+    brightness*: int
+    colorTemp*: int
+    color*: Color
+
 template success*(args: varargs[untyped]) = styledEcho fgGreen, args, resetStyle
 template error*(args: varargs[untyped]) = styledEcho fgRed, args, resetStyle
 
@@ -61,7 +70,10 @@ func kelvinToRgb*(temp: int): tuple[r, g, b: range[0..255]] =
   else:
     result.b = int (138.5177312231 * ln(temp - 10) - 305.0447927307).clamp(0.0, 255.0)
 
-proc checkDevices*(device; numDevices: int; output: bool = on): bool =
+proc toYaml*(s: Color): YNode =
+  newYString("'" & $s & "'")
+
+proc checkDevices*(device: int; numDevices: int; output: bool = on): bool =
   if device notin 0..<numDevices:
     if output:
       error fmt"Invalid device '{device}'. You have {num_devices} device(s)."
@@ -101,7 +113,7 @@ proc colorToAnsi*(color: colors.Color; foreground: bool = true): string =
 proc colorToAnsi*(color: tuple[r, g, b: range[0..255]]; foreground: bool = true): string = 
   colorToAnsi(rgb(color.r, color.g, color.b), foreground)
 
-func getDeviceInfo*(jsonData: JsonNode; device): tuple[deviceAddr, model: string] =
+func getDeviceInfo*(jsonData: JsonNode; device: int): tuple[deviceAddr, model: string] =
   let
     deviceAddr = jsonData[device]["device"].getStr()
     model = jsonData[device]["model"].getStr()
@@ -149,4 +161,4 @@ when isMainModule:
       color = kelvinToRgb(temp)
       ccolor = colorToAnsi(rgb(color.r, color.g, color.b))
 
-    echo fmt"color temperature {ccolor}{temp}{Esc} as {ccolor}rgb({color.r}, {color.g}, {color.b}){Esc}"
+    echo fmt"color temperature {temp} as {ccolor}rgb({color.r}, {color.g}, {color.b}){Esc}"
