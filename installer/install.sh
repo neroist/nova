@@ -10,7 +10,7 @@ fi
 
 # vars
 novaver="1.7.0"
-novadir="/opt/nova"
+novadir="/usr/local/nova"
 input=""
 
 read -p "What directory should Nova install to? (defaults to $novadir) " input
@@ -25,7 +25,7 @@ mkdir -p $novadir
 wget -q -O "$novadir/nova" "https://github.com/neroist/nova/releases/download/$novaver/nova"
 
 # make symlink to nova in secure path
-ln -s /usr/local/nova/nova /usr/local/bin/nova
+ln -s "$novadir/nova" /usr/local/bin/nova
 
 # create files needed by nova and apply permissions
 touch "$novadir/.KEY"
