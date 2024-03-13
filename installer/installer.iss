@@ -9,7 +9,7 @@
 
 #define MyAppName "Nova"
 #define MyAppVersion "1.7.0"
-#define MyAppPublisher "Jasmine"
+#define MyAppPublisher "neroist"
 #define MyAppExeName "nova.exe"
 
 [Setup]
@@ -39,24 +39,72 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
 Source: "/../bin/nova.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\msys64\mingw64\bin\libwinpthread-1.dll"; DestDir: "{app}"
-Source: "C:\msys64\mingw64\bin\libcrypto-1_1-x64.dll"; DestDir: "{app}"
-Source: "C:\msys64\mingw64\bin\libssl-1_1-x64.dll"; DestDir: "{app}"
+
+; FIXME do we really need any of these?
+; Source: "C:\msys64\mingw64\bin\libwinpthread-1.dll"; DestDir: "{app}"
+; Source: "C:\msys64\mingw64\bin\libcrypto-1_1-x64.dll"; DestDir: "{app}"
+; Source: "C:\msys64\mingw64\bin\libssl-1_1-x64.dll"; DestDir: "{app}"
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
 Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
 
-; Add Nova to path
-[Registry]
-Root: HKCU; Subkey: "Environment"; ValueType: expandsz; ValueName: "Path"; ValueData: "{olddata};{app}"
+; Code to add Nova to path, and remove on uninstallation
+; On reinstallation, Nova is not added twice
+[Code]
+const EnvironmentKey = 'Environment';
 
-;[Code]
-;function notInPath(Param: String): Boolean;
-;begin
-;  if RegValueExists(HKEY_CURRENT_USER, 'Path', '{app}') then
-;    result := false
-;  else
-;    result := true
-;end;
+procedure EnvAddPath(Path: string);
+var
+    Paths: string;
+begin
+    { Retrieve current path (use empty string if entry not exists) }
+    if not RegQueryStringValue(HKEY_CURRENT_USER, EnvironmentKey, 'Path', Paths)
+    then Paths := '';
+
+    { Skip if string already found in path }
+    if Pos(';' + Uppercase(Path) + ';', ';' + Uppercase(Paths) + ';') > 0 then exit;
+
+    { App string to the end of the path variable }
+    Paths := Paths + ';'+ Path +';'
+
+    { Overwrite (or create if missing) path environment variable }
+    if RegWriteStringValue(HKEY_CURRENT_USER, EnvironmentKey, 'Path', Paths)
+    then Log(Format('The [%s] added to PATH: [%s]', [Path, Paths]))
+    else Log(Format('Error while adding the [%s] to PATH: [%s]', [Path, Paths]));
+end;
+
+procedure EnvRemovePath(Path: string);
+var
+    Paths: string;
+    P: Integer;
+begin
+    { Skip if registry entry not exists }
+    if not RegQueryStringValue(HKEY_CURRENT_USER, EnvironmentKey, 'Path', Paths) then
+        exit;
+
+    { Skip if string not found in path }
+    P := Pos(';' + Uppercase(Path) + ';', ';' + Uppercase(Paths) + ';');
+    if P = 0 then exit;
+
+    { Update path variable }
+    Delete(Paths, P - 1, Length(Path) + 1);
+
+    { Overwrite path environment variable }
+    if RegWriteStringValue(HKEY_CURRENT_USER, EnvironmentKey, 'Path', Paths)
+    then Log(Format('The [%s] removed from PATH: [%s]', [Path, Paths]))
+    else Log(Format('Error while removing the [%s] from PATH: [%s]', [Path, Paths]));
+end;
+
+procedure CurStepChanged(CurStep: TSetupStep);
+begin
+    if CurStep = ssPostInstall 
+    then EnvAddPath(ExpandConstant('{app}'));
+end;
+
+procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
+begin
+    if CurUninstallStep = usPostUninstall
+    then EnvRemovePath(ExpandConstant('{app}'));
+end;
