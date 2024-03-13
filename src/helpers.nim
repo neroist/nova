@@ -2,7 +2,7 @@
 
 #[
   Nova, a program to control Govee light strips from the command line
-  Copyright (C) 2023 neroist
+  Copyright (C) 2024 neroist
 
   This software is released under the MIT License.
   https://opensource.org/licenses/MIT
