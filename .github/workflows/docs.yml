@@ -8,6 +8,7 @@ on:
     paths:
       - ".github/workflows/docs.yml"
       - "docs/**"
+      - "nova.nimble"
   workflow_dispatch:
 
 jobs:
