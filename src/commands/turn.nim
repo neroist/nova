@@ -11,6 +11,7 @@ func toggle*(str: string): string =
   elif str == "off": "on"
   else: str
 
+# TODO accept bool instead of string for `state`
 proc turn*(device: int = 0; state: string = ""; toggle = false, output = on, all: bool = false): string =
   ## Turn device on or off
 
@@ -57,7 +58,7 @@ proc turn*(device: int = 0; state: string = ""; toggle = false, output = on, all
   let re = put(ControlURI, @{"Govee-API-Key": apiKey, "Content-Type": "application/json"}, $body)
 
   if output:
-    echo "Set device power state to \'", state, "\'"
+    echo &"Set device {device} power state to \'", state, "\'"
     echo ""
 
     sendCompletionMsg re.code, parseJson(re.body)["message"], HttpCode(re.code)
