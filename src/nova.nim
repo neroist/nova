@@ -18,9 +18,9 @@ import commands/[
   picker,
   update,
   setup,
-  other,
   state,
   color,
+  misc,
   turn,
   rgb
 ]
