@@ -22,7 +22,7 @@ task docs, "Build Nova documentation":
     selfExec "r book build"
 
 task nova, "Build Nova":
-  selfExec "c -d:release src/nova"
+  selfExec "c -f src/nova"
 
 # Dependencies
 requires "https://github.com/neroist/nim-termui#head"
