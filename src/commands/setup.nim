@@ -9,23 +9,27 @@ import puppy
 import ../common
 
 proc editFileVisibility*(file: string; hidden: bool) =
-  ## Edit file visibility of the file `file`. Only edits for Windows and
-  ## MacOS, as you can hide a file in linux by simply adding a period before
-  ## the file name (and show a file by removing the period).
-
-  var
-    winoption = "+h"
-    macoption = "hidden"
-
-  if defined(windows) and (not hidden):
-    winoption = "-h"
-  elif (defined(macos) or defined(macosx)) and (not hidden):
-    macoption = "nohidden"
+  ## Edit file visibility of the file `file`. 
+  ## 
+  ## Only operates on Windows and MacOS, is simply a noop on Linux.
 
   when defined(windows):
+    var winoption = "+h"
+
+    if not hidden:
+      winoption = "-h"
+
     discard execShellCmd(fmt"attrib {winoption} {file}") # add "hidden" attribute to file
   elif defined(macos) or defined(macosx):
-    discard execShellCmd(fmt"chflags {macoption} {file}") # set "hidden" flag on file
+    var macoption = "hidden"
+
+    if not hidden:
+      winoption = "nohidden"
+
+    discard execShellCmd(fmt"chflags {macoption} {file}")        
+
+proc applyPermissions*(file: string) =
+  inclFilePermissions(file, {fpUserWrite, fpUserRead, fpOthersWrite, fpOthersRead})
 
 proc setup* =
   ## Setup Nova
@@ -40,7 +44,7 @@ proc setup* =
     code = response.code
 
   if code == 200:
-    # we "un-hide" the the .KEY file incase it exists already because
+    # we "un-hide" the the .KEY file incase it exists already
     # we cant write to a hidden file, apparently
     if fileExists keyFile:
       editFileVisibility(keyFile, hidden=false)
