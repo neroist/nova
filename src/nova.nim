@@ -46,7 +46,8 @@ dispatchMulti(
       "toggle": "Whether or not to toggle the power state of the device (if its on turn it off and " &
                 "vice-versa). This flag takes precedence over the `state` option.",
       "device": $DeviceHelp,
-      "output": $OutputHelp
+      "output": $OutputHelp,
+      "all": $AllHelp
     },
     noAutoEcho = true
   ],
@@ -56,8 +57,15 @@ dispatchMulti(
       "brightness": "The brightness you want to set on the device. Supports values 1-100 only. " &
                     "If left blank, the command will print the current brightness of the device.",
       "device": $DeviceHelp,
-      "output": $OutputHelp
+      "output": $OutputHelp,
+      "all": $AllHelp
     },
+    noAutoEcho = true
+  ],
+  [
+    brightness.brightness,
+    cmdName = "b",
+    doc = "Alias for 'brighness' command",
     noAutoEcho = true
   ],
   [
@@ -68,7 +76,8 @@ dispatchMulti(
         "If left blank, will return the current color of the device. " &
         "If `color` is \"rand\" or \"random\" a random color will be displayed on the device",
       "device": $DeviceHelp,
-      "output": $OutputHelp
+      "output": $OutputHelp,
+      "all": $AllHelp
     },
     noAutoEcho = true
   ],
@@ -79,19 +88,26 @@ dispatchMulti(
       "temperature": "The color temperature you want to set on the device. " &
                       "Has to be in the valid range your Govee device supports.",
       "device": $DeviceHelp,
-      "output": $OutputHelp
+      "output": $OutputHelp,
+      "all": $AllHelp
     },
     noAutoEcho = true
   ],
   [
     state.state,
-    help = {"device": $DeviceHelp}
+    help = {
+      "device": $DeviceHelp,
+      "all": $AllHelp
+    }
   ],
   [
     state.state,
     cmdName = "device",
-    doc = "Alias for state",
-    help = {"device": $DeviceHelp}
+    doc = "Alias for 'state' command",
+    help = {
+      "device": $DeviceHelp,
+      "all": $AllHelp
+    }
   ],
   [
     rgb.rgb,
@@ -100,17 +116,18 @@ dispatchMulti(
       "rgb": "The color you want to set on the device in an RGB format. " &
               "Has to be 3 numbers seperated by a space. " &
               "If left blank, the command will print the current color in an RGB function.",
-      "output": $OutputHelp
+      "output": $OutputHelp,
+      "all": $AllHelp
     },
-    noAutoEcho = true,
-    cmdName = "rgb"
+    noAutoEcho = true
   ],
   [
     picker.picker,
     help = {
       "device": $DeviceHelp,
       "output": $OutputHelp,
-      "set_property": "Whether or not to set `device`'s color to the color chosen."
+      "set_property": "Whether or not to set `device`'s color to the color chosen.",
+      "all": $AllHelp
     }
   ],
   [
@@ -129,7 +146,7 @@ dispatchMulti(
     license,
     help = {
       "browser": "Whether or not to open the license in the default " &
-                  "browser, or to just print the license text to the terminal"
+                 "browser, or to just print the license text to the terminal"
     }
   ],
   [docs]

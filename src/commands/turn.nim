@@ -11,14 +11,18 @@ func toggle*(str: string): string =
   elif str == "off": "on"
   else: str
 
-proc turn*(device: int = 0; state: string = ""; toggle: bool = false, output: bool = on): string =
+proc turn*(device: int = 0; state: string = ""; toggle = false, output = on, all: bool = false): string =
   ## Turn device on or off
 
   if not isSetup(output) or (not checkDevices(device, output = output)): return
 
-  let apiKey = readFile(keyFile)
+  if all:
+    for i in 0..<numDevices-1:
+      discard turn(i, state, toggle, output)
 
-  let
+  let 
+    apiKey = readFile(keyFile)
+
     resp = parseJson readFile(devicesFile)
     (deviceAddr, model) = getDeviceInfo(resp, device)
 

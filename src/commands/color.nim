@@ -10,7 +10,7 @@ import puppy
 
 import ../common
 
-proc color*(device: int = 0; color: string = ""; output: bool = on): string =
+proc color*(device: int = 0; color: string = ""; output = on, all: bool = false): string =
   ## Set device color with an HTML/hex color code.
   ## NOTE: when called with no parameters, the device's current color will be #000000 if:
   ## 
@@ -19,7 +19,11 @@ proc color*(device: int = 0; color: string = ""; output: bool = on): string =
   ## 3. A scene is playing on the device.
 
   if not isSetup(output) or not checkDevices(device, output = output): return
-
+  
+  if all:
+    for i in 0..<numDevices-1:
+      discard color(i, color, output)
+  
   let 
     apiKey = readFile(keyFile)
     devices = parseJson readFile(devicesFile)

@@ -29,10 +29,14 @@ func kelvinToRgb*(temp: int): tuple[r, g, b: range[0..255]] =
   else:
     result.b = int (138.5177312231 * ln(temp - 10) - 305.0447927307).clamp(0.0, 255.0)
 
-proc colorTemp*(device: int = 0; output: bool = on; temperature: int = -1): int =
+proc colorTemp*(device = 0, temperature: int = -1; output = on, all: bool = false): int =
   ## Set device color temperature in kelvin
 
   if not isSetup(output) or not checkDevices(device, output = output): return
+  
+  if all:
+    for i in 0..<numDevices-1:
+      discard colorTemp(i, temperature, output)
 
   let 
     apiKey = readFile(keyFile) 

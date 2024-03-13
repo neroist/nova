@@ -7,10 +7,14 @@ import std/json
 import ./color_temp
 import ../common
 
-proc state*(device: int = 0) =
+proc state*(device: int = 0; all: bool = false) =
   ## Output state of device
 
   if not isSetup(true) or not checkDevices(device, output=true): return
+
+  if all:
+    for i in 0..<numDevices-1:
+      state(i)
 
   var
     colorJson = %* {"r": 0, "g": 0, "b": 0}

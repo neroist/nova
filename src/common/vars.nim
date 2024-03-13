@@ -9,6 +9,9 @@ const
   OutputHelp* = "Whether or not the command will produce output."
     ## "Output" option help text.
   
+  AllHelp* = "If enabled, the command will run on all devices. Ignores `device` option."
+    ## "All" option help text.
+  
   NotSetupErrorMsg* = "Nova is not setup properly. Use the command `nova setup` to setup Nova."
     ## Error message when Nova is not setup properly.
   

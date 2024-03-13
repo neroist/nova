@@ -7,10 +7,14 @@ import puppy
 
 import ../common
 
-proc brightness*(device: int = 0; brightness = -1; output: bool = on): int =
+proc brightness*(device = 0, brightness: int = -1; output = on, all: bool = false): int =
   ## Set device brightness
 
   if not isSetup(output) or not checkDevices(device, output = output): return
+  
+  if all:
+    for i in 0..<numDevices-1:
+      discard brightness(i, brightness, output)
 
   let 
     apiKey = readFile(keyFile)
