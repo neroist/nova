@@ -1,17 +1,21 @@
 import std/httpclient
 import std/strformat
+import std/strutils
 import std/json
 
 import puppy
 
 import ../common
 
-func toggle*(str: string): string = 
+func toStr(b: bool): string =
+  if b == true: "on"
+  else: "off"
+
+func toggle(str: string): string = 
   if str == "on": "off"
   elif str == "off": "on"
   else: str
 
-# TODO accept bool instead of string for `state`
 proc turn*(device: int = 0; state: string = ""; toggle = false, output = on, all: bool = false): string =
   ## Turn device on or off
 
@@ -42,8 +46,9 @@ proc turn*(device: int = 0; state: string = ""; toggle = false, output = on, all
 
     state = response["data"]["properties"][1]["powerState"].getStr().toggle()
 
-  if state notin ["off", "on"]:
-    error "Invalid state, state has to be the string \"off\" or \"on\"."
+  try: discard state.parseBool()
+  except ValueError:
+    error "Invalid state, state has to be the string \"off\", \"on\", or something similar."
     return
 
   let body = %* {
@@ -51,7 +56,7 @@ proc turn*(device: int = 0; state: string = ""; toggle = false, output = on, all
     "model": model,
     "cmd": {
       "name": "turn",
-      "value": state
+      "value": state.parseBool().toStr()
     }
   }
 
