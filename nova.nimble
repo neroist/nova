@@ -24,10 +24,6 @@ task docs, "Build Nova documentation":
 task nova, "Build Nova":
   selfExec "c -d:release src/nova"
 
-after nova:
-  when defined(windows):
-    exec "iscc installer/installer.iss"
-
 # Dependencies
 requires "https://github.com/neroist/nim-termui#head"
 
