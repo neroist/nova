@@ -12,5 +12,4 @@ jobs:
         with:
           identifier: Jasmine.Nova
           installers-regex: '\.exe$'
-          max-versions-to-keep: 3
           token: ${{ secrets.WINGET_TOKEN }}
