@@ -16,7 +16,7 @@ To get your API key, follow these steps:
 
 ![](https://files.readme.io/df8629a-api_pics_03.png)
 
-4. Finally, add your name add reason for application, and submit a request for your API key
+4. Finally, add your name add reason for application, and submit a request for your API key.
 
 ![](https://files.readme.io/8c04a1e-api_pics_04.png)
 

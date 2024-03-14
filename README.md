@@ -13,7 +13,7 @@ Not affiliated with Govee.
 - [Supported Devices](#supported-devices)
 - [Notes](#important-notes)
 - [Installation](#installation)
-- [How To Get Govee API Key](#how-to-get-govee-api-key)
+- [How To Get Govee API Key](https://neroist.github.io/nova/api-key.html)
 - [Deletion](#deletion)
 - [Documentation](#documentation)
 - [Build From Source](#build-from-source)
@@ -43,9 +43,7 @@ Only Wi-Fi devices are supported.
 
 ## Important Notes
 
-**Positional arguments are not supported.** For example: `nova color 0 "aliceblue"` will not work and throw an error. You will have to explicitly declare every argument you pass into the command. For example: `nova color -d 0 -c "aliceblue"`. Also, see [`setup`](https://neroist.github.io/Nova/commands/setup.html).
-
-In addition, please refrain from calling commands too quickly or frequently.
+Please refrain from calling commands too quickly or frequently, as it may result in you being rate-limited.
 
 ## Installation
 
@@ -61,19 +59,11 @@ For linux, download `installer.sh` and run
 sudo sh installer.sh
 ```
 
-## How to get Govee API key
-
-1. Open the Govee Home mobile app.
-2. Go to the "My Profile" tab, go to settings (the gear in the top right), press "Apply for API key"
-3. Fill out your name and your reason (for the reason you can just write "I would like to control my LEDs with a CLI" and it should be fine) and submit.
-
-You should receive an email with your API key soon.
-
 ## Deletion
 
 1. Delete Nova from whatever directory you put it in (or delete the directory itself).
 
-   Or, if you installed with the Windows installer, open Settings, go to Apps, then search for "Nova". When you see Nova, click the three dots and hit "Uninstall."
+    - Or, if you installed with the Windows installer, open Settings, go to Apps, then search for "Nova". When you see Nova, click the three dots and hit "Uninstall."
 
 ## Documentation
 
@@ -94,6 +84,14 @@ In order to build, cd into the base directory and run:
 ```shell
 nimble nova
 ```
+
+Next, to build the installer, run this command:
+
+```shell
+nimble installer
+```
+
+On windows, this compiles the `installer/installer.iss` file. On Linux, this just copies the `install.sh` file to `bin/`.
 
 The compiled binaries will be available in the `bin/` directory.
 
