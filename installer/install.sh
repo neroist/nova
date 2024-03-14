@@ -47,6 +47,7 @@ chmod u+wr,o+wr "$novadir/.KEY"
 
 # apply perms to executable too
 chmod u+rx,o+rx "$novadir/nova"
+chmod u+rx,o+rx "$novadir/nova32"
 
 printf "Nova has been installed.\n\n"
 printf "Please add Nova to your PATH. You can do so by adding this line at the end of your ~/.bashrc or ~/.profile file:\n"
