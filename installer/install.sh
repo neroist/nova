@@ -11,18 +11,29 @@ fi
 # vars
 novaver="1.7.0"
 novadir="/usr/local/nova"
-input=""
+bit=""
+dir=""
 
 read -p "What directory should Nova install to? (defaults to $novadir) " input
+read -p "Do you want to install the 32 bit version (leave blank for no, input 'both' for both)" bit32
 
-if [ -n "$input" ]; then # if input is not empty...
-  novadir=$input
+if [ -n "$dir" ]; then # if input is not empty...
+  novadir=$dir
+fi
+
+mkdir -p $novadir
+
+if [[ -n "$bit" ]]; then
+  wget -q -O "$novadir/nova" "https://github.com/neroist/nova/releases/download/$novaver/nova32"
+  
+  if [[ "$bit" == "both" ]]; then
+    wget -q -O "$novadir/nova" "https://github.com/neroist/nova/releases/download/$novaver/nova"
+  fi
+else
+  wget -q -O "$novadir/nova" "https://github.com/neroist/nova/releases/download/$novaver/nova"
 fi
 
 printf "Installing to $novadir/\n\n"
-
-mkdir -p $novadir
-wget -q -O "$novadir/nova" "https://github.com/neroist/nova/releases/download/$novaver/nova"
 
 # make symlink to nova in secure path
 ln -s "$novadir/nova" /usr/local/bin/nova
