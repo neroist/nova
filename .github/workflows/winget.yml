@@ -3,6 +3,8 @@ run-name: Publish to WinGet
 
 on:
   workflow-dispatch:
+    branches:
+      - main
   release:
     types: [released]
 
