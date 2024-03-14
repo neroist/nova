@@ -21,10 +21,21 @@ task docs, "Build Nova documentation":
     selfExec "r book init"
     selfExec "r book build"
 
-task nova, "Build Nova":
-  selfExec "c -f src/nova"
+task nova, "Build Nova; -d:nova32 for 32 bit version":
+  when defined(nova32):
+    echo "\nBuilding 32 bit version\n"
+
+    selfExec "c -f -d:nova32 src/nova"
+    exec "strip bin/nova"
+  else:
+    echo "\nBuilding 64 bit version\n"
+
+    selfExec "c -f src/nova"
+    exec "strip bin/nova"
+
 
 # Dependencies
+
 requires "https://github.com/neroist/nim-termui#head"
 
 requires "nim >= 1.6.8"
