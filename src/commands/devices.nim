@@ -13,9 +13,8 @@ proc devices* =
   let devices = parseJson readFile(devicesFile) 
 
   for dev, i in devices.getElems():
-    let 
-      cmds = collect(for i in i["supportCmds"]: i.getStr())
-        ## seq of all supported commands of the device
+    let cmds = collect(for i in i["supportCmds"]: i.getStr())
+          ## seq of all supported commands of the device
 
     echo "\e[1m", "DEVICE ", $dev, ansiResetCode
     echo "  Mac Address: ", i["device"].getStr()

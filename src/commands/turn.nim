@@ -28,8 +28,12 @@ proc turn*(device: int = 0; state: string = ""; toggle = false, output = on, all
   let 
     apiKey = readFile(keyFile)
 
-    resp = parseJson readFile(devicesFile)
-    (deviceAddr, model) = getDeviceInfo(resp, device)
+    devices = parseFile(devicesFile)
+    (deviceAddr, model) = getDeviceInfo(devices, device)
+
+  if newJString("turn") notin devices[device]["supportCmds"].getElems():
+    error "This command is not supported by device ", $device
+    return
 
   var state = state
 

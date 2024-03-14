@@ -12,6 +12,7 @@ import ../common
 
 proc color*(device: int = 0; color: string = ""; output = on, all: bool = false): string =
   ## Set device color with an HTML/hex color code.
+  ## 
   ## NOTE: when called with no parameters, the device's current color will be #000000 if:
   ## 
   ## 1. Music mode is on. 
@@ -28,6 +29,10 @@ proc color*(device: int = 0; color: string = ""; output = on, all: bool = false)
     apiKey = readFile(keyFile)
     devices = parseJson readFile(devicesFile)
     (deviceAddr, model) = getDeviceInfo(devices, device)
+
+  if newJString("color") notin devices[device]["supportCmds"].getElems():
+    error "This command is not supported by device ", $device
+    return
 
   var
     color = color.replace(" ").replace("-").normalize()

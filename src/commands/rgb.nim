@@ -33,6 +33,10 @@ proc rgb*(rgb: seq[int] = @[-1, -1, -1]; device: int = 0; output = on, all: bool
     devices = parseJson readFile(devicesFile)
     (deviceAddr, model) = getDeviceInfo(devices, device)
 
+  if newJString("color") notin devices[device]["supportCmds"].getElems():
+    error "This command is not supported by device ", $device
+    return
+
   if rgb == @[-1 ,-1, -1]:
     var colorJson = %* {"r": 0, "g": 0, "b": 0}
 

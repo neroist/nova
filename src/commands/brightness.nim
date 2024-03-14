@@ -21,6 +21,10 @@ proc brightness*(device = 0, brightness: int = -1; output = on, all: bool = fals
     devices = parseJson readFile(devicesFile)
     (deviceAddr, model) = getDeviceInfo(devices, device)
 
+  if newJString("brightness") notin devices[device]["supportCmds"].getElems():
+    error "This command is not supported by device ", $device
+    return
+
   if brightness == -1:  # if brightness is default value
     let response = getDeviceState(deviceAddr, model, apiKey)
 

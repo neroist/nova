@@ -43,6 +43,10 @@ proc colorTemp*(device = 0, temperature: int = -1; output = on, all: bool = fals
     devices = parseJson readFile(devicesFile)
     (deviceAddr, model) = getDeviceInfo(devices, device)
 
+  if newJString("colorTem") notin devices[device]["supportCmds"].getElems():
+    error "This command is not supported by device ", $device
+    return
+
   if temperature == -1:
     let 
       response = getDeviceState(deviceAddr, model, apiKey)
