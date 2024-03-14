@@ -2,7 +2,7 @@ name: publish-to-winget
 run-name: Publish to WinGet
 
 on:
-  workflow-dispatch:
+  workflow_dispatch:
     branches:
       - main
   release:
