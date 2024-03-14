@@ -17,7 +17,7 @@ dir=""
 read -p "What directory should Nova install to? (defaults to $novadir) " input
 read -p "Do you want to install the 32 bit version (leave blank for no, input 'both' for both)" bit32
 
-if [ -n "$dir" ]; then # if input is not empty...
+if [ -n "$dir" ]; then
   novadir=$dir
 fi
 
