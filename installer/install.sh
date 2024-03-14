@@ -15,7 +15,7 @@ bit=""
 dir=""
 
 read -p "What directory should Nova install to? (defaults to $novadir) " input
-read -p "Do you want to install the 32 bit version (leave blank for no, input 'both' for both)" bit32
+read -p "Do you want to install the 32 bit version (leave blank for no, 'both' for both) " bit32
 
 if [ -n "$dir" ]; then
   novadir=$dir
@@ -33,10 +33,11 @@ else
   wget -q -O "$novadir/nova" "https://github.com/neroist/nova/releases/download/$novaver/nova"
 fi
 
-printf "Installing to $novadir/\n\n"
+printf "\nInstalling to $novadir/\n"
 
 # make symlink to nova in secure path
-ln -s "$novadir/nova" /usr/local/bin/nova
+ln -sf "$novadir/nova" /usr/local/bin/nova
+ln -sf "$novadir/nova32" /usr/local/bin/nova32
 
 # create files needed by nova and apply permissions
 touch "$novadir/.KEY"
@@ -49,7 +50,7 @@ chmod u+wr,o+wr "$novadir/.KEY"
 chmod u+rx,o+rx "$novadir/nova"
 chmod u+rx,o+rx "$novadir/nova32"
 
-printf "Nova has been installed.\n\n"
+printf "\nNova has been installed.\n\n"
 printf "Please add Nova to your PATH. You can do so by adding this line at the end of your ~/.bashrc or ~/.profile file:\n"
 printf "      export PATH=\"$novadir:\$PATH\"\n"
 printf "Or if you're using fish shell do:\n"
