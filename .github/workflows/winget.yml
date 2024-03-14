@@ -15,5 +15,5 @@ jobs:
       - uses: vedantmgoyal2009/winget-releaser@v2
         with:
           identifier: Jasmine.Nova
-          installers-regex: '\.exe$'
+          installers-regex: 'nova-installer(64|32|)\.exe$'
           token: ${{ secrets.WINGET_TOKEN }}
