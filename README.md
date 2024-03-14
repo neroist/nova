@@ -93,7 +93,7 @@ If you want to build nova for 32 bit, run this instead:
 nimble -d:nova32 nova
 ```
 
-On Linux, this may require the `gcc-multilib` package.
+On Linux, this may require the `gcc-multilib` and `libcurl4:i386` packages.
 
 #### Installer
 
