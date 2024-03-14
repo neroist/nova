@@ -26,7 +26,7 @@ task nova, "Build Nova; -d:nova32 for 32 bit version":
     echo "\nBuilding 32 bit version\n"
 
     selfExec "c -f -d:nova32 src/nova"
-    exec "strip bin/nova"
+    exec "strip bin/nova32"
   else:
     echo "\nBuilding 64 bit version\n"
 
