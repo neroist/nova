@@ -79,11 +79,23 @@ See <https://neroist.github.io/nova>
 
 ### Build
 
+#### Nova
+
 In order to build, cd into the base directory and run:
 
 ```shell
 nimble nova
 ```
+
+If you want to build nova for 32 bit, run this instead:
+
+```shell
+nimble -d:nova32 nova
+```
+
+On Linux, this may require the `gcc-multilib` package.
+
+#### Installer
 
 Next, to build the installer, run this command:
 
