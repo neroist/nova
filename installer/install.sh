@@ -21,6 +21,8 @@ if [ -n "$dir" ]; then
   novadir=$dir
 fi
 
+printf "\nInstalling to $novadir/\n"
+
 mkdir -p $novadir
 
 if [[ -n "$bit" ]]; then
@@ -33,13 +35,14 @@ else
   wget -q -O "$novadir/nova" "https://github.com/neroist/nova/releases/download/$novaver/nova"
 fi
 
-printf "\nInstalling to $novadir/\n"
+## make symlink to nova in secure path
+[[ -z "$bit" || "$bit" == "both" ]] && ln -sf "$novadir/nova" /usr/local/bin/nova
+[[ -n "$bit" || "$bit" == "both" ]] && ln -sf "$novadir/nova32" /usr/local/bin/nova32
 
-# make symlink to nova in secure path
-ln -sf "$novadir/nova" /usr/local/bin/nova
-ln -sf "$novadir/nova32" /usr/local/bin/nova32
+# make symlink for nova32 as nova
+[[ -n "$bit" && "$bit" != "both" ]] && ln -sf "$novadir/nova32" /usr/local/bin/nova
 
-# create files needed by nova and apply permissions
+## create files needed by nova and apply permissions
 touch "$novadir/.KEY"
 touch "$novadir/.DEVICES"
 
@@ -47,8 +50,8 @@ chmod u+wr,o+wr "$novadir/.DEVICES"
 chmod u+wr,o+wr "$novadir/.KEY"
 
 # apply perms to executable too
-chmod u+rx,o+rx "$novadir/nova"
-chmod u+rx,o+rx "$novadir/nova32"
+[[ -z "$bit" || "$bit" == "both" ]] && chmod u+rx,o+rx "$novadir/nova"
+[[ -n "$bit" || "$bit" == "both" ]] && chmod u+rx,o+rx "$novadir/nova32"
 
 printf "\nNova has been installed.\n\n"
 printf "Please add Nova to your PATH. You can do so by adding this line at the end of your ~/.bashrc or ~/.profile file:\n"
