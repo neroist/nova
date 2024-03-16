@@ -1,5 +1,6 @@
 bin/
 *.exe
 .KEY
+nova_linkerArgs.txt
 
 .vscode
