@@ -25,13 +25,11 @@ task nova, "Build Nova; -d:nova32 for 32 bit version":
   when defined(nova32):
     echo "\nBuilding 32 bit version\n"
 
-    selfExec "c -f -d:nova32 src/nova"
-    exec "strip bin/nova32"
+    selfExec "c -d:nova32 -d:strip src/nova"
   else:
     echo "\nBuilding 64 bit version\n"
 
-    selfExec "c -f src/nova"
-    exec "strip bin/nova"
+    selfExec "c -d:strip src/nova"
 
 
 # Dependencies
