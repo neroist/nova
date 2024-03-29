@@ -24,7 +24,7 @@ proc editFileVisibility*(file: string; hidden: bool) =
     var macoption = "hidden"
 
     if not hidden:
-      winoption = "nohidden"
+      macoption = "nohidden"
 
     discard execShellCmd(fmt"chflags {macoption} {file}")        
 
