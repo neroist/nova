@@ -10,16 +10,16 @@
 
 import std/strformat
 import std/terminal
-import std/json
 import std/os
 
 # import yanyl
 
 import common/messages
+import common/types
 import common/ansi
+import common/vars
 import common/api
 
-include common/vars
 
 proc checkDevices*(device: int; devices: int = numDevices; output: bool = on): bool =
   result = true
@@ -43,10 +43,8 @@ proc isSetup*(output: bool = on; keyDir = keyFile, devicesDir = devicesFile, err
 
     return false
 
-# set numDevices
-if isSetup(false):
-  numDevices = parseFile(devicesFile).len
-
 export api
+export vars
 export ansi
+export types
 export messages

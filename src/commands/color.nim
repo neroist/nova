@@ -1,4 +1,3 @@
-import std/httpclient
 import std/strformat
 import std/strutils
 import std/terminal
@@ -27,34 +26,21 @@ proc color*(device: int = 0; color: string = ""; output = on, all: bool = false)
   
   let 
     apiKey = readFile(keyFile)
-    devices = parseJson readFile(devicesFile)
-    (deviceAddr, model) = getDeviceInfo(devices, device)
+    govee_device = getDevice(device)
 
-  if newJString("color") notin devices[device]["supportCmds"].getElems():
+  if "color" notin govee_device.supportCmds:
     error "This command is not supported by device ", $device
     return
 
   var
     color = color.replace(" ").replace("-").normalize()
-    colorJson = %* {"r": 0, "g": 0, "b": 0}
     r, g, b: int
 
   if color == "":
-    let response = getDeviceState(deviceAddr, model, apiKey)
-
-    try:
-      colorJson = response["data"]["properties"][3]["color"]
-    except KeyError: discard
-
-    let
-      color = $rgb(
-        colorJson["r"].getInt(), 
-        colorJson["g"].getInt(), 
-        colorJson["b"].getInt()
-      )
+    let state = getDeviceState(govee_device.device, govee_device.model, apiKey)
 
     if output:
-      echo fmt"Device {device} color: ", colorToAnsi(parseColor(color)), color, esc
+      echo fmt"Device {device} color: ", colorToAnsi(state.color), state.color, esc
 
     return color
 
@@ -81,8 +67,8 @@ proc color*(device: int = 0; color: string = ""; output = on, all: bool = false)
     (r, g, b) = parseColor(color).extractRGB()
 
   let body = %* {
-    "device": deviceAddr,
-    "model": model,
+    "device": govee_device.device,
+    "model": govee_device.model,
     "cmd": {
       "name": "color",
       "value": {
@@ -93,11 +79,11 @@ proc color*(device: int = 0; color: string = ""; output = on, all: bool = false)
     }
   }
 
-  let re = put(ControlURI, @{"Govee-API-Key": apiKey, "Content-Type": "application/json"}, $body)
+  let response = put(ControlURI, @{"Govee-API-Key": apiKey, "Content-Type": "application/json"}, $body)
 
   if output:
-    echo fmt"Set device {device}'s color to ", colorToAnsi(rgb(r, g, b)), rgb(r, g, b), esc, '\n'
+    echo fmt"Set device {device}'s color to {colorToAnsi(rgb(r, g, b))}{rgb(r, g, b)}{esc}", '\n'
     
-    sendCompletionMsg re.code, parseJson(re.body)["message"], HttpCode(re.code)
+    sendCompletionMsg response
 
   return color

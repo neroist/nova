@@ -2,9 +2,12 @@ import std/httpclient
 import std/terminal
 import std/json
 
+import puppy
+
 import ./ansi
 
 template success*(args: varargs[untyped]) = styledEcho fgGreen, args, resetStyle
+template warning*(args: varargs[untyped]) = styledEcho fgYellow, args, resetStyle
 template error*(args: varargs[untyped]) = styledEcho fgRed, args, resetStyle
 
 func getErrorMsg*(code: int): string =
@@ -16,13 +19,13 @@ func getErrorMsg*(code: int): string =
     else:
       return $code & " error"
 
-proc sendCompletionMsg*(code: int; message: JsonNode; codeMsg: HttpCode) =
-  if code == 200:
+proc sendCompletionMsg*(response: puppy.Response) =
+  if response.code == 200:
     success "Successfully executed command"
   else:
     error "Error executing command"
  
-  echo "Message: ", message
-  echo "Code: ", codeMsg
+  echo "Message: ", parseJson(response.body)["message"]
+  echo "Code: ", HttpCode(response.code)
 
 export ansi

@@ -1,4 +1,3 @@
-import std/httpclient
 import std/strformat
 import std/terminal
 import std/colors
@@ -22,42 +21,29 @@ proc rgb*(rgb: seq[int] = @[-1, -1, -1]; device: int = 0; output = on, all: bool
     for i in 0..<numDevices:
       discard rgb(rgb, i, output)
 
-  var rgb = rgb
-
   if len(rgb) != 3:
     error "RGB has to be 3 integers, no more, no less."
     return
 
   let
     apiKey = readFile(keyFile)
-    devices = parseJson readFile(devicesFile)
-    (deviceAddr, model) = getDeviceInfo(devices, device)
+    govee_device = getDevice(device)
 
-  if newJString("color") notin devices[device]["supportCmds"].getElems():
+  if "color" notin govee_device.supportCmds:
     error "This command is not supported by device ", $device
     return
 
   if rgb == @[-1 ,-1, -1]:
-    var colorJson = %* {"r": 0, "g": 0, "b": 0}
+    let state = getDeviceState(govee_device.device, govee_device.model, apiKey)
 
-    let response = getDeviceState(deviceAddr, model, apiKey)
-
-    try:
-      colorJson = response["data"]["properties"][3]["color"]
-    except KeyError:
-      discard
-
-    let 
-      r = colorJson["r"].getInt()
-      g = colorJson["g"].getInt()
-      b = colorJson["b"].getInt()
-
-      color = colorToAnsi rgb(r, g, b)
+    let
+      (r, g, b) = state.color.extractRGB()
+      ansi_color = state.color.colorToAnsi()
 
     if output:
-      echo fmt"Device {device} color: {color}rgb({r}, {g}, {b}){esc}"
+      echo fmt"Device {device} color: {ansi_color}rgb({r}, {g}, {b}){esc}"
 
-    return (r: r, g: g, b: b)
+    return (r, g, b)
 
   for i in rgb:
     if i notin 1..255:
@@ -66,12 +52,11 @@ proc rgb*(rgb: seq[int] = @[-1, -1, -1]; device: int = 0; output = on, all: bool
 
       return
 
-  let
-    color = colorToAnsi rgb(rgb[0], rgb[1], rgb[2])
+  let ansi_color = colorToAnsi rgb(rgb[0], rgb[1], rgb[2])
 
   let body = %* {
-    "device": deviceAddr,
-    "model": model,
+    "device": govee_device.device,
+    "model": govee_device.model,
     "cmd": {
       "name": "color",
       "value": {
@@ -82,11 +67,11 @@ proc rgb*(rgb: seq[int] = @[-1, -1, -1]; device: int = 0; output = on, all: bool
     }
   }
 
-  let re = put(ControlURI, @{"Govee-API-Key": apiKey, "Content-Type": "application/json"}, $body)
+  let response = put(ControlURI, @{"Govee-API-Key": apiKey, "Content-Type": "application/json"}, $body)
 
   if output:
-    echo fmt"Set device {device}'s color to {color}rgb({rgb[0]}, {rgb[1]}, {rgb[2]}){esc}", '\n'
+    echo fmt"Set device {device}'s color to {ansi_color}rgb({rgb[0]}, {rgb[1]}, {rgb[2]}){esc}", '\n'
 
-    sendCompletionMsg re.code, parseJson(re.body)["message"], HttpCode(re.code)
+    sendCompletionMsg response
 
   return (r: rgb[0], g: rgb[1], b: rgb[2])

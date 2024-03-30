@@ -8,7 +8,9 @@
 
 import std/terminal
 import std/random
+import std/json
 
+import termui/ansi
 import cligen
 
 import commands/[
@@ -34,6 +36,15 @@ randomize()
 # enable true color, needed so commands can look pretty!
 enableTrueColors()
 
+# also enable ansi on windows terminal
+#? do we need this
+enableAnsiOnWindowsConsole()
+
+# set numDevices
+if isSetup(false):
+  numDevices = parseFile(devicesFile).len
+
+# set cfg version for `nova --version`
 clCfg.version = "Nova " & Version
 
 dispatchMulti(

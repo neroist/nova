@@ -1,4 +1,3 @@
-import std/httpclient
 import std/strformat
 import std/terminal
 import std/json
@@ -18,39 +17,41 @@ proc brightness*(device = 0, brightness: int = -1; output = on, all: bool = fals
 
   let 
     apiKey = readFile(keyFile)
-    devices = parseJson readFile(devicesFile)
-    (deviceAddr, model) = getDeviceInfo(devices, device)
+    govee_device = getDevice(device)
 
-  if newJString("brightness") notin devices[device]["supportCmds"].getElems():
+  if "brightness" notin govee_device.supportCmds:
     error "This command is not supported by device ", $device
     return
 
-  if brightness == -1:  # if brightness is default value
-    let response = getDeviceState(deviceAddr, model, apiKey)
+  # if brightness is default value
+  if brightness == -1:  
+    let state = getDeviceState(govee_device.device, govee_device.model, apiKey)
 
     if output:
-      echo fmt"Device {device} brightness: ", response["data"]["properties"][2]["brightness"].getInt(), '%'
+      echo fmt"Device {device} brightness: {state.brightness}%"
 
-    return response["data"]["properties"][2]["brightness"].getInt()
+    return state.brightness
 
-  if brightness notin 1..100 :
+  if brightness notin 1..100:
     if output:
       error "Invalid brightness, is not in the range 1-100"
 
     return
 
   let body = %* {
-    "device": deviceAddr,
-    "model": model,
+    "device": govee_device.device,
+    "model": govee_device.model,
     "cmd": {
       "name": "brightness",
       "value": brightness
     }
   }
 
-  let re = put(ControlURI, @{"Govee-API-Key": apiKey, "Content-Type": "application/json"}, $body)
+  let response = put(ControlURI, @{"Govee-API-Key": apiKey, "Content-Type": "application/json"}, $body)
 
   if output:
-    sendCompletionMsg re.code, parseJson(re.body)["message"], HttpCode(re.code)
+    echo fmt"Set device {device}'s brightness to {brightness}%"
+
+    sendCompletionMsg response
   
   return brightness

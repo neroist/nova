@@ -44,24 +44,28 @@ proc setup* =
     code = response.code
 
   if code == 200:
-    # we "un-hide" the the .KEY file incase it exists already
-    # we cant write to a hidden file, apparently
-    if fileExists keyFile:
-      editFileVisibility(keyFile, hidden=false)
+    # we "un-hide" the .KEY and .DEVICES files in case they exist already
+    for file in [keyFile, devicesFile]:
+      if file.fileExists():
+        editFileVisibility(file, hidden=false)
 
-    # same for .DEVICES
-    if fileExists devicesFile:
-      editFileVisibility(devicesFile, hidden=false)
+    # write api key
+    writeFile(keyFile, apiKey) 
 
-    writeFile(keyFile, apiKey) # write api key
-    writeFile(devicesFile, $parseJson(response.body)["data"]["devices"]) # cache devices
+    # cache devices
+    writeFile(devicesFile, $parseJson(response.body)["data"]["devices"]) 
 
+    # "re-hide" them
     for file in [keyFile, devicesFile]:
       editFileVisibility(file, hidden=true)
 
+    # success!
     success "\nSetup completed successfully.\nWelcome to Nova."
+
     return
   else:
+    # .. or not :(
     error "\nCode: ", $code
     error getErrorMsg(code)
+
     return

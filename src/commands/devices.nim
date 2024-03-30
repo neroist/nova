@@ -1,7 +1,6 @@
 import std/strutils
-import std/terminal
-import std/sugar
-import std/json
+
+import jsony
 
 import ../common
 
@@ -10,16 +9,14 @@ proc devices* =
 
   if not isSetup(true): return
 
-  let devices = parseJson readFile(devicesFile) 
+  let devices = readFile(devicesFile).fromJson(seq[GoveeDevice])
 
-  for dev, i in devices.getElems():
-    let cmds = collect(for i in i["supportCmds"]: i.getStr())
-          ## seq of all supported commands of the device
+  for idx, device in devices:
+    echo bold, "DEVICE ", idx, esc
 
-    echo "\e[1m", "DEVICE ", $dev, ansiResetCode
-    echo "  Mac Address: ", i["device"].getStr()
-    echo "  Model: ", i["model"].getStr()
-    echo "  Device Name: ", i["deviceName"].getStr()
-    echo "  Controllable: ", capitalizeAscii($i["controllable"].getBool())
-    echo "  Retrievable: ", capitalizeAscii($i["retrievable"].getBool())
-    echo "  Supported Commands: ", cmds.join(", "), "\n"
+    echo "\tMac Address: ", device.device
+    echo "\tModel: ", device.model
+    echo "\tDevice Name: ", device.deviceName
+    echo "\tControllable: ", device.controllable
+    echo "\tRetrievable: ", device.retrievable
+    echo "\tSupported Commands: ", device.supportCmds.join(", "), "\n"

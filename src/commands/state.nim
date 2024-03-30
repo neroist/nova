@@ -2,7 +2,6 @@ import std/strformat
 import std/strutils
 import std/terminal
 import std/colors
-import std/json
 
 import ./color_temp
 import ../common
@@ -16,39 +15,22 @@ proc state*(device: int = 0; all: bool = false) =
     for i in 0..<numDevices-1:
       state(i)
 
-  var
-    colorJson = %* {"r": 0, "g": 0, "b": 0}
-    colorTem = 0 
+  let
+    govee_device = getDevice(device)
+    state = getDeviceState(govee_device.device, govee_device.model)
 
   let
-    apiKey = readFile(keyFile)
-    devices = parseJson readFile(devicesFile)
-    (deviceAddr, model) = getDeviceInfo(devices, device)
+    device_color = state.color
+    (r, g, b) = state.color.extractRGB()
 
-    response = getDeviceState(deviceAddr, model, apiKey)
+    ansi_color = colorToAnsi state.color
+    ansi_color_temp = colorToAnsi(kelvinToRgb(state.colorTemp))
 
-    properties = response["data"]["properties"]
-
-  try:
-    colorJson = properties[3]["color"]
-  except KeyError:
-    colorTem = properties[4]["colorTem"].getInt()
-
-  let
-    r = colorJson["r"].getInt()
-    g = colorJson["g"].getInt()
-    b = colorJson["b"].getInt()
-
-    color = fmt"#{r.toHex()[^2..^1]}{g.toHex()[^2..^1]}{b.toHex()[^2..^1]}"
-    ansi = colorToAnsi rgb(r, g, b)
-    krgb = kelvinToRgb(colorTem)
-    kelvinAnsi = colorToAnsi(krgb)
-
-  styledEcho styleItalic, "DEVICE ", $device
-  echo "  Mac Address: ", response["data"]["device"].str[0..^1]
-  echo "  Model: ", response["data"]["model"].str[0..^1]
-  echo "  Online: ", capitalizeAscii($properties[0]["online"].getBool()), " (may be incorrect)"
-  echo "  Power State: ", properties[1]["powerState"].getStr().capitalizeAscii()
-  echo "  Brightness: ", properties[2]["brightness"].getInt()
-  echo "  Color: ", fmt"{ansi}{color}{esc} or {ansi}rgb({r}, {g}, {b}){esc}"
-  echo "  Color Temperature: ", kelvinAnsi, colorTem, esc, " (if not 0, color will be #000000)"
+  styledEcho styleItalic, "DEVICE ", $device, ansiResetCode
+  echo &"\tMac Address: {state.device}"
+  echo &"\tModel: {state.model}"
+  echo &"\tOnline: {state.online} (may be incorrect)"
+  echo &"\tPower State: {state.powerState}"
+  echo &"\tBrightness: {state.brightness}"
+  echo &"\tColor: {ansi_color}{device_color}{esc} or {ansi_color}rgb({r}, {g}, {b}){esc}"
+  echo &"\tColor Temperature: {ansi_color_temp}{state.colorTemp}K{esc} (if not 0K, color will be #000000)"

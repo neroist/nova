@@ -1,4 +1,3 @@
-import std/httpclient
 import std/strformat
 import std/terminal
 import std/json
@@ -35,45 +34,40 @@ proc colorTemp*(device = 0, temperature: int = -1; output = on, all: bool = fals
   if not isSetup(output) or not checkDevices(device, output = output): return
   
   if all:
-    for i in 0..<numDevices-1:
+    for i in 0..<numDevices:
       discard colorTemp(i, temperature, output)
 
-  let 
-    apiKey = readFile(keyFile) 
-    devices = parseJson readFile(devicesFile)
-    (deviceAddr, model) = getDeviceInfo(devices, device)
+  let
+    apiKey = readFile(keyFile)
+    govee_device = getDevice(device)
 
-  if newJString("colorTem") notin devices[device]["supportCmds"].getElems():
+  if "colorTem" notin govee_device.supportCmds:
     error "This command is not supported by device ", $device
     return
 
   if temperature == -1:
     let 
-      response = getDeviceState(deviceAddr, model, apiKey)
-
-      temp = response["data"]["properties"][3]["colorTemInKelvin"].getInt(0)
-
-      ansi = colorToAnsi(kelvinToRgb(temp))
+      state = getDeviceState(govee_device.device, govee_device.model, apiKey)
+      temp = state.colorTemp
+      ansi = colorToAnsi(kelvinToRgb(state.colorTemp))
 
     if output:
       echo fmt"Device {device}'s color temperature is ", ansi, temp, 'K', esc
 
     return temp
 
-  let
-    jsonColorTemRange = devices[device]["properties"]["colorTem"]["range"]
-    colorTemRange = jsonColorTemRange["min"].getInt() .. jsonColorTemRange["max"].getInt()
+  let colorTemRange = govee_device.tempRange()
 
   if temperature notin colorTemRange:
     if output:
       # .a is slice lower bound, .b is slice upper bound
       error fmt"Color temperature {temperature}K out of supported range: {colorTemRange.a}K-{colorTemRange.b}K"
 
-    return
+    quit 1
 
   let body = %* {
-    "device": deviceAddr,
-    "model": model,
+    "device": govee_device.device,
+    "model": govee_device.model,
     "cmd": {
       "name": "colorTem",
       "value": temperature
@@ -81,13 +75,13 @@ proc colorTemp*(device = 0, temperature: int = -1; output = on, all: bool = fals
   }
 
   let 
-    re = put(ControlURI, @{"Govee-API-Key": apiKey, "Content-Type": "application/json"}, $body)
+    response = put(ControlURI, @{"Govee-API-Key": apiKey, "Content-Type": "application/json"}, $body)
 
-    ccolor = colorToAnsi(kelvinToRgb(temperature))
+    ansi_color = colorToAnsi(kelvinToRgb(temperature))
 
   if output:
-    echo fmt"Set device {device}'s color temperature to {ccolor}{temperature}K{esc}", '\n'
+    echo fmt"Set device {device}'s color temperature to {ansi_color}{temperature}K{esc}", '\n'
 
-    sendCompletionMsg re.code, parseJson(re.body)["message"], HttpCode(re.code)
+    sendCompletionMsg response
 
   return temperature

@@ -1,4 +1,9 @@
-# included by ../common.nim
+import std/terminal
+import std/os
+
+proc ansiCode(code: string): string {.inline.} =
+  if isTrueColorSupported(): code
+  else: ""
 
 const
   DeviceHelp* = "The device to perform the action/command on. Defaults to '0'. " &
@@ -34,8 +39,8 @@ var
   numDevices*: int
 
 let
-  esc* = if isTrueColorSupported(): ansiResetCode
-         else: ""
+  esc* = ansiCode ansiResetCode
+  bold* = ansiCode "\e[1m"
 
   keyFile* = getAppDir() / ".KEY"
   savesFile* = getAppDir() / ".saves.yaml"

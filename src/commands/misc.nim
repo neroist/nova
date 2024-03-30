@@ -15,7 +15,7 @@ proc about* =
   ## Nova about
 
   echo "Nova ", Version, '\n'
-  echo Description
+  echo Description, '\n'
   echo "Made by ", Author, '.'
 
 proc description* =
