@@ -24,9 +24,6 @@ proc turn*(device: int = 0; state: string = ""; toggle = false, output = on, all
 
   if not isSetup(output) or (not checkDevices(device, output = output)): return
 
-  if not state.isBool():
-    error "Invalid `state`! `state` has to be the string \"off\", \"on\", or something similar."
-    return
 
   if all:
     for i in 0..<numDevices:
@@ -58,6 +55,10 @@ proc turn*(device: int = 0; state: string = ""; toggle = false, output = on, all
     state = device_state.powerState
                         .toStr()
                         .toggle()
+  
+  if not state.isBool() and not toggle:
+    error "Invalid `state`! `state` has to be the string \"off\", \"on\", or something similar."
+    return
 
   let body = %* {
     "device": govee_device.device,
