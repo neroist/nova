@@ -3,9 +3,6 @@ import std/terminal
 import std/colors
 
 proc colorToAnsi*(color: Color; foreground: bool = true): string =
-  if not isTrueColorSupported():
-    return ""
-
   let
     rgb = color.extractRGB
 
