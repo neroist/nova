@@ -1,6 +1,6 @@
 # Package
 
-version       = "1.7.0"
+version       = "1.8.0"
 author        = "Jasmine"
 description   = "Nova is a CLI for controlling Govee light strips, inspired by Jack Devey's Lux."
 license       = "MIT"

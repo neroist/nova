@@ -9,7 +9,7 @@ if [ "$(id -u)" -ne 0 ]; then
 fi
 
 # vars
-novaver="1.7.0"
+novaver="1.8.0"
 novadir="/usr/local/nova"
 bit=""
 dir=""

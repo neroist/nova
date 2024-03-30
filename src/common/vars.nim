@@ -20,7 +20,7 @@ const
   NotSetupErrorMsg* = "Nova is not setup properly. Use the command `nova setup` to setup Nova."
     ## Error message when Nova is not setup properly.
   
-  Version* = "v1.7.0"
+  Version* = "v1.8.0"
     ## Nova version
   
   Description* = "Nova is a CLI for controlling Govee light strips, inspired by Jack Devey's Lux."
