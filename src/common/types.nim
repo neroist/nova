@@ -49,10 +49,6 @@ proc tempRange*(dev: GoveeDevice): Slice[int] =
 #   if fieldName == "supportCmds":
 #     fieldName = "supportedCmds"
 
-proc newHook*(dev: var GoveeDevice) =
-  # initialize the properties field before jsony parsing to avoid segfaults :p
-  dev.properties = newJObject()
-
 # ---
 
 proc getColor(color: JsonNode): Color =
