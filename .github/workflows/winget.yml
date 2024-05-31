@@ -8,6 +8,11 @@ on:
   release:
     types: [released]
 
+env:
+  WINGET_TOKEN: ${{ secrets.WINGET_TOKEN }}
+  HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.PUBLIC_ACCESS_TOKEN }}
+  NUGET_TOKEN: ${{ secrets.NUGET_TOKEN }}
+
 jobs:
   publish:
     runs-on: windows-latest
@@ -16,4 +21,4 @@ jobs:
         with:
           identifier: Jasmine.Nova
           installers-regex: 'nova-installer(64|32|)\.exe$'
-          token: ${{ secrets.WINGET_TOKEN }}
+          token: ${{ env.WINGET_TOKEN }}
