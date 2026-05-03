@@ -33,7 +33,7 @@ const
     ## The base URI used to control devices.
   
   Author* = "Jasmine"
-    ## The creator of Nova (me! :3)
+    ## The creator of Nova (me!)
 
 var
   numDevices*: int
